@@ -1,0 +1,131 @@
+/* Container for the entire page section */
+.trip-list-container {
+    padding: 2rem;
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+/* Title styling */
+.trip-list-container h2 {
+    text-align: center;
+    margin-bottom: 1.5rem;
+    color: #333;
+}
+
+/* Use CSS Grid to display up to 4 cards per row */
+.trip-list {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+    gap: 1.5rem;
+}
+
+/* Each card wrapper is relative to position the burger */
+.trip-card-wrapper {
+    position: relative;
+}
+
+/* The trip card styling */
+.trip-card {
+    display: block;
+    background-color: #f0e68c; /* khaki background */
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    text-decoration: none;
+    color: inherit;
+}
+
+.trip-card:hover {
+    transform: scale(1.03);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+}
+
+/* The trip image is rectangular with round corners */
+.trip-image {
+    width: 100%;
+    height: 150px;
+    object-fit: cover;
+    border-top-left-radius: 12px;
+    border-top-right-radius: 12px;
+}
+
+/* Trip details container */
+.trip-details {
+    padding: 1rem;
+}
+
+.trip-details h3 {
+    margin: 0 0 0.5rem;
+    color: #ff4500;
+    font-size: 1.2rem;
+}
+
+.trip-details p {
+    margin: 0.25rem 0;
+    font-size: 0.9rem;
+    color: #333;
+}
+
+/* Burger menu styling */
+.trip-actions {
+    position: absolute;
+    bottom: 0.5rem;
+    right: 0.5rem;
+}
+
+/* The burger button with a black-orange gradient */
+.burger-btn {
+    background: linear-gradient(45deg, #968585, #ff5900);
+    border: none;
+    color: #fff;
+    font-size: 1.5rem;
+    padding: 0.2rem 0.5rem;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+/* Dropdown menu for the burger */
+.menu-dropdown {
+    position: absolute;
+    bottom: 2.5rem;
+    right: 0;
+    background-color: #fff;
+    border: 1px solid #ff8c00;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
+    border-radius: 4px;
+    overflow: hidden;
+    z-index: 10;
+}
+
+.menu-dropdown button {
+    display: block;
+    width: 100%;
+    padding: 0.5rem 1rem;
+    background: none;
+    border: none;
+    text-align: left;
+    cursor: pointer;
+    color: #333;
+}
+
+.menu-dropdown button:hover {
+    background-color: #f7f7f7;
+}
+
+.create-trip-btn {
+    background-color: var(--primary-color);
+    color: var(--secondary-color);
+    border: none;
+    padding: 0.8rem 1.2rem;
+    border-radius: var(--border-radius);
+    font-size: 1rem;
+    cursor: pointer;
+    margin: 1rem auto;
+    display: block;
+    transition: background-color 0.3s ease;
+}
+
+.create-trip-btn:hover {
+    background-color: #e03e00;
+}

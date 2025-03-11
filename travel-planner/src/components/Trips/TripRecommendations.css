@@ -1,0 +1,50 @@
+/* src/components/Trips/TripRecommendations.css */
+.trip-recommendations {
+    margin-top: 2rem;
+    padding: 1rem;
+    background-color: #fefefe;
+    border: 1px solid #ff4500;
+    border-radius: 8px;
+}
+
+.trip-recommendations h3 {
+    color: #ff4500;
+    margin-bottom: 1rem;
+    text-align: center;
+}
+
+.general-recommendations,
+.day-recommendations {
+    margin-bottom: 1rem;
+}
+
+.general-recommendations h4,
+.day-recommendations h4 {
+    margin-bottom: 0.5rem;
+    font-size: 1.1rem;
+    color: #333;
+    border-bottom: 1px solid #ddd;
+    padding-bottom: 0.3rem;
+}
+
+.recommendation-item {
+    margin-bottom: 1rem;
+    padding: 0.5rem;
+    border-top: 1px solid #ddd;
+}
+
+.recommendation-item h5 {
+    margin-bottom: 0.5rem;
+    font-size: 1rem;
+    color: #444;
+}
+
+.recommendation-detail {
+    margin: 0.3rem 0;
+    font-size: 0.95rem;
+    color: #555;
+}
+
+.recommendation-detail strong {
+    margin-right: 0.3rem;
+}

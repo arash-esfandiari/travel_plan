@@ -1,0 +1,5 @@
+/backend/node_modules
+/travel-planner/node_modules
+/travel-planner/src/assets
+/travel-planner/.env
+/backend/.env

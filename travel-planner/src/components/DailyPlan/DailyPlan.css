@@ -1,0 +1,166 @@
+.daily-plan-section {
+    margin-top: 2rem;
+    background-color: #fff;
+    border: 1px solid var(--primary-color);
+    border-radius: var(--border-radius);
+    padding: 1rem;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.daily-plan-section h3 {
+    color: var(--primary-color);
+    margin-bottom: 1rem;
+}
+
+.daily-plan-item {
+    border-bottom: 1px solid #ddd;
+    padding: 0.5rem 0;
+}
+
+.daily-plan-item:last-child {
+    border-bottom: none;
+}
+
+.daily-plan-item p {
+    margin: 0.2rem 0;
+}
+
+.daily-plan-form {
+    margin-top: 1rem;
+    background-color: #fff;
+    border: 1px solid #ff4500;
+    border-radius: 8px;
+    padding: 1rem;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    font-family: "Montserrat", sans-serif;
+}
+
+.daily-plan-form h4 {
+    margin-bottom: 0.5rem;
+    color: #ff4500;
+    font-family: "Montserrat", sans-serif;
+}
+
+.daily-plan-form form {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
+.daily-plan-form select,
+.daily-plan-form input[type="text"],
+.daily-plan-form textarea {
+    padding: 0.5rem;
+    border: 1px solid #333;
+    border-radius: 4px;
+    font-family: "Montserrat", sans-serif;
+    background-color: #f5f5f5; /* Light grey background for inputs */
+}
+
+.daily-plan-form button {
+    padding: 0.5rem;
+    background-color: #ff4500;
+    color: #fff;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+    font-family: "Montserrat", sans-serif;
+}
+
+.daily-plan-form button:hover {
+    background-color: #e03e00;
+}
+
+.daily-plan-section {
+    margin-top: 2rem;
+    background-color: #fff;
+    border: 1px solid var(--primary-color);
+    border-radius: var(--border-radius);
+    padding: 1rem;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.daily-plan-day {
+    margin-bottom: 1.5rem;
+    border-bottom: 1px solid #ddd;
+    padding-bottom: 1rem;
+}
+
+.daily-plan-day:last-child {
+    border-bottom: none;
+}
+
+.daily-plan-day h4 {
+    margin-bottom: 0.5rem;
+    color: var(--primary-color);
+}
+
+.daily-plan-item {
+    padding: 0.5rem 0;
+    border-bottom: 1px solid #eee;
+}
+
+.daily-plan-item:last-child {
+    border-bottom: none;
+}
+.daily-plan-section {
+    margin-top: 2rem;
+    background-color: #fff;
+    border: 1px solid #ff4500;
+    border-radius: 8px;
+    padding: 1rem;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.daily-plan-day {
+    margin-bottom: 1.5rem;
+    border-bottom: 1px solid #ddd;
+    padding-bottom: 1rem;
+}
+
+.daily-plan-day:last-child {
+    border-bottom: none;
+}
+
+.daily-plan-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    cursor: pointer;
+    background-color: #f9f9f9;
+    padding: 0.5rem;
+    border-radius: 4px;
+}
+
+.daily-plan-header h4 {
+    margin: 0;
+    color: #ff4500;
+    font-size: 1rem;
+}
+
+.daily-plan-header span {
+    font-size: 1.5rem;
+    color: #ff4500;
+}
+
+.daily-plan-content {
+    padding: 0.5rem 1rem;
+}
+
+.daily-weather {
+    margin-bottom: 0.5rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    background-color: rgba(255, 69, 0, 0.1);
+    padding: 0.5rem;
+    border-radius: 4px;
+}
+
+.daily-weather img {
+    max-width: 40px; /* Maximum width */
+    max-height: 40px; /* Maximum height */
+    width: auto; /* Let the browser determine the width based on aspect ratio */
+    height: auto; /* Let the browser determine the height */
+}
