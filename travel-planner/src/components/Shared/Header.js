@@ -13,9 +13,9 @@ const Header = () => {
 
     return (
         <header>
-            <h1>Travel Planner</h1>
+            <h1>Smart Travel Planner</h1>
             <nav>
-                <Link to="/">Dashboard</Link>
+                <Link to="/">Home</Link>
                 <Link to="/trips">Trips</Link>
                 {token ? (
                     <>

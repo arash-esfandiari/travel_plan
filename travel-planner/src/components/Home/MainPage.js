@@ -33,7 +33,7 @@ const MainPage = () => {
                         return (
                             <div key={cellIndex} className="grid-item central-item">
                                 <button className="create-trip-button" onClick={handleCreateTrip}>
-                                    + Smart Travel Plan
+                                    + Plan Your Trip
                                 </button>
                             </div>
                         );
