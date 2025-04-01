@@ -8,8 +8,10 @@ const dailyPlanRoutes = require('./routes/dailyPlanRoutes');// Import the daily 
 
 const app = express(); // Create an instance of an Express application
 
-// Use the CORS middleware to allow cross-origin requests
-app.use(cors());
+// Allow CORS only from your Netlify frontend URL.
+// Set FRONTEND_URL in your .env file (e.g., FRONTEND_URL=https://your-app-name.netlify.app)
+const allowedOrigin = process.env.FRONTEND_URL || 'https://your-app-name.netlify.app';
+app.use(cors({ origin: allowedOrigin }));
 // Use the JSON middleware to parse JSON request bodies
 app.use(express.json());
 

@@ -59,7 +59,7 @@ const TripDetails = () => {
                     <h2>{trip.trip_name}</h2>
                     {trip.image_url && (
                         <img
-                            src={`http://localhost:5001${trip.image_url}`}
+                            src={`${process.env.REACT_APP_API_URL}${trip.image_url}`}
                             alt={trip.trip_name}
                             className="trip-image"
                         />
@@ -71,6 +71,10 @@ const TripDetails = () => {
                         <strong>Description:</strong> {trip.description}
                     </p>
                     <h3>Itinerary</h3>
+                    {/* New Recommendations Section */}
+                    {trip.recommendations && (
+                        <TripRecommendations recommendations={trip.recommendations} />
+                    )}
                     <DailyPlanList
                         tripId={tripId}
                         tripStartDate={trip.start_date}
@@ -85,10 +89,6 @@ const TripDetails = () => {
                         tripEndDate={trip.end_date}
                         onPlanAdded={() => setRefreshPlans(!refreshPlans)}
                     />
-                    {/* New Recommendations Section */}
-                    {trip.recommendations && (
-                        <TripRecommendations recommendations={trip.recommendations} />
-                    )}
                 </div>
             </div>
             <div className="trip-details-right">

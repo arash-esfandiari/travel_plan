@@ -94,8 +94,6 @@ exports.createTrip = async (req, res) => {
         // Extract recommendations from the response
         const recommendations = chatCompletion.choices[0].message.content;
 
-        // Attach the recommendations to the new trip object
-        console.log('Recommendations:', recommendations);
 
         // Create the trip record in your database
         const newTrip = await tripModel.createTrip(
