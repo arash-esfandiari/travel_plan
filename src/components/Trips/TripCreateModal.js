@@ -12,7 +12,6 @@ const TripCreateModal = ({ onClose, onTripCreated }) => {
     const [tripName, setTripName] = useState('');
     const [description, setDescription] = useState('');
     const [imageFile, setImageFile] = useState(null);
-    const [imagePreview, setImagePreview] = useState(null);
 
     // Date range picker state
     const [dateRange, setDateRange] = useState([
@@ -100,7 +99,6 @@ const TripCreateModal = ({ onClose, onTripCreated }) => {
                     ></textarea>
                     <ImageUploader
                         onFileSelected={(file) => setImageFile(file)}
-                        initialPreview={imagePreview}
                     />
                     <div className="modal-actions">
                         <button type="button" onClick={onClose}>Cancel</button>
