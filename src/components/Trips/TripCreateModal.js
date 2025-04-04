@@ -12,6 +12,7 @@ const TripCreateModal = ({ onClose, onTripCreated }) => {
     const [tripName, setTripName] = useState('');
     const [description, setDescription] = useState('');
     const [imageFile, setImageFile] = useState(null);
+    const [isLoading, setIsLoading] = useState(false);
 
     // Date range picker state
     const [dateRange, setDateRange] = useState([
@@ -39,6 +40,7 @@ const TripCreateModal = ({ onClose, onTripCreated }) => {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
+        setIsLoading(true); // Start loading
         if (dateRange[0].endDate <= dateRange[0].startDate) {
             alert('The trip must end after it starts.');
             return;
@@ -60,6 +62,8 @@ const TripCreateModal = ({ onClose, onTripCreated }) => {
         } catch (error) {
             console.error('Error creating trip:', error);
             alert('Failed to create trip.');
+        } finally {
+            setIsLoading(false); // Stop loading
         }
     };
 
@@ -98,11 +102,20 @@ const TripCreateModal = ({ onClose, onTripCreated }) => {
                         required
                     ></textarea>
                     <ImageUploader
-                        onFileSelected={(file) => setImageFile(file)}
+                        onFileSelected={(file) => {
+                            const MAX_FILE_SIZE = 5 * 1024 * 1024; // 5 MB
+                            if (file.size > MAX_FILE_SIZE) {
+                                alert('The selected file is too large. Please select a file smaller than 5 MB.');
+                                return;
+                            }
+                            setImageFile(file);
+                        }}
                     />
                     <div className="modal-actions">
                         <button type="button" onClick={onClose}>Cancel</button>
-                        <button type="submit">Create Trip</button>
+                        <button type="submit" disabled={isLoading}>
+                            {isLoading ? 'Creating...' : 'Create Trip'}
+                        </button>
                     </div>
                 </form>
             </div>

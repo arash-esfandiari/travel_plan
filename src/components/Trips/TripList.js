@@ -53,7 +53,7 @@ const TripList = () => {
                     <div key={trip.id} className="trip-card-wrapper">
                         <Link to={`/trips/${trip.id}`} className="trip-card">
                             <img
-                                src={trip.image_url ? `${process.env.REACT_APP_API_URL}${trip.image_url}` : '/assets/images/placeholder.jpg'}
+                                src={trip.image_url ? `${process.env.REACT_APP_BACKEND_API_URL}${trip.image_url}` : '/assets/images/placeholder.jpg'}
                                 alt={trip.trip_name}
                                 className="trip-image"
                             />

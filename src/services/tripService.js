@@ -16,8 +16,12 @@ export const getTripById = async (tripId) => {
 };
 
 // Create a new trip
-export const createTrip = async (tripData) => {
-    const response = await api.post('/trips', tripData);
+export const createTrip = async (formData) => {
+    const response = await api.post('/trips', formData, {
+        headers: {
+            'Content-Type': 'multipart/form-data',
+        },
+    });
     return response.data;
 };
 
@@ -27,10 +31,8 @@ export const updateTrip = async (tripId, tripData) => {
     return response.data;
 };
 
-
 // Delete a trip
 export const deleteTrip = async (tripId) => {
     const response = await api.delete(`/trips/${tripId}`);
     return response.data;
 };
-
