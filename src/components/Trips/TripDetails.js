@@ -59,7 +59,7 @@ const TripDetails = () => {
                     <h2>{trip.trip_name}</h2>
                     {trip.image_url && (
                         <img
-                            src={`${process.env.REACT_APP_BACKEND_API_URL}${trip.image_url}`}
+                            src={`${trip.image_url}`}
                             alt={trip.trip_name}
                             className="trip-image"
                         />

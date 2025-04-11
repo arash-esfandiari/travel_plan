@@ -36,7 +36,7 @@ const TripEdit = () => {
                 setTripName(trip.trip_name);
                 setDescription(trip.description);
                 if (trip.image_url) {
-                    setImagePreview(`${process.env.REACT_APP_BACKEND_API_URL}${trip.image_url}`);
+                    setImagePreview(`${trip.image_url}`);
                 }
                 setDateRange([
                     {
