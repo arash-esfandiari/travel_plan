@@ -1,4 +1,14 @@
-@import url("https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600&display=swap");
+/* Add a fade-in animation */
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(-20px); /* Optional: Slide down slightly */
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
 
 header {
     background-color: var(--primary-color);
@@ -8,6 +18,11 @@ header {
     align-items: center;
     justify-content: space-between;
     font-family: "Montserrat", sans-serif; /* Travel-inspired font */
+    animation: fadeIn 1s ease-in-out; /* Apply the fade-in animation */
+    border-bottom: 2px solid #ccc; /* Add a border below the header */
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* Add a shadow below the border */
+    border-radius: 20px; /* Add rounded edges to the bottom of the header */
+    margin: 7px;
 }
 
 header h1 {
@@ -35,8 +50,8 @@ nav a:hover {
 }
 
 .logo img {
-    max-width: 100px;
-    height: auto;
+    max-height: 50px;
+    width: auto;
     display: block;
 }
 

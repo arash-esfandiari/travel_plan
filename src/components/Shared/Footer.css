@@ -6,4 +6,31 @@ footer {
     padding: 1rem;
     text-align: center;
     font-family: "Montserrat", sans-serif;
+    border-top: 2px solid #ccc; /* Add a border above the footer */
+    box-shadow: 0 -4px 6px rgba(0, 0, 0, 0.1); /* Add a shadow above the border */
+    border-radius: 20px; /* Add rounded edges to the bottom of the header */
+    margin: 7px;
+}
+
+.footer-content {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.footer-links {
+    display: flex;
+    gap: 1rem;
+}
+
+.footer-links a {
+    color: black;
+    text-decoration: none;
+    font-weight: bold;
+    transition: color 0.3s ease;
+}
+
+.footer-links a:hover {
+    color: var(--accent-color);
 }
