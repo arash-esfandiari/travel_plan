@@ -1,6 +1,7 @@
-import React from 'react';
+import React, { useContext } from 'react';
 import { useNavigate } from 'react-router-dom';
 import './MainPage.css';
+import { AuthContext } from '../../context/AuthContext'; // Import AuthContext
 
 // Import local images from assets/images/cities
 import city1 from '../../assets/images/cities/barca.jpg';
@@ -16,9 +17,14 @@ const imageUrls = [city1, city2, city3, city4, city5, city6, city7, city8];
 
 const MainPage = () => {
     const navigate = useNavigate();
+    const { user } = useContext(AuthContext); // Access the user from AuthContext
 
     const handleCreateTrip = () => {
-        navigate('/trips');
+        if (user) {
+            navigate('/trips'); // Redirect to trips page if logged in
+        } else {
+            navigate('/login'); // Redirect to login page if not logged in
+        }
     };
 
     // Create an array for 9 cells (3 rows x 3 columns)
@@ -40,11 +46,10 @@ const MainPage = () => {
                     }
                     // Otherwise, render an image from our local assets.
                     // Use modulo to cycle through images if necessary.
-                    let imgIndex = 0
+                    let imgIndex = 0;
                     if (cellIndex < 4) {
                         imgIndex = cellIndex;
-                    }
-                    else {
+                    } else {
                         imgIndex = cellIndex - 1;
                     }
                     const imageUrl = imageUrls[imgIndex];

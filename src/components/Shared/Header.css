@@ -34,6 +34,12 @@ nav a:hover {
     color: var(--accent-color);
 }
 
+.logo img {
+    max-width: 100px;
+    height: auto;
+    display: block;
+}
+
 .user-status {
     font-style: italic;
     color: black;
@@ -50,6 +56,59 @@ nav a:hover {
 }
 
 .logout-btn:hover {
+    background-color: var(--secondary-color);
+    color: var(--primary-color);
+}
+
+.user-dropdown {
+    position: relative;
+    display: inline-block;
+}
+
+.user-name {
+    background: none;
+    border: none;
+    color: black;
+    font-weight: bold;
+    cursor: pointer;
+    padding: 0.3rem 0.6rem;
+    border-radius: 4px;
+    transition: background 0.3s ease;
+}
+
+.user-name:hover {
+    background-color: var(--secondary-color);
+    color: var(--primary-color);
+}
+
+.dropdown-menu {
+    display: none;
+    position: absolute;
+    right: 0;
+    background-color: white;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    z-index: 1000;
+    min-width: 150px;
+}
+
+.user-dropdown:hover .dropdown-menu {
+    display: block;
+}
+
+.dropdown-menu button {
+    background: none;
+    border: none;
+    color: black;
+    padding: 0.5rem 1rem;
+    text-align: left;
+    width: 100%;
+    cursor: pointer;
+    transition: background 0.3s ease;
+}
+
+.dropdown-menu button:hover {
     background-color: var(--secondary-color);
     color: var(--primary-color);
 }

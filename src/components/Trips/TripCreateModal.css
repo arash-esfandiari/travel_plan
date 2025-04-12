@@ -90,3 +90,38 @@
     background-color: #ff4500;
     color: #fff;
 }
+
+.form-label {
+    font-weight: bold;
+    display: block;
+    margin-bottom: 5px;
+    text-align: left;
+}
+
+label {
+    display: block;
+    margin-bottom: 15px;
+}
+
+input,
+textarea,
+.date-range-input {
+    width: 100%;
+    padding: 8px;
+    margin-top: 5px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    box-sizing: border-box;
+}
+
+.date-range-input {
+    cursor: pointer;
+}
+
+.autocomplete-input {
+    width: 100%;
+    padding: 8px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    font-size: 1rem;
+}

@@ -1,26 +1,36 @@
-import React from 'react';
+import React, { useContext } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
+import { AuthContext } from '../../context/AuthContext';
 import './Header.css';
+import logo from '../../assets/images/logos/logo_horz.png';
 
 const Header = () => {
+    const { user, logout } = useContext(AuthContext);
     const navigate = useNavigate();
-    const token = localStorage.getItem('token');
 
     const handleLogout = () => {
-        localStorage.removeItem('token');
+        logout();
         navigate('/');
     };
 
     return (
         <header>
-            <h1>Smart Travel Planner</h1>
+            <div className="logo">
+                <Link to="/">
+                    <img src={logo} alt="Logo" />
+                </Link>
+            </div>
             <nav>
                 <Link to="/">Home</Link>
-                <Link to="/trips">Trips</Link>
-                {token ? (
+                {user ? (
                     <>
-                        <span className="user-status">Logged in</span>
-                        <button onClick={handleLogout} className="logout-btn">Logout</button>
+                        <Link to="/trips">My Trips</Link>
+                        <div className="user-dropdown">
+                            <button className="user-name">{user.email}</button>
+                            <div className="dropdown-menu">
+                                <button onClick={handleLogout}>Logout</button>
+                            </div>
+                        </div>
                     </>
                 ) : (
                     <>
