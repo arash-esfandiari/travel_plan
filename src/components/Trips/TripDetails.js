@@ -2,7 +2,6 @@
 import React, { useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
 import { getTripById } from '../../services/tripService';
-import { geocodeCity } from '../../services/geocodeCity';
 import DailyPlanList from '../DailyPlan/DailyPlanList';
 import DailyPlanForm from '../DailyPlan/DailyPlanForm';
 import TripMap from './TripMap';
@@ -34,10 +33,6 @@ const TripDetails = () => {
             const lng = parseFloat(trip.longitude);
             if (!isNaN(lat) && !isNaN(lng)) {
                 setMapCenter({ lat, lng });
-            } else if (trip.trip_name) {
-                geocodeCity(trip.trip_name)
-                    .then((coords) => setMapCenter(coords))
-                    .catch(() => setMapCenter({ lat: 40.7128, lng: -74.0060 }));
             } else {
                 setMapCenter({ lat: 40.7128, lng: -74.0060 });
             }

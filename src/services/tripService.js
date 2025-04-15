@@ -16,10 +16,10 @@ export const getTripById = async (tripId) => {
 };
 
 // Create a new trip
-export const createTrip = async (formData) => {
-    const response = await api.post('/trips', formData, {
+export const createTrip = async (tripData) => {
+    const response = await api.post('/trips', tripData, {
         headers: {
-            'Content-Type': 'multipart/form-data',
+            'Content-Type': 'application/json', // Use JSON instead of multipart/form-data
         },
     });
     return response.data;

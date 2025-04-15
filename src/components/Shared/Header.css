@@ -75,6 +75,7 @@ nav a:hover {
     color: var(--primary-color);
 }
 
+/* Most recent styles for user-dropdown and related elements */
 .user-dropdown {
     position: relative;
     display: inline-block;
@@ -83,21 +84,31 @@ nav a:hover {
 .user-name {
     background: none;
     border: none;
-    color: black;
-    font-weight: bold;
     cursor: pointer;
-    padding: 0.3rem 0.6rem;
-    border-radius: 4px;
-    transition: background 0.3s ease;
+    font-size: 16px;
+    font-weight: bold;
+    display: flex;
+    align-items: center;
+    gap: 5px; /* Space between name and arrow */
 }
 
-.user-name:hover {
-    background-color: var(--secondary-color);
-    color: var(--primary-color);
+/* Dropdown arrow styling */
+.dropdown-arrow {
+    font-size: 12px;
+    color: #555; /* Adjust color to match your design */
+    transition: transform 0.3s ease;
+}
+
+.user-name:hover .dropdown-arrow {
+    color: #000; /* Change color on hover */
+}
+
+.user-name[aria-expanded="true"] .dropdown-arrow {
+    transform: rotate(180deg); /* Rotate arrow when dropdown is open */
 }
 
 .dropdown-menu {
-    display: none;
+    display: none; /* Default: hidden */
     position: absolute;
     right: 0;
     background-color: white;
@@ -108,8 +119,8 @@ nav a:hover {
     min-width: 150px;
 }
 
-.user-dropdown:hover .dropdown-menu {
-    display: block;
+.user-dropdown .dropdown-menu {
+    display: block; /* Controlled by React state */
 }
 
 .dropdown-menu button {

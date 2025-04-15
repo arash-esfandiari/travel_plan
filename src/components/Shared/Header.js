@@ -8,6 +8,7 @@ const Header = () => {
     const { user, logout } = useContext(AuthContext);
     const navigate = useNavigate();
     const [isFading, setIsFading] = useState(false);
+    const [isDropdownOpen, setIsDropdownOpen] = useState(false); // State to toggle dropdown visibility
 
     const handleLogout = () => {
         setIsFading(true); // Trigger fade-out effect
@@ -16,6 +17,11 @@ const Header = () => {
             navigate('/');
         }, 1000); // Match the fade-out duration
     };
+
+    const toggleDropdown = () => {
+        setIsDropdownOpen((prev) => !prev); // Toggle dropdown visibility
+    };
+
 
     return (
         <header className={isFading ? 'fade-out' : ''}>
@@ -30,10 +36,18 @@ const Header = () => {
                     <>
                         <Link to="/trips">My Trips</Link>
                         <div className="user-dropdown">
-                            <button className="user-name">{user.email}</button>
-                            <div className="dropdown-menu">
-                                <button onClick={handleLogout}>Logout</button>
-                            </div>
+                            <button
+                                className="user-name"
+                                onClick={toggleDropdown} // Toggle dropdown on click
+                                aria-expanded={isDropdownOpen} // Accessibility attribute
+                            >
+                                {user.first_name} <span className="dropdown-arrow">▼</span>
+                            </button>
+                            {isDropdownOpen && ( // Show dropdown menu only if isDropdownOpen is true
+                                <div className="dropdown-menu">
+                                    <button onClick={handleLogout}>Logout</button>
+                                </div>
+                            )}
                         </div>
                     </>
                 ) : (

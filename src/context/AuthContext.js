@@ -1,5 +1,5 @@
 import React, { createContext, useState, useEffect } from 'react';
-import { jwtDecode } from 'jwt-decode';
+import { jwtDecode } from 'jwt-decode'; // Corrected import for jwtDecode
 
 export const AuthContext = createContext();
 
@@ -11,7 +11,13 @@ export const AuthProvider = ({ children }) => {
         if (token) {
             try {
                 const decodedToken = jwtDecode(token);
-                setUser({ userId: decodedToken.userId, email: decodedToken.email });
+                setUser({
+                    userId: decodedToken.userId,
+                    email: decodedToken.email,
+                    username: decodedToken.username, // Added username
+                    first_name: decodedToken.first_name, // Added first_name
+                    last_name: decodedToken.last_name, // Added last_name
+                });
             } catch (error) {
                 console.error('Error decoding token:', error);
                 setUser(null);
@@ -22,7 +28,13 @@ export const AuthProvider = ({ children }) => {
     const login = (token) => {
         localStorage.setItem('token', token); // Save the token to localStorage
         const decodedToken = jwtDecode(token); // Decode the token
-        setUser({ userId: decodedToken.userId, email: decodedToken.email }); // Update the user state
+        setUser({
+            userId: decodedToken.userId,
+            email: decodedToken.email,
+            username: decodedToken.username, // Added username
+            firstName: decodedToken.first_name, // Added first_name
+            lastName: decodedToken.last_name, // Added last_name
+        });
     };
 
     const logout = () => {

@@ -2,9 +2,9 @@
 import api from './api';
 
 // Sign up a new user
-export const signup = async (name, email, password) => {
-    const response = await api.post('/auth/signup', { name, email, password });
-    return response.data; // e.g., { message: "User created" }
+export const register = async (username, email, password, first_name, last_name) => {
+    const response = await api.post('/auth/register', { username, email, password, first_name, last_name });
+    return response.data; // e.g., { message: "User created", user: { ... } }
 };
 
 // Log in and retrieve token
@@ -17,7 +17,7 @@ export const login = async (email, password) => {
 // Optional: Fetch current user profile
 export const getCurrentUser = async () => {
     const response = await api.get('/auth/me');
-    return response.data;
+    return response.data; // e.g., { user: { id, username, email, first_name, last_name } }
 };
 
 // (Optional) Log out if your backend supports an invalidate-token endpoint

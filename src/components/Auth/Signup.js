@@ -1,19 +1,29 @@
-// src/components/Auth/Signup.js
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { signup } from '../../services/authService';
+import { register } from '../../services/authService';
 
 const Signup = () => {
-    const [name, setName] = useState('');
+    const [username, setUsername] = useState('');
+    const [firstName, setFirstName] = useState('');
+    const [lastName, setLastName] = useState('');
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const navigate = useNavigate();
 
+    // Helper function to capitalize the first letter and make all other letters lowercase
+    const formatName = (name) => {
+        return name.charAt(0).toUpperCase() + name.slice(1).toLowerCase();
+    };
+
     const handleSubmit = async (e) => {
         e.preventDefault();
         try {
-            await signup(name, email, password);
-            navigate('/login');
+            // Format firstName and lastName before sending to the backend
+            const formattedFirstName = formatName(firstName);
+            const formattedLastName = formatName(lastName);
+
+            await register(username, email, password, formattedFirstName, formattedLastName); // Pass formatted names
+            navigate('/login'); // Redirect to login page after successful signup
         } catch (error) {
             console.error('Signup failed:', error);
             alert('Signup failed. Please try again.');
@@ -26,9 +36,23 @@ const Signup = () => {
             <form onSubmit={handleSubmit}>
                 <input
                     type="text"
-                    placeholder="Name"
-                    value={name}
-                    onChange={(e) => setName(e.target.value)}
+                    placeholder="Username"
+                    value={username}
+                    onChange={(e) => setUsername(e.target.value)}
+                    required
+                />
+                <input
+                    type="text"
+                    placeholder="First Name"
+                    value={firstName}
+                    onChange={(e) => setFirstName(e.target.value)}
+                    required
+                />
+                <input
+                    type="text"
+                    placeholder="Last Name"
+                    value={lastName}
+                    onChange={(e) => setLastName(e.target.value)}
                     required
                 />
                 <input
