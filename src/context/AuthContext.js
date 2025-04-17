@@ -32,8 +32,8 @@ export const AuthProvider = ({ children }) => {
             userId: decodedToken.userId,
             email: decodedToken.email,
             username: decodedToken.username, // Added username
-            firstName: decodedToken.first_name, // Added first_name
-            lastName: decodedToken.last_name, // Added last_name
+            first_name: decodedToken.first_name, // Added first_name
+            last_name: decodedToken.last_name, // Added last_name
         });
     };
 

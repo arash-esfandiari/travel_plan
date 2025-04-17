@@ -8,7 +8,7 @@ const Header = () => {
     const { user, logout } = useContext(AuthContext);
     const navigate = useNavigate();
     const [isFading, setIsFading] = useState(false);
-    const [isDropdownOpen, setIsDropdownOpen] = useState(false); // State to toggle dropdown visibility
+    const [isDropdownOpen, setIsDropdownOpen] = useState(false); // Ensure dropdown is closed by default
 
     const handleLogout = () => {
         setIsFading(true); // Trigger fade-out effect
@@ -21,7 +21,6 @@ const Header = () => {
     const toggleDropdown = () => {
         setIsDropdownOpen((prev) => !prev); // Toggle dropdown visibility
     };
-
 
     return (
         <header className={isFading ? 'fade-out' : ''}>
