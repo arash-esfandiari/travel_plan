@@ -27,39 +27,118 @@ const MainPage = () => {
         }
     };
 
-    // Create an array for 9 cells (3 rows x 3 columns)
-    const cells = Array.from({ length: 9 }, (_, index) => index);
-
     return (
         <div className="main-page">
-            <div className="grid-container">
-                {cells.map((cellIndex) => {
-                    // For cell index 4 (the center cell), render the button.
-                    if (cellIndex === 4) {
-                        return (
-                            <div key={cellIndex} className="grid-item central-item">
-                                <button className="create-trip-button" onClick={handleCreateTrip}>
-                                    + Plan Your Trip
-                                </button>
-                            </div>
-                        );
-                    }
-                    // Otherwise, render an image from our local assets.
-                    // Use modulo to cycle through images if necessary.
-                    let imgIndex = 0;
-                    if (cellIndex < 4) {
-                        imgIndex = cellIndex;
-                    } else {
-                        imgIndex = cellIndex - 1;
-                    }
-                    const imageUrl = imageUrls[imgIndex];
-                    return (
-                        <div key={cellIndex} className="grid-item">
-                            <img src={imageUrl} alt="City Attraction" />
+            {/* Hero Section */}
+            <section className="hero-section">
+                <div className="hero-content">
+                    <h1 className="hero-title">Let's plan your trip together</h1>
+                    <p className="hero-subtitle">Discover the world with AI-powered travel planning</p>
+                    <button className="hero-cta" onClick={handleCreateTrip}>
+                        Start Planning
+                    </button>
+                </div>
+                <div className="hero-visual">
+                    <img src={city1} alt="Travel Destination" className="hero-image" />
+                </div>
+            </section>
+
+            {/* Feature Section 1: AI Planning */}
+            <section className="feature-section">
+                <div className="feature-content">
+                    <h2 className="feature-title">AI-Powered Planning</h2>
+                    <p className="feature-description">
+                        Our intelligent AI creates personalized itineraries based on your preferences,
+                        budget, and travel style. Get recommendations that match your unique taste.
+                    </p>
+                    <div className="feature-highlights">
+                        <div className="highlight-item">
+                            <span className="highlight-icon">🤖</span>
+                            <span>Smart Recommendations</span>
                         </div>
-                    );
-                })}
-            </div>
+                        <div className="highlight-item">
+                            <span className="highlight-icon">⚡</span>
+                            <span>Instant Planning</span>
+                        </div>
+                        <div className="highlight-item">
+                            <span className="highlight-icon">🎯</span>
+                            <span>Personalized</span>
+                        </div>
+                    </div>
+                </div>
+                <div className="feature-visual">
+                    <img src={city2} alt="AI Planning" className="feature-image" />
+                </div>
+            </section>
+
+            {/* Feature Section 2: Daily Plans */}
+            <section className="feature-section reverse">
+                <div className="feature-content">
+                    <h2 className="feature-title">Daily Itineraries</h2>
+                    <p className="feature-description">
+                        Break down your trip into detailed daily plans. From morning coffee spots
+                        to evening entertainment, every moment is thoughtfully planned.
+                    </p>
+                    <div className="feature-highlights">
+                        <div className="highlight-item">
+                            <span className="highlight-icon">📅</span>
+                            <span>Day-by-Day Plans</span>
+                        </div>
+                        <div className="highlight-item">
+                            <span className="highlight-icon">📍</span>
+                            <span>Location Mapping</span>
+                        </div>
+                        <div className="highlight-item">
+                            <span className="highlight-icon">⏰</span>
+                            <span>Time Management</span>
+                        </div>
+                    </div>
+                </div>
+                <div className="feature-visual">
+                    <img src={city3} alt="Daily Plans" className="feature-image" />
+                </div>
+            </section>
+
+            {/* Feature Section 3: Interactive Maps */}
+            <section className="feature-section">
+                <div className="feature-content">
+                    <h2 className="feature-title">Interactive Maps</h2>
+                    <p className="feature-description">
+                        Visualize your journey with interactive maps. See all your destinations,
+                        routes, and points of interest in one beautiful interface.
+                    </p>
+                    <div className="feature-highlights">
+                        <div className="highlight-item">
+                            <span className="highlight-icon">🗺️</span>
+                            <span>Visual Planning</span>
+                        </div>
+                        <div className="highlight-item">
+                            <span className="highlight-icon">🔍</span>
+                            <span>Explore Areas</span>
+                        </div>
+                        <div className="highlight-item">
+                            <span className="highlight-icon">🎯</span>
+                            <span>Pin Locations</span>
+                        </div>
+                    </div>
+                </div>
+                <div className="feature-visual">
+                    <img src={city4} alt="Interactive Maps" className="feature-image" />
+                </div>
+            </section>
+
+            {/* CTA Section */}
+            <section className="cta-section">
+                <div className="cta-content">
+                    <h2 className="cta-title">Ready to Start Your Journey?</h2>
+                    <p className="cta-description">
+                        Join thousands of travelers who trust our AI to plan their perfect trips.
+                    </p>
+                    <button className="cta-button" onClick={handleCreateTrip}>
+                        Create Your First Trip
+                    </button>
+                </div>
+            </section>
         </div>
     );
 };
