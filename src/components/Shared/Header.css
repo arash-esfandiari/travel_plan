@@ -1,8 +1,22 @@
-/* Add a fade-in animation */
-@keyframes fadeIn {
+@import url("https://fonts.googleapis.com/css2?family=Fredoka:wght@400;600;700&display=swap");
+
+/* CSS Variables for consistency with main page */
+:root {
+    --header-bg: rgba(255, 255, 255, 0.95);
+    --header-border: rgba(0, 0, 0, 0.1);
+    --header-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+    --header-hover-bg: rgba(255, 69, 0, 0.1);
+    --header-text: #333;
+    --header-text-hover: #ff4500;
+    --transition-smooth: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    --transition-bounce: all 0.4s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+}
+
+/* Header fade-in animation */
+@keyframes headerSlideIn {
     from {
         opacity: 0;
-        transform: translateY(-20px); /* Optional: Slide down slightly */
+        transform: translateY(-30px);
     }
     to {
         opacity: 1;
@@ -10,131 +24,378 @@
     }
 }
 
+@keyframes headerSlideDown {
+    from {
+        opacity: 0;
+        transform: translateY(-20px);
+        background: transparent;
+        backdrop-filter: blur(0px);
+        -webkit-backdrop-filter: blur(0px);
+        border-bottom: 1px solid transparent;
+        box-shadow: none;
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+        background: var(--header-bg);
+        backdrop-filter: blur(20px);
+        -webkit-backdrop-filter: blur(20px);
+        border-bottom: 1px solid var(--header-border);
+        box-shadow: var(--header-shadow);
+    }
+}
+
+@keyframes logoFloat {
+    0%,
+    100% {
+        transform: translateY(0);
+    }
+    50% {
+        transform: translateY(-2px);
+    }
+}
+
+@keyframes navItemSlideIn {
+    from {
+        opacity: 0;
+        transform: translateX(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateX(0);
+    }
+}
+
 header {
-    background-color: var(--primary-color);
-    color: black; /* Text color set to black */
-    padding: 1rem 2rem;
+    background: transparent;
+    backdrop-filter: blur(0px);
+    -webkit-backdrop-filter: blur(0px);
+    border-bottom: 1px solid transparent;
+    box-shadow: none;
+    padding: 1rem 3rem;
     display: flex;
     align-items: center;
     justify-content: space-between;
-    font-family: "Montserrat", sans-serif; /* Travel-inspired font */
-    animation: fadeIn 1s ease-in-out; /* Apply the fade-in animation */
-    border-bottom: 2px solid #ccc; /* Add a border below the header */
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* Add a shadow below the border */
-    border-radius: 20px; /* Add rounded edges to the bottom of the header */
-    margin: 7px;
+    font-family: "Fredoka", "Comic Sans MS", "Baloo", cursive, sans-serif;
+    animation: headerSlideIn 0.8s ease-out;
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    z-index: 1000;
+    transition: background 0.4s cubic-bezier(0.4, 0, 0.2, 1),
+        backdrop-filter 0.4s cubic-bezier(0.4, 0, 0.2, 1),
+        border-bottom 0.4s cubic-bezier(0.4, 0, 0.2, 1),
+        box-shadow 0.4s cubic-bezier(0.4, 0, 0.2, 1),
+        transform 0.4s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
-header h1 {
-    font-size: 2rem;
-    margin: 0;
-    color: black; /* Ensure header title is black */
+/* Header when scrolled */
+header.scrolled {
+    background: var(--header-bg);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border-bottom: 1px solid var(--header-border);
+    box-shadow: var(--header-shadow);
+}
+
+header.scrolled:hover {
+    background: rgba(255, 255, 255, 0.98);
+    box-shadow: 0 12px 40px rgba(0, 0, 0, 0.15);
+}
+
+.logo {
+    animation: logoFloat 3s ease-in-out infinite;
+}
+
+.logo img {
+    max-height: 45px;
+    width: auto;
+    display: block;
+    transition: var(--transition-smooth);
+    filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.1));
+}
+
+.logo:hover img {
+    transform: scale(1.05);
+    filter: drop-shadow(0 4px 8px rgba(0, 0, 0, 0.15));
 }
 
 nav {
     display: flex;
-    gap: 1.5rem;
+    gap: 2rem;
     align-items: center;
-    font-family: "Montserrat", sans-serif;
+    font-family: "Fredoka", "Comic Sans MS", "Baloo", cursive, sans-serif;
 }
 
 nav a {
-    color: black; /* Text links are black */
+    color: var(--main-white);
     text-decoration: none;
-    font-weight: bold;
-    transition: color 0.3s ease;
+    font-weight: 600;
+    font-size: 1rem;
+    padding: 0.5rem 1rem;
+    border-radius: 25px;
+    transition: var(--transition-bounce);
+    position: relative;
+    overflow: hidden;
+    animation: navItemSlideIn 0.6s ease-out both;
+    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+}
+
+/* Change text color when scrolled */
+header.scrolled nav a {
+    color: var(--header-text);
+    text-shadow: none;
+}
+
+nav a:nth-child(1) {
+    animation-delay: 0.1s;
+}
+nav a:nth-child(2) {
+    animation-delay: 0.2s;
+}
+nav a:nth-child(3) {
+    animation-delay: 0.3s;
+}
+nav a:nth-child(4) {
+    animation-delay: 0.4s;
+}
+
+nav a::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(
+        90deg,
+        transparent,
+        rgba(255, 69, 0, 0.1),
+        transparent
+    );
+    transition: left 0.5s;
+}
+
+nav a:hover::before {
+    left: 100%;
 }
 
 nav a:hover {
-    color: var(--accent-color);
+    color: var(--main-white);
+    background: rgba(255, 255, 255, 0.1);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(255, 255, 255, 0.2);
 }
 
-.logo img {
-    max-height: 50px;
-    width: auto;
-    display: block;
+/* Change hover styles when scrolled */
+header.scrolled nav a:hover {
+    color: var(--header-text-hover);
+    background: var(--header-hover-bg);
+    box-shadow: 0 4px 12px rgba(255, 69, 0, 0.2);
 }
 
-.user-status {
-    font-style: italic;
-    color: black;
-}
-
-.logout-btn {
-    background: none;
-    border: 1px solid var(--secondary-color);
-    color: black;
-    padding: 0.3rem 0.6rem;
-    cursor: pointer;
-    border-radius: 4px;
-    transition: background 0.3s ease;
-}
-
-.logout-btn:hover {
-    background-color: var(--secondary-color);
-    color: var(--primary-color);
-}
-
-/* Most recent styles for user-dropdown and related elements */
+/* User dropdown styling */
 .user-dropdown {
     position: relative;
     display: inline-block;
+    animation: navItemSlideIn 0.6s ease-out 0.5s both;
 }
 
 .user-name {
-    background: none;
-    border: none;
+    background: rgba(255, 255, 255, 0.1);
+    border: 2px solid transparent;
+    border-radius: 25px;
     cursor: pointer;
-    font-size: 16px;
-    font-weight: bold;
+    font-size: 1rem;
+    font-weight: 600;
+    font-family: "Fredoka", "Comic Sans MS", "Baloo", cursive, sans-serif;
     display: flex;
     align-items: center;
-    gap: 5px; /* Space between name and arrow */
+    gap: 8px;
+    padding: 0.5rem 1rem;
+    color: var(--main-white);
+    transition: var(--transition-bounce);
+    position: relative;
+    overflow: hidden;
+    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
 }
 
-/* Dropdown arrow styling */
+/* Change user name styles when scrolled */
+header.scrolled .user-name {
+    background: rgba(255, 69, 0, 0.1);
+    color: var(--header-text);
+    text-shadow: none;
+}
+
+.user-name::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(
+        90deg,
+        transparent,
+        rgba(255, 69, 0, 0.2),
+        transparent
+    );
+    transition: left 0.5s;
+}
+
+.user-name:hover::before {
+    left: 100%;
+}
+
+.user-name:hover {
+    background: rgba(255, 255, 255, 0.2);
+    border-color: rgba(255, 255, 255, 0.3);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(255, 255, 255, 0.2);
+}
+
+/* Change hover styles when scrolled */
+header.scrolled .user-name:hover {
+    background: rgba(255, 69, 0, 0.15);
+    border-color: rgba(255, 69, 0, 0.3);
+    box-shadow: 0 4px 12px rgba(255, 69, 0, 0.2);
+}
+
 .dropdown-arrow {
-    font-size: 12px;
-    color: #555; /* Adjust color to match your design */
-    transition: transform 0.3s ease;
+    font-size: 10px;
+    color: var(--main-white);
+    transition: var(--transition-smooth);
+    transform-origin: center;
+}
+
+/* Change arrow color when scrolled */
+header.scrolled .dropdown-arrow {
+    color: var(--header-text);
 }
 
 .user-name:hover .dropdown-arrow {
-    color: #000; /* Change color on hover */
+    color: var(--main-white);
+}
+
+/* Change arrow hover color when scrolled */
+header.scrolled .user-name:hover .dropdown-arrow {
+    color: var(--header-text-hover);
 }
 
 .user-name[aria-expanded="true"] .dropdown-arrow {
-    transform: rotate(180deg); /* Rotate arrow when dropdown is open */
+    transform: rotate(180deg);
+    color: var(--main-white);
+}
+
+/* Change expanded arrow color when scrolled */
+header.scrolled .user-name[aria-expanded="true"] .dropdown-arrow {
+    color: var(--header-text-hover);
 }
 
 .dropdown-menu {
-    display: none; /* Default: hidden */
     position: absolute;
     right: 0;
-    background-color: white;
-    border: 1px solid #ccc;
-    border-radius: 4px;
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    top: 100%;
+    margin-top: 0.5rem;
+    background: rgba(255, 255, 255, 0.95);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border: 1px solid var(--header-border);
+    border-radius: 15px;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.15);
     z-index: 1000;
-    min-width: 150px;
+    min-width: 160px;
+    opacity: 0;
+    transform: translateY(-10px) scale(0.95);
+    transition: var(--transition-bounce);
+    overflow: hidden;
 }
 
 .user-dropdown .dropdown-menu {
-    display: block; /* Controlled by React state */
+    opacity: 1;
+    transform: translateY(0) scale(1);
 }
 
 .dropdown-menu button {
     background: none;
     border: none;
-    color: black;
-    padding: 0.5rem 1rem;
+    color: var(--header-text);
+    padding: 0.8rem 1.2rem;
     text-align: left;
     width: 100%;
     cursor: pointer;
-    transition: background 0.3s ease;
+    font-family: "Fredoka", "Comic Sans MS", "Baloo", cursive, sans-serif;
+    font-weight: 500;
+    font-size: 0.95rem;
+    transition: var(--transition-smooth);
+    position: relative;
+    overflow: hidden;
+}
+
+.dropdown-menu button::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(
+        90deg,
+        transparent,
+        rgba(255, 69, 0, 0.1),
+        transparent
+    );
+    transition: left 0.5s;
+}
+
+.dropdown-menu button:hover::before {
+    left: 100%;
 }
 
 .dropdown-menu button:hover {
-    background-color: var(--secondary-color);
-    color: var(--primary-color);
+    background: var(--header-hover-bg);
+    color: var(--header-text-hover);
+    transform: translateX(5px);
+}
+
+/* Fade out animation for logout */
+header.fade-out {
+    animation: headerSlideOut 1s ease-in forwards;
+}
+
+@keyframes headerSlideOut {
+    from {
+        opacity: 1;
+        transform: translateY(0);
+    }
+    to {
+        opacity: 0;
+        transform: translateY(-30px);
+    }
+}
+
+/* Responsive design */
+@media (max-width: 768px) {
+    header {
+        padding: 0.8rem 1rem;
+    }
+
+    nav {
+        gap: 1rem;
+    }
+
+    nav a {
+        font-size: 0.9rem;
+        padding: 0.4rem 0.8rem;
+    }
+
+    .user-name {
+        font-size: 0.9rem;
+        padding: 0.4rem 0.8rem;
+    }
+
+    .logo img {
+        max-height: 35px;
+    }
 }

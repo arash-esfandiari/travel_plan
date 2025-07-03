@@ -19,7 +19,7 @@ html,
 body,
 #root {
     font-family: "Montserrat", sans-serif;
-    height: 100%;
+    min-height: 100%;
     font-family: "Helvetica Neue", Arial, sans-serif;
     background-color: var(--bg-color);
     color: var(--accent-color);
@@ -29,11 +29,14 @@ body,
     display: flex;
     flex-direction: column;
     min-height: 100vh;
+    position: relative;
 }
 
 main {
     flex: 1;
-    padding: 2rem;
+    padding: 0;
+    position: relative;
+    min-height: 100vh;
 }
 
 /* Ensure footer sticks to the bottom */

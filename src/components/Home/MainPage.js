@@ -4,16 +4,16 @@ import './MainPage.css';
 import { AuthContext } from '../../context/AuthContext'; // Import AuthContext
 
 // Import local images from assets/images/cities
-import city1 from '../../assets/images/cities/barca.jpg';
-import city2 from '../../assets/images/cities/santiago.webp';
-import city3 from '../../assets/images/cities/eiffel.jpg';
-import city4 from '../../assets/images/cities/lisbon.webp';
-import city5 from '../../assets/images/cities/munich.webp';
-import city6 from '../../assets/images/cities/isfahan.jpg';
-import city7 from '../../assets/images/cities/egypt.avif';
-import city8 from '../../assets/images/cities/vegas.webp';
+import barcelona from '../../assets/images/places/barcelona.avif';
+// import eifell from '../../assets/images/places/eiffel.webp';
+import sardinia from '../../assets/images/places/sardinia.webp';
+// import munich from '../../assets/images/places/munich.webp';
+// import isfahan from '../../assets/images/places/isfahan.jpg';
+import egypt from '../../assets/images/places/egypt.avif';
+// import vegas from '../../assets/images/places/vegas.webp';
+// import allianz from '../../assets/images/places/allianz.avif';
+import paris from '../../assets/images/places/paris.webp';
 
-const imageUrls = [city1, city2, city3, city4, city5, city6, city7, city8];
 
 const MainPage = () => {
     const navigate = useNavigate();
@@ -31,62 +31,86 @@ const MainPage = () => {
         <div className="main-page">
             {/* Hero Section */}
             <section className="hero-section">
+                {/* Background image */}
+                <div className="hero-background">
+                    <img src={sardinia} alt="Travel Destination" className="hero-bg-image" />
+                    <div className="hero-overlay"></div>
+                </div>
+
+                {/* Floating decorative icons */}
+                <div className="floating-icon floating-icon-1">
+                    <span>✈️</span>
+                </div>
+                <div className="floating-icon floating-icon-2">
+                    <span>🗺️</span>
+                </div>
+                <div className="floating-icon floating-icon-3">
+                    <span>🏛️</span>
+                </div>
+                <div className="floating-icon floating-icon-4">
+                    <span>🌍</span>
+                </div>
+                <div className="floating-icon floating-icon-5">
+                    <span>🎒</span>
+                </div>
+                <div className="floating-icon floating-icon-6">
+                    <span>📸</span>
+                </div>
+
                 <div className="hero-content">
                     <h1 className="hero-title">Let's plan your trip together</h1>
-                    <p className="hero-subtitle">Discover the world with AI-powered travel planning</p>
-                    <button className="hero-cta" onClick={handleCreateTrip}>
-                        Start Planning
-                    </button>
-                </div>
-                <div className="hero-visual">
-                    <img src={city1} alt="Travel Destination" className="hero-image" />
+                    <p className="hero-subtitle">You're in control. AI helps optimize.</p>
+                    <div className="hero-buttons">
+                        <button className="forward-continue-btn">
+                            <span className="continue-text">Continue</span>
+                            <span className="arrow">➤</span>
+                        </button>
+                    </div>
                 </div>
             </section>
 
             {/* Feature Section 1: AI Planning */}
             <section className="feature-section">
                 <div className="feature-content">
-                    <h2 className="feature-title">AI-Powered Planning</h2>
+                    <h2 className="feature-title">Your Vision, AI Optimization</h2>
                     <p className="feature-description">
-                        Our intelligent AI creates personalized itineraries based on your preferences,
-                        budget, and travel style. Get recommendations that match your unique taste.
+                        Start with your ideas. AI suggests optimizations to make your trip better.
                     </p>
                     <div className="feature-highlights">
                         <div className="highlight-item">
-                            <span className="highlight-icon">🤖</span>
-                            <span>Smart Recommendations</span>
+                            <span className="highlight-icon">🎯</span>
+                            <span>Your Preferences</span>
                         </div>
                         <div className="highlight-item">
                             <span className="highlight-icon">⚡</span>
-                            <span>Instant Planning</span>
+                            <span>Smart Optimization</span>
                         </div>
                         <div className="highlight-item">
-                            <span className="highlight-icon">🎯</span>
-                            <span>Personalized</span>
+                            <span className="highlight-icon">💡</span>
+                            <span>AI Suggestions</span>
                         </div>
                     </div>
                 </div>
                 <div className="feature-visual">
-                    <img src={city2} alt="AI Planning" className="feature-image" />
+                    <img src={barcelona} alt="AI Planning" className="feature-image" />
                 </div>
             </section>
 
             {/* Feature Section 2: Daily Plans */}
             <section className="feature-section reverse">
                 <div className="feature-content">
-                    <h2 className="feature-title">Daily Itineraries</h2>
+                    <h2 className="feature-title">Your Schedule, Enhanced</h2>
                     <p className="feature-description">
-                        Break down your trip into detailed daily plans. From morning coffee spots
-                        to evening entertainment, every moment is thoughtfully planned.
+                        Build your daily plans. AI optimizes timing and routes.
                     </p>
                     <div className="feature-highlights">
                         <div className="highlight-item">
                             <span className="highlight-icon">📅</span>
-                            <span>Day-by-Day Plans</span>
+                            <span>Your Plans</span>
                         </div>
                         <div className="highlight-item">
                             <span className="highlight-icon">📍</span>
-                            <span>Location Mapping</span>
+                            <span>Route Optimization</span>
                         </div>
                         <div className="highlight-item">
                             <span className="highlight-icon">⏰</span>
@@ -95,50 +119,52 @@ const MainPage = () => {
                     </div>
                 </div>
                 <div className="feature-visual">
-                    <img src={city3} alt="Daily Plans" className="feature-image" />
+                    <img src={paris} alt="Daily Plans" className="feature-image" />
                 </div>
             </section>
 
             {/* Feature Section 3: Interactive Maps */}
             <section className="feature-section">
                 <div className="feature-content">
-                    <h2 className="feature-title">Interactive Maps</h2>
+                    <h2 className="feature-title">Your Journey, Visualized</h2>
                     <p className="feature-description">
-                        Visualize your journey with interactive maps. See all your destinations,
-                        routes, and points of interest in one beautiful interface.
+                        Add your locations. AI suggests nearby attractions and optimal routes.
                     </p>
                     <div className="feature-highlights">
                         <div className="highlight-item">
                             <span className="highlight-icon">🗺️</span>
-                            <span>Visual Planning</span>
+                            <span>Your Locations</span>
                         </div>
                         <div className="highlight-item">
                             <span className="highlight-icon">🔍</span>
-                            <span>Explore Areas</span>
+                            <span>AI Discoveries</span>
                         </div>
                         <div className="highlight-item">
                             <span className="highlight-icon">🎯</span>
-                            <span>Pin Locations</span>
+                            <span>Smart Routes</span>
                         </div>
                     </div>
                 </div>
                 <div className="feature-visual">
-                    <img src={city4} alt="Interactive Maps" className="feature-image" />
+                    <img src={egypt} alt="Interactive Maps" className="feature-image" />
                 </div>
             </section>
 
             {/* CTA Section */}
             <section className="cta-section">
                 <div className="cta-content">
-                    <h2 className="cta-title">Ready to Start Your Journey?</h2>
+                    <h2 className="cta-title">Ready to Take Control?</h2>
                     <p className="cta-description">
-                        Join thousands of travelers who trust our AI to plan their perfect trips.
+                        Start planning your way, with AI assistance.
                     </p>
                     <button className="cta-button" onClick={handleCreateTrip}>
-                        Create Your First Trip
+                        Start Your Journey
                     </button>
                 </div>
             </section>
+
+            {/* Spacer to ensure proper document height calculation */}
+            <div style={{ height: '100px', width: '100%' }}></div>
         </div>
     );
 };

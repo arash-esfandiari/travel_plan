@@ -1,29 +1,44 @@
-import React, { useContext, useState } from 'react';
+import React, { useContext, useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { AuthContext } from '../../context/AuthContext';
 import './Header.css';
-import logo from '../../assets/images/logos/logo-horz.png';
+import logo from '../../assets/images/logos/logo2.png';
 
 const Header = () => {
     const { user, logout } = useContext(AuthContext);
     const navigate = useNavigate();
     const [isFading, setIsFading] = useState(false);
-    const [isDropdownOpen, setIsDropdownOpen] = useState(false); // Ensure dropdown is closed by default
+    const [isDropdownOpen, setIsDropdownOpen] = useState(false);
+    const [isScrolled, setIsScrolled] = useState(false);
+
+    useEffect(() => {
+        const handleScroll = () => {
+            const scrollTop = window.scrollY;
+            const shouldBeScrolled = scrollTop > 10;
+            setIsScrolled(shouldBeScrolled);
+        };
+
+        // Call once on mount to set initial state
+        handleScroll();
+
+        window.addEventListener('scroll', handleScroll);
+        return () => window.removeEventListener('scroll', handleScroll);
+    }, []);
 
     const handleLogout = () => {
-        setIsFading(true); // Trigger fade-out effect
+        setIsFading(true);
         setTimeout(() => {
             logout();
             navigate('/');
-        }, 1000); // Match the fade-out duration
+        }, 1000);
     };
 
     const toggleDropdown = () => {
-        setIsDropdownOpen((prev) => !prev); // Toggle dropdown visibility
+        setIsDropdownOpen((prev) => !prev);
     };
 
     return (
-        <header className={isFading ? 'fade-out' : ''}>
+        <header className={`${isFading ? 'fade-out' : ''} ${isScrolled ? 'scrolled' : ''}`}>
             <div className="logo">
                 <Link to="/">
                     <img src={logo} alt="Logo" />
@@ -37,12 +52,12 @@ const Header = () => {
                         <div className="user-dropdown">
                             <button
                                 className="user-name"
-                                onClick={toggleDropdown} // Toggle dropdown on click
-                                aria-expanded={isDropdownOpen} // Accessibility attribute
+                                onClick={toggleDropdown}
+                                aria-expanded={isDropdownOpen}
                             >
                                 {user.first_name} <span className="dropdown-arrow">▼</span>
                             </button>
-                            {isDropdownOpen && ( // Show dropdown menu only if isDropdownOpen is true
+                            {isDropdownOpen && (
                                 <div className="dropdown-menu">
                                     <button onClick={handleLogout}>Logout</button>
                                 </div>
