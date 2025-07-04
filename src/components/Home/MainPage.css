@@ -761,3 +761,18 @@ body {
         align-items: center;
     }
 }
+
+/* Pulse animation for when question flow is active */
+.forward-continue-btn.question-flow-active {
+    animation: pulseGlow 2s ease-in-out infinite;
+}
+
+@keyframes pulseGlow {
+    0%,
+    100% {
+        box-shadow: 0 8px 25px rgba(255, 69, 0, 0.3);
+    }
+    50% {
+        box-shadow: 0 8px 35px rgba(255, 69, 0, 0.5);
+    }
+}

@@ -2,7 +2,7 @@ import React, { useContext, useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { AuthContext } from '../../context/AuthContext';
 import './Header.css';
-import logo from '../../assets/images/logos/logo2.png';
+import logo from '../../assets/images/logos/logo.png';
 
 const Header = () => {
     const { user, logout } = useContext(AuthContext);
@@ -24,6 +24,12 @@ const Header = () => {
         window.addEventListener('scroll', handleScroll);
         return () => window.removeEventListener('scroll', handleScroll);
     }, []);
+
+    // Reset fading state when user changes
+    useEffect(() => {
+        setIsFading(false);
+        setIsDropdownOpen(false);
+    }, [user]);
 
     const handleLogout = () => {
         setIsFading(true);

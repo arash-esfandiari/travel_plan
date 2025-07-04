@@ -81,6 +81,21 @@ footer {
     font-size: 1rem;
 }
 
+.login-message {
+    background: linear-gradient(135deg, #ff4500 0%, #ff6b35 100%);
+    color: white;
+    padding: 1rem;
+    border-radius: 8px;
+    margin-bottom: 1rem;
+    text-align: center;
+    box-shadow: 0 4px 15px rgba(255, 69, 0, 0.3);
+}
+
+.login-message p {
+    margin: 0;
+    font-weight: 500;
+}
+
 /* Shared Components */
 header h1,
 footer p {

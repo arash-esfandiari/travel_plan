@@ -38,20 +38,39 @@ const TripActions = ({ trip, onDeleted }) => {
 
     return (
         <div className="trip-actions">
-            <button className="burger-btn" onClick={toggleMenu}>⋮</button>
+            <button className="actions-btn" onClick={toggleMenu}>
+                <span className="actions-icon">⚙️</span>
+            </button>
             {menuOpen && (
-                <div className="menu-dropdown">
-                    <button onClick={handleUpdate}>Edit Trip</button>
-                    <button onClick={handleDelete}>Delete Trip</button>
+                <div className="actions-dropdown">
+                    <button className="action-item edit-action" onClick={handleUpdate}>
+                        <span className="action-icon">✏️</span>
+                        <span className="action-text">Edit Trip</span>
+                    </button>
+                    <button className="action-item delete-action" onClick={handleDelete}>
+                        <span className="action-icon">🗑️</span>
+                        <span className="action-text">Delete Trip</span>
+                    </button>
                 </div>
             )}
             {confirmDelete && (
-                <div className="confirm-modal">
-                    <div className="modal-content">
-                        <p>Are you sure you want to delete your <strong>{trip.trip_name}</strong> trip?</p>
-                        <div className="modal-actions">
-                            <button onClick={cancelDeletion}>Cancel</button>
-                            <button onClick={confirmDeletion} className="delete-btn">Delete</button>
+                <div className="confirm-overlay">
+                    <div className="confirm-modal">
+                        <div className="confirm-header">
+                            <span className="confirm-icon">⚠️</span>
+                            <h3>Delete Trip</h3>
+                        </div>
+                        <p>Are you sure you want to delete <strong>"{trip.trip_name}"</strong>?</p>
+                        <p className="confirm-warning">This action cannot be undone.</p>
+                        <div className="confirm-actions">
+                            <button className="cancel-btn" onClick={cancelDeletion}>
+                                <span className="btn-icon">❌</span>
+                                Cancel
+                            </button>
+                            <button className="delete-btn" onClick={confirmDeletion}>
+                                <span className="btn-icon">🗑️</span>
+                                Delete
+                            </button>
                         </div>
                     </div>
                 </div>
