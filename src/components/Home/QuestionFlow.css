@@ -21,15 +21,17 @@
     height: 100%;
     background: rgba(0, 0, 0, 0.6);
     backdrop-filter: blur(8px);
-    animation: backdropFadeIn 0.3s ease-out;
+    animation: backdropFadeIn 0.8s ease-out;
 }
 
 @keyframes backdropFadeIn {
-    from {
+    0% {
         opacity: 0;
+        backdrop-filter: blur(0px);
     }
-    to {
+    100% {
         opacity: 1;
+        backdrop-filter: blur(8px);
     }
 }
 
@@ -48,7 +50,7 @@
 
 /* Entering animation - slide in from right with bounce */
 .question-box.entering {
-    animation: slideInFromRight 0.6s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+    animation: slideInFromRight 1.2s cubic-bezier(0.34, 1.56, 0.64, 1);
 }
 
 @keyframes slideInFromRight {
@@ -56,12 +58,12 @@
         transform: translateX(100vw) scale(0.8);
         opacity: 0;
     }
-    60% {
-        transform: translateX(-20px) scale(1.05);
+    70% {
+        transform: translateX(-10px) scale(1.03);
         opacity: 1;
     }
-    80% {
-        transform: translateX(10px) scale(1.02);
+    85% {
+        transform: translateX(5px) scale(1.01);
     }
     100% {
         transform: translateX(0) scale(1);
@@ -205,44 +207,41 @@
 /* Google Autocomplete styling */
 .autocomplete-input {
     width: 100%;
-    padding: 1rem 1.5rem;
-    border: 2px solid #e1e5e9;
-    border-radius: 15px;
-    font-size: 1.1rem;
-    font-family: inherit;
-    background: #fff;
-    transition: all 0.3s ease;
-    animation: inputSlideUp 0.5s ease-out 0.4s both;
+    padding: 1rem;
+    font-size: 1rem;
+    border: 1px solid #ced4da;
+    border-radius: 0.5rem;
+    background-color: white;
+    transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
 }
 
 .autocomplete-input:focus {
-    outline: none;
     border-color: #ff4500;
-    box-shadow: 0 0 0 3px rgba(255, 69, 0, 0.1);
-    transform: scale(1.02);
+    outline: 0;
+    box-shadow: 0 0 0 0.2rem rgba(255, 69, 0, 0.25);
 }
 
 /* Google Places Autocomplete dropdown styling */
 .pac-container {
-    border-radius: 15px;
-    border: 2px solid #ff4500;
-    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
-    font-family: "Fredoka", "Comic Sans MS", "Baloo", cursive, sans-serif;
-    margin-top: 5px;
+    border-radius: 0.5rem;
+    border: 1px solid #ced4da;
+    box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.15);
+    margin-top: 0.25rem;
+    font-family: inherit;
 }
 
 .pac-item {
-    padding: 0.8rem 1rem;
-    border: none;
-    transition: background-color 0.2s ease;
+    padding: 0.75rem 1rem;
+    cursor: pointer;
+    transition: background-color 0.15s ease-in-out;
 }
 
 .pac-item:hover {
-    background-color: rgba(255, 69, 0, 0.1);
+    background-color: #f8f9fa;
 }
 
 .pac-item-selected {
-    background-color: rgba(255, 69, 0, 0.15);
+    background-color: #f8f9fa;
 }
 
 .pac-matched {
@@ -256,37 +255,22 @@
     align-items: center;
     justify-content: center;
     gap: 0.5rem;
-    margin-top: 1rem;
-    color: #666;
-    font-size: 0.9rem;
-    animation: fadeIn 0.3s ease-out;
-}
-
-@keyframes fadeIn {
-    from {
-        opacity: 0;
-        transform: translateY(10px);
-    }
-    to {
-        opacity: 1;
-        transform: translateY(0);
-    }
+    margin-top: 0.5rem;
+    color: #6c757d;
+    font-size: 0.875rem;
 }
 
 .loading-spinner {
-    width: 16px;
-    height: 16px;
-    border: 2px solid #e1e5e9;
-    border-top: 2px solid #ff4500;
+    width: 1rem;
+    height: 1rem;
+    border: 2px solid rgba(108, 117, 125, 0.2);
+    border-top-color: #6c757d;
     border-radius: 50%;
     animation: spin 1s linear infinite;
 }
 
 @keyframes spin {
-    0% {
-        transform: rotate(0deg);
-    }
-    100% {
+    to {
         transform: rotate(360deg);
     }
 }
@@ -917,6 +901,19 @@
     transform: translateY(0);
 }
 
+.confirm-dates-btn.disabled {
+    background: linear-gradient(135deg, #cccccc 0%, #999999 100%);
+    cursor: not-allowed;
+    box-shadow: none;
+    opacity: 0.7;
+    transform: none !important;
+}
+
+.confirm-dates-btn.disabled:hover {
+    transform: none;
+    box-shadow: none;
+}
+
 /* Date Selection Tabs */
 .date-selection-container {
     width: 100%;
@@ -1217,4 +1214,23 @@
     color: #ff4500;
     opacity: 1;
     transform: translateY(-2px);
+}
+
+.destination-input-container {
+    width: 100%;
+    position: relative;
+}
+
+.autocomplete-container {
+    width: 100%;
+}
+
+.error-message {
+    color: #dc3545;
+    font-size: 0.875rem;
+    margin-top: 0.5rem;
+    padding: 0.5rem;
+    background-color: rgba(220, 53, 69, 0.1);
+    border-radius: 0.25rem;
+    text-align: center;
 }

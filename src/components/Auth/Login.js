@@ -69,14 +69,7 @@ const Login = () => {
                     <img src={paris} alt="Paris" className="bg-image" />
                     <div className="bg-overlay"></div>
                 </div>
-                <div className="bg-layer bg-layer-2">
-                    <img src={barcelona} alt="Barcelona" className="bg-image" />
-                    <div className="bg-overlay"></div>
-                </div>
-                <div className="bg-layer bg-layer-3">
-                    <img src={egypt} alt="Egypt" className="bg-image" />
-                    <div className="bg-overlay"></div>
-                </div>
+
             </div>
 
             {/* Floating decorative icons */}

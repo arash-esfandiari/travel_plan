@@ -1,17 +1,16 @@
 import React, { useState, useEffect } from 'react';
-import { Link } from 'react-router-dom';
-import { getTrips } from '../../services/tripService';
+import { Link, useNavigate } from 'react-router-dom';
+import { getTrips, createTripFromQuestionFlow } from '../../services/tripService';
 import TripActions from './TripActions';
-import TripCreateModal from './TripCreateModal';
 import { formatDate } from '../../utils/formatDate';
+import QuestionFlow from '../Home/QuestionFlow';
 import './TripList.css';
-
-
 
 const TripList = () => {
     const [trips, setTrips] = useState([]);
-    const [showCreateModal, setShowCreateModal] = useState(false);
     const [isLoading, setIsLoading] = useState(true);
+    const [showQuestionFlow, setShowQuestionFlow] = useState(false);
+    const navigate = useNavigate();
 
     // Animated emojis for the floating icons
     const emojis = ['✈️', '🗺️', '🏛️', '🌍', '🎒', '📸', '🏖️', '🗽', '🎡', '🏰'];
@@ -40,9 +39,58 @@ const TripList = () => {
         setTrips(trips.filter(trip => trip.id !== deletedTripId));
     };
 
+    const handleQuestionFlowComplete = async (answers, destinationCoords) => {
+        console.log('Question flow completed in TripList. Starting trip creation...');
+        console.log('Answers received:', answers);
+        console.log('Coordinates received:', destinationCoords);
+
+        try {
+            const questionFlowData = {
+                destination: answers.destination,
+                startDate: answers.startDate,
+                endDate: answers.endDate,
+                numberOfPeople: 1, // Default value
+                preferences: answers,
+                travelStyle: answers.travelStyle,
+                budgetRange: answers.budget,
+                interests: answers.interests,
+                latitude: destinationCoords?.lat,
+                longitude: destinationCoords?.lng,
+                status: 'generating' // Set initial status
+            };
+
+            console.log('Preparing to create trip with data:', questionFlowData);
+
+            // Create the trip and get the initial response
+            const newTrip = await createTripFromQuestionFlow(questionFlowData);
+            console.log('Trip created successfully:', newTrip);
+
+            // Close the question flow modal
+            setShowQuestionFlow(false);
+
+            // Add the new trip to the list
+            handleTripCreated(newTrip);
+
+            console.log('Navigating to trip details page...');
+            // Navigate to the trip details page where the loading screen will be shown
+            navigate(`/trips/${newTrip.id}`);
+        } catch (error) {
+            console.error('Error in trip creation:', error);
+            // Show error message to user
+            alert('Failed to create trip. Please try again.');
+        }
+    };
+
+    const handleQuestionFlowClose = () => {
+        setShowQuestionFlow(false);
+    };
+
+    const startQuestionFlow = () => {
+        setShowQuestionFlow(true);
+    };
+
     return (
         <div className="trips-page">
-
             {/* Floating decorative icons */}
             {emojis.map((emoji, index) => (
                 <div
@@ -71,11 +119,10 @@ const TripList = () => {
                 <div className="create-trip-section">
                     <button
                         className="create-trip-btn"
-                        onClick={() => setShowCreateModal(true)}
+                        onClick={startQuestionFlow}
                     >
-                        <span className="btn-icon">➕</span>
+                        <span className="btn-icon">+</span>
                         <span className="btn-text">Plan New Adventure</span>
-                        <span className="btn-arrow">➤</span>
                     </button>
                 </div>
 
@@ -93,7 +140,7 @@ const TripList = () => {
                             <p>Start planning your first trip and create amazing memories!</p>
                             <button
                                 className="empty-state-btn"
-                                onClick={() => setShowCreateModal(true)}
+                                onClick={startQuestionFlow}
                             >
                                 Create Your First Trip
                             </button>
@@ -144,13 +191,12 @@ const TripList = () => {
                 </div>
             </div>
 
-            {/* Create Trip Modal */}
-            {showCreateModal && (
-                <TripCreateModal
-                    onClose={() => setShowCreateModal(false)}
-                    onTripCreated={handleTripCreated}
-                />
-            )}
+            {/* Question Flow Component */}
+            <QuestionFlow
+                isVisible={showQuestionFlow}
+                onComplete={handleQuestionFlowComplete}
+                onClose={handleQuestionFlowClose}
+            />
         </div>
     );
 };

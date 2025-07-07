@@ -10,12 +10,35 @@ export const getTrips = async () => {
 
 // Get details of a single trip
 export const getTripById = async (tripId) => {
-    const response = await api.get(`/trips/${tripId}`);
-    // response.data could be an object with trip + itinerary, depending on your backend
-    return response.data;
+    console.log('tripService: Fetching trip details for ID:', tripId);
+    try {
+        const response = await api.get(`/trips/${tripId}`);
+        console.log('tripService: Trip details fetched:', response.data);
+        return response.data;
+    } catch (error) {
+        console.error('tripService: Error fetching trip details:', error.response || error);
+        throw error;
+    }
 };
 
-// Create a new trip
+// Create a new trip from question flow data
+export const createTripFromQuestionFlow = async (questionFlowData) => {
+    console.log('tripService: Creating trip with data:', questionFlowData);
+    try {
+        const response = await api.post('/trips', questionFlowData, {
+            headers: {
+                'Content-Type': 'application/json',
+            },
+        });
+        console.log('tripService: Trip created successfully. Response:', response.data);
+        return response.data;
+    } catch (error) {
+        console.error('tripService: Error creating trip:', error.response || error);
+        throw error;
+    }
+};
+
+// Create a new trip (legacy method)
 export const createTrip = async (tripData) => {
     const response = await api.post('/trips', tripData, {
         headers: {

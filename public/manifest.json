@@ -1,6 +1,6 @@
 {
-  "short_name": "Travel Planner",
-  "description": "A smart travel planner that helps you organize your trips efficiently.",
+  "short_name": "Let's Planet",
+  "description": "AI travel planner helps you organize your trips efficiently.",
   "lang": "en-US",
   "scope": "/",
   "orientation": "portrait",
@@ -9,7 +9,7 @@
     "productivity",
     "lifestyle"
   ],
-  "name": "Smart Travel Planner",
+  "name": "Let's Planet",
   "icons": [
     {
       "src": "favicon.ico",
@@ -25,16 +25,6 @@
       "src": "logo512.png",
       "type": "image/png",
       "sizes": "512x512"
-    },
-    {
-      "src": "/android-chrome-192x192.png",
-      "sizes": "192x192",
-      "type": "image/png"
-    },
-    {
-      "src": "/android-chrome-512x512.png",
-      "sizes": "512x512",
-      "type": "image/png"
     }
   ],
   "start_url": ".",

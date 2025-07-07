@@ -9,10 +9,11 @@ import './QuestionFlow.css';
 
 const QuestionFlow = ({ isVisible, onComplete, onClose }) => {
     const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
-    const [animationState, setAnimationState] = useState('entering'); // entering, visible, exiting
+    const [animationState, setAnimationState] = useState('entering');
     const [answers, setAnswers] = useState({});
     const [destinationCoords, setDestinationCoords] = useState(null);
     const [isLoadingDestination, setIsLoadingDestination] = useState(false);
+    const calendarRef = useRef(null);
 
     // Date range picker state
     const [dateRange, setDateRange] = useState([
@@ -24,10 +25,9 @@ const QuestionFlow = ({ isVisible, onComplete, onClose }) => {
     ]);
     const [showCalendar, setShowCalendar] = useState(false);
     const [datesSelected, setDatesSelected] = useState(false);
-    const calendarRef = useRef(null);
 
     // Tab state for date selection
-    const [activeDateTab, setActiveDateTab] = useState('calendar'); // 'calendar' or 'flexible'
+    const [activeDateTab, setActiveDateTab] = useState('calendar');
 
     const questions = [
         {
@@ -95,6 +95,7 @@ const QuestionFlow = ({ isVisible, onComplete, onClose }) => {
     }, []);
 
     const handleAnswer = (answer) => {
+        console.log('handleAnswer called with:', answer);
         setAnswers(prev => ({
             ...prev,
             [questions[currentQuestionIndex].id]: answer
@@ -112,7 +113,10 @@ const QuestionFlow = ({ isVisible, onComplete, onClose }) => {
                 }, 300);
             } else {
                 // All questions completed
-                onComplete({ ...answers, [questions[currentQuestionIndex].id]: answer }, destinationCoords);
+                const finalAnswers = { ...answers, [questions[currentQuestionIndex].id]: answer };
+                console.log('Question flow completed. Final answers:', finalAnswers);
+                console.log('Destination coordinates:', destinationCoords);
+                onComplete(finalAnswers, destinationCoords);
             }
         }, 400);
     };
@@ -180,14 +184,22 @@ const QuestionFlow = ({ isVisible, onComplete, onClose }) => {
             case 'text':
                 if (question.id === 'destination') {
                     return (
-                        <Autocomplete
-                            apiKey={process.env.REACT_APP_GOOGLE_MAPS_API_KEY}
-                            onPlaceSelected={handlePlaceSelected}
-                            types={['(cities)']}
-                            placeholder={question.placeholder}
-                            className="question-input autocomplete-input"
-                            autoFocus
-                        />
+                        <div className="destination-input-container">
+                            <Autocomplete
+                                apiKey={process.env.REACT_APP_GOOGLE_MAPS_API_KEY}
+                                onPlaceSelected={handlePlaceSelected}
+                                types={['(cities)']}
+                                placeholder={question.placeholder}
+                                className="question-input autocomplete-input"
+                                autoFocus
+                            />
+                            {isLoadingDestination && (
+                                <div className="loading-indicator">
+                                    <div className="loading-spinner"></div>
+                                    <span>Processing destination...</span>
+                                </div>
+                            )}
+                        </div>
                     );
                 }
                 return (
@@ -251,10 +263,11 @@ const QuestionFlow = ({ isVisible, onComplete, onClose }) => {
                         )}
                         <div className="calendar-external-actions">
                             <button
-                                className="confirm-dates-btn"
+                                className={`confirm-dates-btn ${!datesSelected ? 'disabled' : ''}`}
                                 onClick={handleDateRangeConfirm}
+                                disabled={!datesSelected}
                             >
-                                Confirm Dates
+                                {datesSelected ? 'Confirm Dates' : 'Select dates to continue'}
                             </button>
                         </div>
                     </div>
@@ -317,10 +330,11 @@ const QuestionFlow = ({ isVisible, onComplete, onClose }) => {
                                         )}
                                         <div className="calendar-external-actions">
                                             <button
-                                                className="confirm-dates-btn"
+                                                className={`confirm-dates-btn ${!datesSelected ? 'disabled' : ''}`}
                                                 onClick={handleDateRangeConfirm}
+                                                disabled={!datesSelected}
                                             >
-                                                Confirm Dates
+                                                {datesSelected ? 'Confirm Dates' : 'Select dates to continue'}
                                             </button>
                                         </div>
                                     </div>
@@ -525,13 +539,6 @@ const QuestionFlow = ({ isVisible, onComplete, onClose }) => {
                 <div className="question-content">
                     <h3 className="question-text">{currentQuestion.question}</h3>
                     {renderQuestionInput(currentQuestion)}
-                    {isLoadingDestination && currentQuestion.id === 'destination' && (
-                        <div className="loading-indicator">
-                            <div className="loading-spinner"></div>
-                            <span>Processing destination...</span>
-                        </div>
-                    )}
-
                 </div>
                 <div className="question-progress">
                     <div

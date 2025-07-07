@@ -3,7 +3,7 @@
 /* Modern Footer Styling */
 .modern-footer {
     position: relative;
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    background: linear-gradient(135deg, #764ba2 0%, #667eea 50%, #ff6b35 100%);
     color: white;
     font-family: "Fredoka", "Comic Sans MS", "Baloo", cursive, sans-serif;
     overflow: hidden;
@@ -30,7 +30,7 @@
 }
 
 .shape-fill {
-    fill: rgba(255, 255, 255, 0.1);
+    fill: rgba(255, 255, 255, 0.13);
     animation: waveShift 8s ease-in-out infinite;
 }
 
@@ -113,7 +113,7 @@
     font-size: 1.8rem;
     font-weight: 700;
     margin: 0;
-    background: linear-gradient(135deg, #fff 0%, #f0f0f0 100%);
+    background: linear-gradient(135deg, #fff 0%, #ff6b35 100%);
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
     background-clip: text;
@@ -122,7 +122,7 @@
 .logo-text p {
     font-size: 1rem;
     margin: 0.5rem 0 0;
-    opacity: 0.8;
+    opacity: 0.85;
 }
 
 /* Social Links */
@@ -137,9 +137,9 @@
     justify-content: center;
     width: 50px;
     height: 50px;
-    background: rgba(255, 255, 255, 0.1);
+    background: rgba(255, 255, 255, 0.13);
     backdrop-filter: blur(10px);
-    border: 2px solid rgba(255, 255, 255, 0.2);
+    border: 2px solid #ff6b35;
     border-radius: 50%;
     text-decoration: none;
     transition: all 0.3s ease;
@@ -148,18 +148,20 @@
 
 .social-link:hover {
     transform: translateY(-5px) scale(1.1);
-    background: rgba(255, 255, 255, 0.2);
-    border-color: rgba(255, 255, 255, 0.4);
-    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+    background: rgba(255, 255, 255, 0.22);
+    border-color: #ff4500;
+    box-shadow: 0 10px 25px rgba(255, 107, 53, 0.15);
 }
 
 .social-icon {
     font-size: 1.5rem;
     transition: transform 0.3s ease;
+    color: #ff6b35;
 }
 
 .social-link:hover .social-icon {
     transform: scale(1.2);
+    color: #ff4500;
 }
 
 @keyframes socialAppear {
@@ -223,7 +225,7 @@
 }
 
 .footer-section a {
-    color: rgba(255, 255, 255, 0.8);
+    color: rgba(255, 255, 255, 0.9);
     text-decoration: none;
     font-size: 1rem;
     transition: all 0.3s ease;
@@ -237,17 +239,19 @@
     left: -20px;
     opacity: 0;
     transition: all 0.3s ease;
-    color: #ff4500;
+    color: #ff6b35;
 }
 
 .footer-section a:hover {
     color: #fff;
     padding-left: 20px;
+    text-shadow: 0 2px 8px #ff6b35;
 }
 
 .footer-section a:hover::before {
     opacity: 1;
     left: 0;
+    color: #ff4500;
 }
 
 /* Footer Bottom Section */
@@ -258,14 +262,14 @@
     flex-wrap: wrap;
     gap: 2rem;
     padding-top: 2rem;
-    border-top: 2px solid rgba(255, 255, 255, 0.1);
+    border-top: 2px solid rgba(255, 255, 255, 0.18);
     animation: footerSlideUp 0.8s ease-out 0.6s both;
 }
 
 .footer-copyright p {
     margin: 0;
     font-size: 0.9rem;
-    opacity: 0.8;
+    opacity: 0.85;
 }
 
 .footer-newsletter {
@@ -278,23 +282,24 @@
     display: flex;
     align-items: center;
     gap: 0.8rem;
-    background: rgba(255, 255, 255, 0.1);
+    background: rgba(255, 255, 255, 0.13);
     backdrop-filter: blur(10px);
-    border: 2px solid rgba(255, 255, 255, 0.2);
+    border: 2px solid #ff6b35;
     border-radius: 25px;
     padding: 0.8rem 1.5rem;
     transition: all 0.3s ease;
 }
 
 .newsletter-content:hover {
-    background: rgba(255, 255, 255, 0.15);
-    border-color: rgba(255, 255, 255, 0.3);
+    background: rgba(255, 255, 255, 0.18);
+    border-color: #ff4500;
     transform: translateY(-2px);
 }
 
 .newsletter-icon {
     font-size: 1.2rem;
     animation: emailBounce 2s ease-in-out infinite;
+    color: #ff6b35;
 }
 
 @keyframes emailBounce {

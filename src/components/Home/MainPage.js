@@ -171,6 +171,7 @@ const MainPage = () => {
             <section className="feature-section">
                 <div className="feature-content">
                     <h2 className="feature-title">Split Expenses, Stay Friends</h2>
+                    {/* <h2 className="feature-title">Add Friends, Split Expenses</h2> */}
                     <p className="feature-description">
                         Track all group expenses and let AI calculate who owes what. No more awkward money conversations!
                     </p>

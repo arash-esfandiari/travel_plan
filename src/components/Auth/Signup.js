@@ -4,9 +4,8 @@ import { register } from '../../services/authService';
 import './Signup.css';
 
 // Import travel images
-import paris from '../../assets/images/places/paris.webp';
+import sardinia from '../../assets/images/places/sardinia.webp';
 import barcelona from '../../assets/images/places/barcelona.avif';
-import egypt from '../../assets/images/places/egypt.avif';
 
 const Signup = () => {
     const [username, setUsername] = useState('');
@@ -66,16 +65,8 @@ const Signup = () => {
         <div className="signup-page">
             {/* Background with layered images */}
             <div className="signup-background">
-                <div className="bg-layer bg-layer-1">
-                    <img src={paris} alt="Paris" className="bg-image" />
-                    <div className="bg-overlay"></div>
-                </div>
                 <div className="bg-layer bg-layer-2">
-                    <img src={barcelona} alt="Barcelona" className="bg-image" />
-                    <div className="bg-overlay"></div>
-                </div>
-                <div className="bg-layer bg-layer-3">
-                    <img src={egypt} alt="Egypt" className="bg-image" />
+                    <img src={sardinia} alt="Barcelona" className="bg-image" />
                     <div className="bg-overlay"></div>
                 </div>
             </div>
