@@ -82,7 +82,7 @@ const TripList = () => {
                 interests: answers.interests,
                 latitude: destinationCoords?.lat,
                 longitude: destinationCoords?.lng,
-                status: 'generating' // Set initial status
+                status: 'generating' // Set initial status to generating, backend will change to active after creation
             };
 
             console.log('Preparing to create trip with data:', questionFlowData);
