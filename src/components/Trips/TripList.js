@@ -63,23 +63,58 @@ const TripList = () => {
     const [showQuestionFlow, setShowQuestionFlow] = useState(false);
     const [isCreatingTrip, setIsCreatingTrip] = useState(false);
     const [creationError, setCreationError] = useState(null);
+    const [fetchError, setFetchError] = useState(null);
     const navigate = useNavigate();
 
     // Animated emojis for the floating icons
     const emojis = ['✈️', '🗺️', '🏛️', '🌍', '🎒', '📸', '🏖️', '🗽', '🎡', '🏰'];
 
-    useEffect(() => {
-        const fetchTrips = async () => {
-            try {
-                setIsLoading(true);
-                const data = await getTrips();
-                setTrips(data);
-            } catch (error) {
-                console.error('Error fetching trips:', error);
-            } finally {
-                setIsLoading(false);
+    const fetchTrips = async () => {
+        console.log('🔍 TripList: Starting to fetch trips...');
+        try {
+            setIsLoading(true);
+            setFetchError(null);
+            const data = await getTrips();
+            console.log('✅ TripList: Trips fetched successfully:', data);
+            console.log('📊 TripList: Number of trips:', data?.length || 0);
+
+            // Log each trip for debugging
+            if (data && Array.isArray(data)) {
+                data.forEach((trip, index) => {
+                    console.log(`Trip ${index + 1}:`, {
+                        id: trip.id,
+                        trip_name: trip.trip_name,
+                        start_date: trip.start_date,
+                        end_date: trip.end_date,
+                        image_url: trip.image_url,
+                        description: trip.description,
+                        hasRecommendations: !!trip.recommendations
+                    });
+                });
+            } else {
+                console.warn('⚠️ TripList: Unexpected data format:', typeof data, data);
             }
-        };
+
+            setTrips(data || []);
+        } catch (error) {
+            console.error('❌ TripList: Error fetching trips:', error);
+            console.error('Error details:', {
+                message: error.message,
+                status: error.response?.status,
+                statusText: error.response?.statusText,
+                data: error.response?.data
+            });
+
+            // Set error state and empty array
+            setFetchError(error.response?.data?.error || error.message || 'Failed to load trips');
+            setTrips([]);
+        } finally {
+            setIsLoading(false);
+            console.log('🏁 TripList: Fetch operation completed');
+        }
+    };
+
+    useEffect(() => {
         fetchTrips();
     }, []);
 
@@ -194,11 +229,23 @@ const TripList = () => {
                 {/* Header Section */}
                 <div className="trips-header">
                     <div className="header-content">
-                        <div className="header-logo">
-                            <span className="logo-emoji">🗺️</span>
-                            <h1 className="trips-title">Your Adventures</h1>
+                        <div className="header-left">
+                            <div className="header-logo">
+                                <span className="logo-emoji">🗺️</span>
+                                <h1 className="trips-title">Your Adventures</h1>
+                            </div>
+                            <p className="trips-subtitle">All your planned and completed journeys in one place</p>
                         </div>
-                        <p className="trips-subtitle">All your planned and completed journeys in one place</p>
+                        <div className="header-actions">
+                            <button
+                                className="refresh-btn"
+                                onClick={fetchTrips}
+                                disabled={isLoading}
+                                title="Refresh trips list"
+                            >
+                                {isLoading ? '⏳' : '🔄'}
+                            </button>
+                        </div>
                     </div>
                 </div>
 
@@ -219,6 +266,26 @@ const TripList = () => {
                         <div className="loading-container">
                             <div className="loading-spinner">⏳</div>
                             <p>Loading your adventures...</p>
+                        </div>
+                    ) : fetchError ? (
+                        <div className="error-state">
+                            <div className="error-icon">⚠️</div>
+                            <h3>Oops! Something went wrong</h3>
+                            <p>{fetchError}</p>
+                            <div className="error-actions">
+                                <button
+                                    className="retry-btn"
+                                    onClick={fetchTrips}
+                                >
+                                    🔄 Try Again
+                                </button>
+                                <button
+                                    className="create-trip-btn"
+                                    onClick={startQuestionFlow}
+                                >
+                                    ➕ Create New Trip
+                                </button>
+                            </div>
                         </div>
                     ) : trips.length === 0 ? (
                         <div className="empty-state">
