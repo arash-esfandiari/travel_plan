@@ -7,12 +7,13 @@ import 'react-date-range/dist/styles.css';
 import 'react-date-range/dist/theme/default.css';
 import './QuestionFlow.css';
 
-const QuestionFlow = ({ isVisible, onComplete, onClose }) => {
+const QuestionFlow = ({ isVisible, onComplete, onClose, isCreatingTrip = false, creationError = null }) => {
     const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
     const [animationState, setAnimationState] = useState('entering');
     const [answers, setAnswers] = useState({});
     const [destinationCoords, setDestinationCoords] = useState(null);
     const [isLoadingDestination, setIsLoadingDestination] = useState(false);
+
     const calendarRef = useRef(null);
 
     // Date range picker state
@@ -96,6 +97,16 @@ const QuestionFlow = ({ isVisible, onComplete, onClose }) => {
 
     const handleAnswer = (answer) => {
         console.log('handleAnswer called with:', answer);
+
+        // Special handling for trip confirmation (last step)
+        if (questions[currentQuestionIndex].id === 'summary' && answer === 'confirmed') {
+            const finalAnswers = { ...answers, [questions[currentQuestionIndex].id]: answer };
+            console.log('Question flow completed. Final answers:', finalAnswers);
+            console.log('Destination coordinates:', destinationCoords);
+            onComplete(finalAnswers, destinationCoords);
+            return;
+        }
+
         setAnswers(prev => ({
             ...prev,
             [questions[currentQuestionIndex].id]: answer
@@ -112,7 +123,7 @@ const QuestionFlow = ({ isVisible, onComplete, onClose }) => {
                     setAnimationState('visible');
                 }, 300);
             } else {
-                // All questions completed
+                // All questions completed (this case shouldn't happen with summary handling above)
                 const finalAnswers = { ...answers, [questions[currentQuestionIndex].id]: answer };
                 console.log('Question flow completed. Final answers:', finalAnswers);
                 console.log('Destination coordinates:', destinationCoords);
@@ -506,13 +517,30 @@ const QuestionFlow = ({ isVisible, onComplete, onClose }) => {
                             </div>
                         </div>
 
+                        {creationError && (
+                            <div className="creation-error">
+                                <span className="error-icon">⚠️</span>
+                                <span>{creationError}</span>
+                            </div>
+                        )}
+
                         <div className="summary-actions">
                             <button
-                                className="confirm-trip-btn"
+                                className={`confirm-trip-btn ${isCreatingTrip ? 'loading' : ''}`}
                                 onClick={() => handleAnswer('confirmed')}
+                                disabled={isCreatingTrip}
                             >
-                                <span className="btn-icon">🚀</span>
-                                <span>Start Planning My Trip</span>
+                                {isCreatingTrip ? (
+                                    <>
+                                        <span className="btn-icon loading-spinner">⏳</span>
+                                        <span>Creating Your Trip...</span>
+                                    </>
+                                ) : (
+                                    <>
+                                        <span className="btn-icon">🚀</span>
+                                        <span>Start Planning My Trip</span>
+                                    </>
+                                )}
                             </button>
                         </div>
                     </div>

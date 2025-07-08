@@ -216,6 +216,8 @@ const MainPage = () => {
                 isVisible={showQuestionFlow}
                 onComplete={handleQuestionFlowComplete}
                 onClose={handleQuestionFlowClose}
+                isCreatingTrip={false}
+                creationError={null}
             />
         </div>
     );

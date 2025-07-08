@@ -10,6 +10,8 @@ const TripList = () => {
     const [trips, setTrips] = useState([]);
     const [isLoading, setIsLoading] = useState(true);
     const [showQuestionFlow, setShowQuestionFlow] = useState(false);
+    const [isCreatingTrip, setIsCreatingTrip] = useState(false);
+    const [creationError, setCreationError] = useState(null);
     const navigate = useNavigate();
 
     // Animated emojis for the floating icons
@@ -44,6 +46,9 @@ const TripList = () => {
         console.log('Answers received:', answers);
         console.log('Coordinates received:', destinationCoords);
 
+        setIsCreatingTrip(true);
+        setCreationError(null);
+
         try {
             const questionFlowData = {
                 destination: answers.destination,
@@ -67,6 +72,7 @@ const TripList = () => {
 
             // Close the question flow modal
             setShowQuestionFlow(false);
+            setIsCreatingTrip(false);
 
             // Add the new trip to the list
             handleTripCreated(newTrip);
@@ -76,13 +82,17 @@ const TripList = () => {
             navigate(`/trips/${newTrip.id}`);
         } catch (error) {
             console.error('Error in trip creation:', error);
-            // Show error message to user
-            alert('Failed to create trip. Please try again.');
+            setCreationError('Failed to create trip. Please try again.');
+            setIsCreatingTrip(false);
+            // Don't close the question flow on error, let user try again
         }
     };
 
     const handleQuestionFlowClose = () => {
-        setShowQuestionFlow(false);
+        if (!isCreatingTrip) { // Only allow closing if not creating a trip
+            setShowQuestionFlow(false);
+            setCreationError(null);
+        }
     };
 
     const startQuestionFlow = () => {
@@ -196,6 +206,8 @@ const TripList = () => {
                 isVisible={showQuestionFlow}
                 onComplete={handleQuestionFlowComplete}
                 onClose={handleQuestionFlowClose}
+                isCreatingTrip={isCreatingTrip}
+                creationError={creationError}
             />
         </div>
     );

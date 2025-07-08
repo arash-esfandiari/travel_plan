@@ -1225,6 +1225,54 @@
     width: 100%;
 }
 
+.creation-error {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    background: #fff5f5;
+    color: #c53030;
+    padding: 1rem 1.5rem;
+    border-radius: 10px;
+    border: 1px solid #feb2b2;
+    margin-bottom: 1rem;
+    font-size: 0.9rem;
+    animation: errorShake 0.5s ease-out;
+}
+
+@keyframes errorShake {
+    0%,
+    100% {
+        transform: translateX(0);
+    }
+    25% {
+        transform: translateX(-5px);
+    }
+    75% {
+        transform: translateX(5px);
+    }
+}
+
+.creation-error .error-icon {
+    font-size: 1.2rem;
+}
+
+.confirm-trip-btn.loading {
+    background: linear-gradient(135deg, #f7fafc 0%, #edf2f7 100%);
+    color: #718096;
+    cursor: not-allowed;
+    transform: none !important;
+}
+
+.confirm-trip-btn.loading:hover {
+    background: linear-gradient(135deg, #f7fafc 0%, #edf2f7 100%);
+    box-shadow: none;
+    transform: none !important;
+}
+
+.confirm-trip-btn .loading-spinner {
+    animation: spin 1s linear infinite;
+}
+
 .error-message {
     color: #dc3545;
     font-size: 0.875rem;
