@@ -40,6 +40,12 @@ export const createTripFromQuestionFlow = async (questionFlowData) => {
             data: error.response?.data,
             message: error.message
         });
+
+        // Log the validation errors more clearly
+        if (error.response?.data) {
+            console.error('tripService: Backend error response:', JSON.stringify(error.response.data, null, 2));
+        }
+
         throw error;
     }
 };

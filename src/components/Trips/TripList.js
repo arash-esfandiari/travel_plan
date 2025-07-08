@@ -50,10 +50,31 @@ const TripList = () => {
         setCreationError(null);
 
         try {
+            // Debug: Check what dates we have
+            console.log('Raw answers object:', answers);
+            console.log('Start date from answers:', answers.startDate, typeof answers.startDate);
+            console.log('End date from answers:', answers.endDate, typeof answers.endDate);
+
+            // Handle flexible dates - convert to actual dates if needed
+            let startDate = answers.startDate;
+            let endDate = answers.endDate;
+
+            // If we don't have specific dates (user chose flexible dates), create default dates
+            if (!startDate || !endDate) {
+                const today = new Date();
+                const tomorrow = new Date(today);
+                tomorrow.setDate(today.getDate() + 1);
+
+                startDate = today.toISOString().split('T')[0]; // yyyy-MM-dd format
+                endDate = tomorrow.toISOString().split('T')[0]; // yyyy-MM-dd format
+
+                console.log('Using default dates - Start:', startDate, 'End:', endDate);
+            }
+
             const questionFlowData = {
                 destination: answers.destination,
-                startDate: answers.startDate,
-                endDate: answers.endDate,
+                startDate: startDate,
+                endDate: endDate,
                 numberOfPeople: 1, // Default value
                 preferences: answers,
                 travelStyle: answers.travelStyle,
@@ -65,6 +86,7 @@ const TripList = () => {
             };
 
             console.log('Preparing to create trip with data:', questionFlowData);
+            console.log('Data being sent to backend:', JSON.stringify(questionFlowData, null, 2));
 
             // Create the trip and get the initial response
             const newTrip = await createTripFromQuestionFlow(questionFlowData);
