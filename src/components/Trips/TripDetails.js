@@ -82,7 +82,21 @@ const TripDetails = () => {
                 const data = await getTripById(tripId);
                 console.log('✅ TripDetails: Trip data received:', data);
                 setTrip(data.trip);
-                setDailyPlans(data.trip.daily_plans || []);
+
+                // Filter out any undefined/null plans and log the filtering process
+                const rawPlans = data.trip.daily_plans || [];
+                console.log('🔍 Raw plans from backend:', rawPlans);
+
+                const validPlans = rawPlans.filter((plan, index) => {
+                    const isValid = plan && typeof plan === 'object' && plan.plan_date;
+                    if (!isValid) {
+                        console.warn(`⚠️ Filtering out invalid plan at index ${index}:`, plan);
+                    }
+                    return isValid;
+                });
+
+                console.log('✅ Valid plans after filtering:', validPlans);
+                setDailyPlans(validPlans);
                 setError(null);
             } catch (error) {
                 console.error('❌ TripDetails: Error fetching trip details:', error);
@@ -123,7 +137,21 @@ const TripDetails = () => {
                 setLoading(true);
                 const data = await getTripById(tripId);
                 setTrip(data.trip);
-                setDailyPlans(data.trip.daily_plans || []);
+
+                // Filter out any undefined/null plans and log the filtering process
+                const rawPlans = data.trip.daily_plans || [];
+                console.log('🔍 Raw plans from backend (refresh):', rawPlans);
+
+                const validPlans = rawPlans.filter((plan, index) => {
+                    const isValid = plan && typeof plan === 'object' && plan.plan_date;
+                    if (!isValid) {
+                        console.warn(`⚠️ Filtering out invalid plan at index ${index} (refresh):`, plan);
+                    }
+                    return isValid;
+                });
+
+                console.log('✅ Valid plans after filtering (refresh):', validPlans);
+                setDailyPlans(validPlans);
                 setError(null);
                 console.log('✅ TripDetails: Trip refreshed successfully');
             } catch (error) {
@@ -186,7 +214,10 @@ const TripDetails = () => {
             console.error('❌ Error updating plan:', error);
             // Revert local state on error
             const data = await getTripById(tripId);
-            setDailyPlans(data.trip.daily_plans || []);
+            const validPlans = (data.trip.daily_plans || []).filter(plan =>
+                plan && typeof plan === 'object' && plan.plan_date
+            );
+            setDailyPlans(validPlans);
         }
 
         setDraggedPlan(null);
@@ -216,7 +247,10 @@ const TripDetails = () => {
             console.error('❌ Error deleting plan:', error);
             // Revert local state on error
             const data = await getTripById(tripId);
-            setDailyPlans(data.trip.daily_plans || []);
+            const validPlans = (data.trip.daily_plans || []).filter(plan =>
+                plan && typeof plan === 'object' && plan.plan_date
+            );
+            setDailyPlans(validPlans);
         }
     };
 
