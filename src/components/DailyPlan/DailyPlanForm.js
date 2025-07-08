@@ -36,8 +36,9 @@ const DailyPlanForm = ({ tripId, tripStartDate, tripEndDate, onPlanAdded }) => {
         e.preventDefault();
         try {
             // Create the daily plan with the selectedDate in "yyyy-MM-dd" format
-            await createDailyPlan(tripId, selectedDate, category, title, description);
-            onPlanAdded();
+            const newPlan = await createDailyPlan(tripId, selectedDate, category, title, description);
+            console.log('✅ New plan created:', newPlan);
+            onPlanAdded(newPlan);
             // Reset form fields and selectedDate to first option.
             setCategory('');
             setTitle('');

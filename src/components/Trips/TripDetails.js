@@ -92,6 +92,7 @@ const TripDetails = () => {
             }
         };
 
+
         if (tripId) {
             fetchTripDetails();
         }
@@ -309,6 +310,12 @@ const TripDetails = () => {
 
     // Group plans by date
     const groupedPlans = dailyPlans.reduce((acc, plan) => {
+        // Safety check to prevent errors with undefined plans
+        if (!plan || !plan.plan_date) {
+            console.warn('⚠️ Invalid plan object:', plan);
+            return acc;
+        }
+
         const date = plan.plan_date;
         if (!acc[date]) {
             acc[date] = [];
