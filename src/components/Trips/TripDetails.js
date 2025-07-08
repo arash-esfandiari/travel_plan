@@ -67,9 +67,9 @@ const TripDetails = () => {
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
     const [mapCenter, setMapCenter] = useState(null);
-    const [refreshPlans, setRefreshPlans] = useState(false);
-    const [activeSection, setActiveSection] = useState('overview');
-    const [showMap, setShowMap] = useState(false);
+    const [dailyPlans, setDailyPlans] = useState([]);
+    const [draggedPlan, setDraggedPlan] = useState(null);
+    const [isDragging, setIsDragging] = useState(false);
 
     // Animated emojis for floating background
     const floatingEmojis = ['✈️', '🗺️', '🏛️', '🌍', '🎒', '📸', '🏖️', '🗽', '🎡', '🏰'];
@@ -82,6 +82,7 @@ const TripDetails = () => {
                 const data = await getTripById(tripId);
                 console.log('✅ TripDetails: Trip data received:', data);
                 setTrip(data.trip);
+                setDailyPlans(data.trip.daily_plans || []);
                 setError(null);
             } catch (error) {
                 console.error('❌ TripDetails: Error fetching trip details:', error);
@@ -121,6 +122,7 @@ const TripDetails = () => {
                 setLoading(true);
                 const data = await getTripById(tripId);
                 setTrip(data.trip);
+                setDailyPlans(data.trip.daily_plans || []);
                 setError(null);
                 console.log('✅ TripDetails: Trip refreshed successfully');
             } catch (error) {
@@ -133,12 +135,89 @@ const TripDetails = () => {
         await fetchTripDetails();
     };
 
-    const sectionTabs = [
-        { id: 'overview', label: 'Overview', icon: '🏠' },
-        { id: 'recommendations', label: 'AI Recommendations', icon: '🤖' },
-        { id: 'plans', label: 'Daily Plans', icon: '📅' },
-        { id: 'map', label: 'Map View', icon: '🗺️' }
-    ];
+    // Drag and drop handlers
+    const handleDragStart = (e, plan) => {
+        setDraggedPlan(plan);
+        setIsDragging(true);
+        e.dataTransfer.effectAllowed = 'move';
+    };
+
+    const handleDragOver = (e) => {
+        e.preventDefault();
+        e.dataTransfer.dropEffect = 'move';
+    };
+
+    const handleDrop = async (e, targetDay) => {
+        e.preventDefault();
+        if (!draggedPlan) return;
+
+        try {
+            // Update local state immediately for smooth UX
+            const updatedPlans = dailyPlans.map(plan => {
+                if (plan.id === draggedPlan.id) {
+                    return { ...plan, plan_date: targetDay };
+                }
+                return plan;
+            });
+            setDailyPlans(updatedPlans);
+
+            // Save to database using the correct backend schema
+            const response = await fetch(`${process.env.REACT_APP_API_URL}/api/trips/${tripId}/daily-plans/${draggedPlan.id}`, {
+                method: 'PUT',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${localStorage.getItem('token')}`
+                },
+                body: JSON.stringify({
+                    plan_date: targetDay,
+                    category: draggedPlan.category,
+                    title: draggedPlan.title,
+                    description: draggedPlan.description || ''
+                })
+            });
+
+            if (!response.ok) {
+                throw new Error('Failed to update plan');
+            }
+
+            console.log('✅ Plan updated successfully');
+        } catch (error) {
+            console.error('❌ Error updating plan:', error);
+            // Revert local state on error
+            const data = await getTripById(tripId);
+            setDailyPlans(data.trip.daily_plans || []);
+        }
+
+        setDraggedPlan(null);
+        setIsDragging(false);
+    };
+
+    const handleDeletePlan = async (planId) => {
+        try {
+            // Update local state immediately
+            const updatedPlans = dailyPlans.filter(plan => plan.id !== planId);
+            setDailyPlans(updatedPlans);
+
+            // Delete from database
+            const response = await fetch(`${process.env.REACT_APP_API_URL}/api/trips/${tripId}/daily-plans/${planId}`, {
+                method: 'DELETE',
+                headers: {
+                    'Authorization': `Bearer ${localStorage.getItem('token')}`
+                }
+            });
+
+            if (!response.ok) {
+                throw new Error('Failed to delete plan');
+            }
+
+            console.log('✅ Plan deleted successfully');
+        } catch (error) {
+            console.error('❌ Error deleting plan:', error);
+            // Revert local state on error
+            const data = await getTripById(tripId);
+            setDailyPlans(data.trip.daily_plans || []);
+        }
+    };
 
     // Loading state with beautiful design
     if (loading) {
@@ -228,146 +307,91 @@ const TripDetails = () => {
         { key: 'attraction2', name: 'Secondary Attraction', location: { lat: mapCenter?.lat - 0.01 || 40.7028, lng: mapCenter?.lng - 0.01 || -74.0160 } },
     ];
 
-    const renderSectionContent = () => {
-        switch (activeSection) {
-            case 'overview':
-                return (
-                    <div className="section-content overview-content">
-                        <div className="trip-header-card">
-                            {trip.image_url && (
-                                <div className="trip-image-container">
-                                    <img
-                                        src={`${trip.image_url}`}
-                                        alt={trip.trip_name}
-                                        className="trip-image"
-                                    />
-                                    <div className="image-overlay">
-                                        <div className="trip-title-overlay">
-                                            <h1>{trip.trip_name}</h1>
-                                            <div className="trip-dates">
-                                                📅 {formatDate(trip.start_date)} - {formatDate(trip.end_date)}
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            )}
-                        </div>
-
-                        <div className="trip-info-grid">
-                            <div className="info-card">
-                                <div className="info-icon">📍</div>
-                                <div className="info-content">
-                                    <h3>Destination</h3>
-                                    <p>{trip.city_name || trip.trip_name}</p>
-                                </div>
-                            </div>
-
-                            <div className="info-card">
-                                <div className="info-icon">👥</div>
-                                <div className="info-content">
-                                    <h3>Travelers</h3>
-                                    <p>{trip.number_of_people} {trip.number_of_people === 1 ? 'Person' : 'People'}</p>
-                                </div>
-                            </div>
-
-                            <div className="info-card">
-                                <div className="info-icon">🎭</div>
-                                <div className="info-content">
-                                    <h3>Travel Style</h3>
-                                    <p>{trip.travel_style || 'Not specified'}</p>
-                                </div>
-                            </div>
-
-                            <div className="info-card">
-                                <div className="info-icon">💰</div>
-                                <div className="info-content">
-                                    <h3>Budget Range</h3>
-                                    <p>{trip.budget_range || 'Not specified'}</p>
-                                </div>
-                            </div>
-                        </div>
-
-                        {trip.description && (
-                            <div className="description-card">
-                                <h3>✨ About This Trip</h3>
-                                <p>{trip.description}</p>
-                            </div>
-                        )}
-
-                        {trip.interests && (
-                            <div className="interests-card">
-                                <h3>🎯 Your Interests</h3>
-                                <div className="interests-tags">
-                                    {typeof trip.interests === 'string' ?
-                                        <span className="interest-tag">{trip.interests}</span> :
-                                        Array.isArray(trip.interests) ?
-                                            trip.interests.map((interest, index) => (
-                                                <span key={index} className="interest-tag">{interest}</span>
-                                            )) :
-                                            <span className="interest-tag">Adventure & Exploration</span>
-                                    }
-                                </div>
-                            </div>
-                        )}
-                    </div>
-                );
-
-            case 'recommendations':
-                return (
-                    <div className="section-content recommendations-content">
-                        {trip.recommendations ? (
-                            <TripRecommendations recommendations={trip.recommendations} />
-                        ) : (
-                            <div className="no-recommendations">
-                                <div className="no-rec-icon">🤖</div>
-                                <h3>No AI Recommendations Yet</h3>
-                                <p>AI recommendations will appear here once they're generated for your trip.</p>
-                            </div>
-                        )}
-                    </div>
-                );
-
-            case 'plans':
-                return (
-                    <div className="section-content plans-content">
-                        <DailyPlanList
-                            tripId={tripId}
-                            tripStartDate={trip.start_date}
-                            tripEndDate={trip.end_date}
-                            latitude={mapCenter?.lat}
-                            longitude={mapCenter?.lng}
-                            refresh={refreshPlans}
-                        />
-                        <DailyPlanForm
-                            tripId={tripId}
-                            tripStartDate={trip.start_date}
-                            tripEndDate={trip.end_date}
-                            onPlanAdded={() => setRefreshPlans(!refreshPlans)}
-                        />
-                    </div>
-                );
-
-            case 'map':
-                return (
-                    <div className="section-content map-content">
-                        {mapCenter ? (
-                            <div className="map-container">
-                                <TripMap center={mapCenter} attractions={attractions} />
-                            </div>
-                        ) : (
-                            <div className="no-map">
-                                <div className="no-map-icon">🗺️</div>
-                                <h3>Map Unavailable</h3>
-                                <p>Location coordinates are not available for this trip.</p>
-                            </div>
-                        )}
-                    </div>
-                );
-
-            default:
-                return null;
+    // Group plans by date
+    const groupedPlans = dailyPlans.reduce((acc, plan) => {
+        const date = plan.plan_date;
+        if (!acc[date]) {
+            acc[date] = [];
         }
+        acc[date].push(plan);
+        return acc;
+    }, {});
+
+    // Generate all dates between start and end
+    const generateDateRange = (startDate, endDate) => {
+        const dates = [];
+        const start = new Date(startDate);
+        const end = new Date(endDate);
+
+        for (let date = new Date(start); date <= end; date.setDate(date.getDate() + 1)) {
+            dates.push(new Date(date).toISOString().split('T')[0]);
+        }
+        return dates;
     };
+
+    const allDates = trip ? generateDateRange(trip.start_date, trip.end_date) : [];
+
+    const renderPlanBubble = (plan) => {
+        // Map category to appropriate emoji
+        const categoryEmojis = {
+            'Hotel': '🏨',
+            'Restaurant': '🍽️',
+            'Attraction': '🎯',
+            'Comment': '💬',
+            'Activity': '🎭',
+            'Transportation': '🚗'
+        };
+
+        return (
+            <div
+                key={plan.id}
+                className={`plan-bubble ${isDragging && draggedPlan?.id === plan.id ? 'dragging' : ''}`}
+                draggable
+                onDragStart={(e) => handleDragStart(e, plan)}
+            >
+                <div className="plan-content">
+                    <div className="plan-main">
+                        <div className="plan-category">
+                            {categoryEmojis[plan.category] || '📋'} {plan.category}
+                        </div>
+                        <div className="plan-activity">{plan.title}</div>
+                        {plan.description && <div className="plan-description">📝 {plan.description}</div>}
+                    </div>
+                    <button
+                        className="plan-delete-btn"
+                        onClick={() => handleDeletePlan(plan.id)}
+                        title="Remove this plan"
+                    >
+                        ×
+                    </button>
+                </div>
+            </div>
+        );
+    };
+
+    const renderDaySection = (date, dayNumber) => (
+        <div
+            key={date}
+            className={`day-section ${isDragging ? 'drop-zone' : ''}`}
+            onDragOver={handleDragOver}
+            onDrop={(e) => handleDrop(e, date)}
+        >
+            <div className="day-header">
+                <h3>Day {dayNumber}</h3>
+                <span className="day-date">{formatDate(date)}</span>
+            </div>
+            <div className="day-plans">
+                {groupedPlans[date]?.length > 0 ? (
+                    groupedPlans[date].map(renderPlanBubble)
+                ) : (
+                    <div className="empty-day">
+                        <span className="empty-icon">📅</span>
+                        <span className="empty-text">Drop plans here or add new ones</span>
+                    </div>
+                )}
+            </div>
+        </div>
+    );
 
     return (
         <div className="trip-details-page">
@@ -382,16 +406,17 @@ const TripDetails = () => {
                 </div>
             ))}
 
-            <div className="trip-details-container">
-                {/* Header with navigation */}
-                <div className="trip-header">
-                    <div className="header-navigation">
-                        <button className="back-button" onClick={handleGoBack}>
-                            <span className="back-icon">←</span>
-                            <span className="back-text">Back to Trips</span>
-                        </button>
+            <div className="trip-details-wrapper">
+                {/* Left Column - Trip Info and Plans */}
+                <div className="trip-details-left">
+                    {/* Header with navigation */}
+                    <div className="trip-header">
+                        <div className="header-navigation">
+                            <button className="back-button" onClick={handleGoBack}>
+                                <span className="back-icon">←</span>
+                                <span className="back-text">Back to Trips</span>
+                            </button>
 
-                        <div className="header-actions">
                             <button
                                 className="refresh-button"
                                 onClick={handleRefresh}
@@ -401,34 +426,118 @@ const TripDetails = () => {
                                 {loading ? '⏳' : '🔄'}
                             </button>
                         </div>
+
+                        <div className="trip-title-section">
+                            <h1 className="trip-main-title">{trip.trip_name}</h1>
+                            <div className="trip-subtitle">
+                                Your personalized travel experience
+                            </div>
+                        </div>
                     </div>
 
-                    <div className="trip-title-section">
-                        <h1 className="trip-main-title">{trip.trip_name}</h1>
-                        <div className="trip-subtitle">
-                            Your personalized travel experience
+                    {/* General Info Section */}
+                    <div className="general-info-section">
+                        {trip.image_url && (
+                            <div className="trip-image-container">
+                                <img
+                                    src={`${trip.image_url}`}
+                                    alt={trip.trip_name}
+                                    className="trip-image"
+                                />
+                            </div>
+                        )}
+
+                        <div className="trip-info-grid">
+                            <div className="info-card">
+                                <div className="info-icon">📍</div>
+                                <div className="info-content">
+                                    <h3>Destination</h3>
+                                    <p>{trip.city_name || trip.trip_name}</p>
+                                </div>
+                            </div>
+
+                            <div className="info-card">
+                                <div className="info-icon">📅</div>
+                                <div className="info-content">
+                                    <h3>Dates</h3>
+                                    <p>{formatDate(trip.start_date)} - {formatDate(trip.end_date)}</p>
+                                </div>
+                            </div>
+
+                            <div className="info-card">
+                                <div className="info-icon">👥</div>
+                                <div className="info-content">
+                                    <h3>Travelers</h3>
+                                    <p>{trip.number_of_people} {trip.number_of_people === 1 ? 'Person' : 'People'}</p>
+                                </div>
+                            </div>
+
+                            <div className="info-card">
+                                <div className="info-icon">💰</div>
+                                <div className="info-content">
+                                    <h3>Budget</h3>
+                                    <p>{trip.budget_range || 'Not specified'}</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        {trip.description && (
+                            <div className="description-card">
+                                <h3>✨ About This Trip</h3>
+                                <p>{trip.description}</p>
+                            </div>
+                        )}
+
+                        {trip.recommendations && (
+                            <div className="recommendations-section">
+                                <h3>🤖 AI Recommendations</h3>
+                                <TripRecommendations recommendations={trip.recommendations} />
+                            </div>
+                        )}
+                    </div>
+
+                    {/* Daily Plans Section */}
+                    <div className="daily-plans-section">
+                        <div className="section-header">
+                            <h2>📅 Daily Plans</h2>
+                            <p className="drag-hint">Drag plans between days or click × to remove</p>
+                        </div>
+
+                        <div className="days-container">
+                            {allDates.map((date, index) => renderDaySection(date, index + 1))}
+                        </div>
+
+                        <div className="add-plan-section">
+                            <DailyPlanForm
+                                tripId={tripId}
+                                tripStartDate={trip.start_date}
+                                tripEndDate={trip.end_date}
+                                onPlanAdded={(newPlan) => {
+                                    setDailyPlans(prev => [...prev, newPlan]);
+                                }}
+                            />
                         </div>
                     </div>
                 </div>
 
-                {/* Section Navigation Tabs */}
-                <div className="section-tabs">
-                    {sectionTabs.map((tab, index) => (
-                        <button
-                            key={tab.id}
-                            className={`section-tab ${activeSection === tab.id ? 'active' : ''}`}
-                            onClick={() => setActiveSection(tab.id)}
-                            style={{ animationDelay: `${index * 0.1}s` }}
-                        >
-                            <span className="tab-icon">{tab.icon}</span>
-                            <span className="tab-label">{tab.label}</span>
-                        </button>
-                    ))}
-                </div>
-
-                {/* Main Content Area */}
-                <div className="main-content">
-                    {renderSectionContent()}
+                {/* Right Column - Map */}
+                <div className="trip-details-right">
+                    <div className="map-section">
+                        <div className="map-header">
+                            <h3>🗺️ Trip Map</h3>
+                        </div>
+                        {mapCenter ? (
+                            <div className="map-container">
+                                <TripMap center={mapCenter} attractions={attractions} />
+                            </div>
+                        ) : (
+                            <div className="no-map">
+                                <div className="no-map-icon">🗺️</div>
+                                <h3>Map Unavailable</h3>
+                                <p>Location coordinates are not available for this trip.</p>
+                            </div>
+                        )}
+                    </div>
                 </div>
             </div>
         </div>
