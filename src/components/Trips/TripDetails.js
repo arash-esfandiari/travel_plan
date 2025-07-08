@@ -9,7 +9,7 @@ import TripRecommendations from './TripRecommendations';
 import { formatDate } from '../../utils/formatDate';
 import './TripDetails.css';
 
-// A new component for the generating state
+// Component for the trip creation loading state
 const GeneratingRecommendations = () => {
     const [currentEmoji, setCurrentEmoji] = useState(0);
     const emojis = ['✈️', '🗺️', '🌍', '🎒', '📸', '🏖️'];
@@ -69,50 +69,11 @@ const TripDetails = () => {
     const [refreshPlans, setRefreshPlans] = useState(false);
 
     useEffect(() => {
-        let pollingInterval;
-        let pollingTimeout;
-
         const fetchTripDetails = async () => {
             try {
                 const data = await getTripById(tripId);
                 setTrip(data.trip);
                 setLoading(false);
-
-                // If trip is in generating state, start polling
-                if (data.trip.status === 'generating') {
-                    let pollCount = 0;
-                    const maxPollAttempts = 20; // Maximum 1 minute of polling (20 * 3 seconds)
-
-                    pollingInterval = setInterval(async () => {
-                        pollCount++;
-
-                        // Stop polling after max attempts to prevent infinite loops
-                        if (pollCount >= maxPollAttempts) {
-                            console.log('Polling timeout reached, stopping...');
-                            clearInterval(pollingInterval);
-                            // Set status to active if still generating after timeout
-                            setTrip(prev => ({ ...prev, status: 'active' }));
-                            return;
-                        }
-
-                        const updatedData = await getTripById(tripId);
-                        setTrip(updatedData.trip);
-
-                        // If status is no longer generating, stop polling
-                        if (updatedData.trip.status !== 'generating') {
-                            clearInterval(pollingInterval);
-                        }
-                    }, 3000); // Poll every 3 seconds
-
-                    // Fallback timeout - stop polling after 1 minute
-                    pollingTimeout = setTimeout(() => {
-                        console.log('Fallback timeout reached, stopping polling...');
-                        if (pollingInterval) {
-                            clearInterval(pollingInterval);
-                        }
-                        setTrip(prev => ({ ...prev, status: 'active' }));
-                    }, 60000); // 1 minute timeout
-                }
             } catch (error) {
                 console.error('Error fetching trip details:', error);
                 setError('Failed to load trip details');
@@ -121,16 +82,6 @@ const TripDetails = () => {
         };
 
         fetchTripDetails();
-
-        // Cleanup polling interval and timeout
-        return () => {
-            if (pollingInterval) {
-                clearInterval(pollingInterval);
-            }
-            if (pollingTimeout) {
-                clearTimeout(pollingTimeout);
-            }
-        };
     }, [tripId]);
 
     useEffect(() => {
@@ -157,10 +108,7 @@ const TripDetails = () => {
         return <div className="not-found">Trip not found</div>;
     }
 
-    // Show generating screen while trip is being generated
-    if (trip.status === 'generating') {
-        return <GeneratingRecommendations />;
-    }
+    // No need for generating screen - trips are immediately ready
 
     if (!mapCenter) return <div>Loading map...</div>;
 
