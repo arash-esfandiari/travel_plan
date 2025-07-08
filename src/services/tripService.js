@@ -34,6 +34,12 @@ export const createTripFromQuestionFlow = async (questionFlowData) => {
         return response.data;
     } catch (error) {
         console.error('tripService: Error creating trip:', error.response || error);
+        console.error('tripService: Error details:', {
+            status: error.response?.status,
+            statusText: error.response?.statusText,
+            data: error.response?.data,
+            message: error.message
+        });
         throw error;
     }
 };
