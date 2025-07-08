@@ -308,21 +308,42 @@ const TripDetails = () => {
         { key: 'attraction2', name: 'Secondary Attraction', location: { lat: mapCenter?.lat - 0.01 || 40.7028, lng: mapCenter?.lng - 0.01 || -74.0160 } },
     ];
 
-    // Group plans by date
-    const groupedPlans = dailyPlans.reduce((acc, plan) => {
-        // Safety check to prevent errors with undefined plans
-        if (!plan || !plan.plan_date) {
-            console.warn('⚠️ Invalid plan object:', plan);
-            return acc;
+    // Group plans by date with robust error handling
+    const getGroupedPlans = () => {
+        console.log('🔍 Processing dailyPlans:', dailyPlans);
+        console.log('📊 DailyPlans array length:', dailyPlans?.length);
+        console.log('🔍 DailyPlans is array:', Array.isArray(dailyPlans));
+
+        // Ensure dailyPlans is an array
+        if (!Array.isArray(dailyPlans)) {
+            console.warn('⚠️ dailyPlans is not an array:', dailyPlans);
+            return {};
         }
 
-        const date = plan.plan_date;
-        if (!acc[date]) {
-            acc[date] = [];
-        }
-        acc[date].push(plan);
-        return acc;
-    }, {});
+        return dailyPlans.reduce((acc, plan, index) => {
+            console.log(`📋 Processing plan ${index}:`, plan);
+
+            // Safety check to prevent errors with undefined plans
+            if (!plan || typeof plan !== 'object') {
+                console.warn(`⚠️ Invalid plan object at index ${index}:`, plan);
+                return acc;
+            }
+
+            if (!plan.plan_date) {
+                console.warn(`⚠️ Plan missing plan_date at index ${index}:`, plan);
+                return acc;
+            }
+
+            const date = plan.plan_date;
+            if (!acc[date]) {
+                acc[date] = [];
+            }
+            acc[date].push(plan);
+            return acc;
+        }, {});
+    };
+
+    const groupedPlans = getGroupedPlans();
 
     // Generate all dates between start and end
     const generateDateRange = (startDate, endDate) => {
@@ -520,7 +541,26 @@ const TripDetails = () => {
                                 tripStartDate={trip.start_date}
                                 tripEndDate={trip.end_date}
                                 onPlanAdded={(newPlan) => {
-                                    setDailyPlans(prev => [...prev, newPlan]);
+                                    console.log('🎯 onPlanAdded called with:', newPlan);
+                                    console.log('🔍 newPlan type:', typeof newPlan);
+                                    console.log('🔍 newPlan has plan_date:', newPlan?.plan_date);
+
+                                    if (!newPlan || typeof newPlan !== 'object') {
+                                        console.error('❌ Invalid newPlan received:', newPlan);
+                                        return;
+                                    }
+
+                                    if (!newPlan.plan_date) {
+                                        console.error('❌ newPlan missing plan_date:', newPlan);
+                                        return;
+                                    }
+
+                                    setDailyPlans(prev => {
+                                        console.log('📋 Previous plans:', prev);
+                                        const updated = [...prev, newPlan];
+                                        console.log('📋 Updated plans:', updated);
+                                        return updated;
+                                    });
                                 }}
                             />
                         </div>
