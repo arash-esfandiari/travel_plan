@@ -113,7 +113,7 @@ const TripDetails = () => {
             if (!isNaN(lat) && !isNaN(lng)) {
                 setMapCenter({ lat, lng });
             } else {
-                setMapCenter({ lat: 40.7128, lng: -74.0060 });
+                setMapCenter({ lat: 40.7128, lng: -74.0060 }); // Default to NYC if no coordinates
             }
         }
     }, [trip]);
