@@ -3,7 +3,7 @@ import api from './api';
 
 // Get all trips for the logged-in user
 export const getTrips = async () => {
-    const response = await api.get('/trips');
+    const response = await api.get('/api/trips');
     // response.data = [{ id, trip_name, start_date, end_date, ... }, ...]
     return response.data;
 };
@@ -12,7 +12,7 @@ export const getTrips = async () => {
 export const getTripById = async (tripId) => {
     console.log('tripService: Fetching trip details for ID:', tripId);
     try {
-        const response = await api.get(`/trips/${tripId}`);
+        const response = await api.get(`/api/trips/${tripId}`);
         console.log('tripService: Trip details fetched:', response.data);
         return response.data;
     } catch (error) {
@@ -25,7 +25,7 @@ export const getTripById = async (tripId) => {
 export const createTripFromQuestionFlow = async (questionFlowData) => {
     console.log('tripService: Creating trip with data:', questionFlowData);
     try {
-        const response = await api.post('/trips', questionFlowData, {
+        const response = await api.post('/api/trips', questionFlowData, {
             headers: {
                 'Content-Type': 'application/json',
             },
@@ -40,7 +40,7 @@ export const createTripFromQuestionFlow = async (questionFlowData) => {
 
 // Create a new trip (legacy method)
 export const createTrip = async (tripData) => {
-    const response = await api.post('/trips', tripData, {
+    const response = await api.post('/api/trips', tripData, {
         headers: {
             'Content-Type': 'application/json', // Use JSON instead of multipart/form-data
         },
@@ -50,12 +50,12 @@ export const createTrip = async (tripData) => {
 
 // Update a trip
 export const updateTrip = async (tripId, tripData) => {
-    const response = await api.put(`/trips/${tripId}`, tripData);
+    const response = await api.put(`/api/trips/${tripId}`, tripData);
     return response.data;
 };
 
 // Delete a trip
 export const deleteTrip = async (tripId) => {
-    const response = await api.delete(`/trips/${tripId}`);
+    const response = await api.delete(`/api/trips/${tripId}`);
     return response.data;
 };
