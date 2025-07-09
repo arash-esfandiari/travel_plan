@@ -1,3 +1,14 @@
+# Dependencies
 /node_modules
+
+# Production build
 /build
+
+# Environment files (keep .env.example for reference)
 .env
+.env.local
+.env.development
+.env.production
+
+# System files
+*.DS_Store

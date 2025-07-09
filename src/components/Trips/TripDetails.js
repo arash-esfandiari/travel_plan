@@ -7,6 +7,7 @@ import DailyPlanForm from '../DailyPlan/DailyPlanForm';
 import TripMap from './TripMap';
 import TripRecommendations from './TripRecommendations';
 import { formatDate } from '../../utils/formatDate';
+import environment from '../../config/environment';
 import './TripDetails.css';
 
 // Component for the trip creation loading state
@@ -191,7 +192,7 @@ const TripDetails = () => {
             setDailyPlans(updatedPlans);
 
             // Save to database using the correct backend schema
-            const response = await fetch(`${process.env.REACT_APP_API_URL}/api/trips/${tripId}/daily-plans/${draggedPlan.id}`, {
+            const response = await fetch(`${environment.api.baseUrl}/api/trips/${tripId}/daily-plans/${draggedPlan.id}`, {
                 method: 'PUT',
                 headers: {
                     'Content-Type': 'application/json',
@@ -231,7 +232,7 @@ const TripDetails = () => {
             setDailyPlans(updatedPlans);
 
             // Delete from database
-            const response = await fetch(`${process.env.REACT_APP_API_URL}/api/trips/${tripId}/daily-plans/${planId}`, {
+            const response = await fetch(`${environment.api.baseUrl}/api/trips/${tripId}/daily-plans/${planId}`, {
                 method: 'DELETE',
                 headers: {
                     'Authorization': `Bearer ${localStorage.getItem('token')}`

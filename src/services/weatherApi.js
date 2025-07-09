@@ -1,7 +1,8 @@
 // src/services/weatherApi.js
 import axios from 'axios';
+import environment from '../config/environment';
 
-const API_KEY = process.env.REACT_APP_WEATHER_API_KEY;
+const API_KEY = environment.apiKeys.weather;
 const WEATHER_API_URL = 'https://api.weatherapi.com/v1/forecast.json';
 
 /**

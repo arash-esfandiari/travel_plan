@@ -5,6 +5,7 @@ import { addDays, format } from 'date-fns';
 import enUS from 'date-fns/locale/en-US';
 import 'react-date-range/dist/styles.css';
 import 'react-date-range/dist/theme/default.css';
+import environment from '../../config/environment';
 import './QuestionFlow.css';
 
 const QuestionFlow = ({ isVisible, onComplete, onClose, isCreatingTrip = false, creationError = null }) => {
@@ -197,7 +198,7 @@ const QuestionFlow = ({ isVisible, onComplete, onClose, isCreatingTrip = false, 
                     return (
                         <div className="destination-input-container">
                             <Autocomplete
-                                apiKey={process.env.REACT_APP_GOOGLE_MAPS_API_KEY}
+                                apiKey={environment.apiKeys.googleMaps}
                                 onPlaceSelected={handlePlaceSelected}
                                 types={['(cities)']}
                                 placeholder={question.placeholder}

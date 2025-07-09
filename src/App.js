@@ -2,6 +2,7 @@
 import React from 'react';
 import { Routes, Route } from 'react-router-dom';
 import { LoadScript } from '@react-google-maps/api'; // Use LoadScript to load the Maps API
+import environment from './config/environment';
 import Header from './components/Shared/Header';
 import Footer from './components/Shared/Footer';
 import NotFound from './components/Shared/NotFound';
@@ -16,7 +17,7 @@ import TripEdit from './components/Trips/TripEdit';
 function App() {
   return (
     <LoadScript
-      googleMapsApiKey={process.env.REACT_APP_GOOGLE_MAPS_API_KEY}
+      googleMapsApiKey={environment.apiKeys.googleMaps}
       libraries={['places']}
       onLoad={() => console.log('Google Maps API loaded')}
     >
