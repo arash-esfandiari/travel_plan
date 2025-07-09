@@ -8,108 +8,6 @@ import 'react-date-range/dist/theme/default.css';
 import environment from '../../config/environment';
 import './QuestionFlow.css';
 
-// Fallback inline styles in case CSS doesn't load
-const fallbackStyles = {
-    overlay: {
-        position: 'fixed',
-        top: 0,
-        left: 0,
-        width: '100%',
-        height: '100%',
-        backgroundColor: 'rgba(0, 0, 0, 0.6)',
-        backdropFilter: 'blur(8px)',
-        display: 'flex',
-        alignItems: 'center',
-        justifyContent: 'center',
-        zIndex: 1000,
-        fontFamily: 'Fredoka, "Comic Sans MS", "Baloo", cursive, sans-serif'
-    },
-    questionBox: {
-        position: 'relative',
-        background: 'linear-gradient(135deg, #ffffff 0%, #f8f9fa 100%)',
-        borderRadius: '20px',
-        padding: '2rem',
-        maxWidth: '500px',
-        width: '90%',
-        boxShadow: '0 20px 60px rgba(0, 0, 0, 0.3)',
-        border: '1px solid rgba(255, 255, 255, 0.2)',
-        zIndex: 1001
-    },
-    questionHeader: {
-        display: 'flex',
-        alignItems: 'center',
-        justifyContent: 'space-between',
-        marginBottom: '1.5rem'
-    },
-    questionIcon: {
-        fontSize: '2.5rem'
-    },
-    closeBtn: {
-        background: 'none',
-        border: 'none',
-        fontSize: '1.5rem',
-        color: '#666',
-        cursor: 'pointer',
-        padding: '0.5rem',
-        borderRadius: '50%',
-        width: '40px',
-        height: '40px',
-        display: 'flex',
-        alignItems: 'center',
-        justifyContent: 'center'
-    },
-    questionText: {
-        fontSize: '1.8rem',
-        fontWeight: '700',
-        color: '#222',
-        marginBottom: '1.5rem',
-        lineHeight: '1.3'
-    },
-    questionInput: {
-        width: '100%',
-        padding: '1rem 1.5rem',
-        border: '2px solid #e1e5e9',
-        borderRadius: '15px',
-        fontSize: '1.1rem',
-        fontFamily: 'inherit',
-        background: '#fff',
-        boxSizing: 'border-box'
-    },
-    questionOptions: {
-        display: 'grid',
-        gap: '0.8rem'
-    },
-    questionOption: {
-        background: 'linear-gradient(135deg, #fff 0%, #f8f9fa 100%)',
-        border: '2px solid #e1e5e9',
-        borderRadius: '12px',
-        padding: '1rem 1.5rem',
-        fontSize: '1rem',
-        fontFamily: 'inherit',
-        fontWeight: '500',
-        color: '#333',
-        cursor: 'pointer',
-        textAlign: 'left'
-    },
-    progressContainer: {
-        marginTop: '1.5rem',
-        paddingTop: '1rem',
-        borderTop: '1px solid #e1e5e9'
-    },
-    progressBar: {
-        height: '4px',
-        background: 'linear-gradient(90deg, #ff4500, #ff6b35)',
-        borderRadius: '2px',
-        marginBottom: '0.5rem',
-        transition: 'width 0.5s ease'
-    },
-    progressText: {
-        fontSize: '0.9rem',
-        color: '#666',
-        fontWeight: '500'
-    }
-};
-
 const QuestionFlow = ({ isVisible, onComplete, onClose, isCreatingTrip = false, creationError = null }) => {
     const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
     const [animationState, setAnimationState] = useState('entering');
@@ -305,7 +203,6 @@ const QuestionFlow = ({ isVisible, onComplete, onClose, isCreatingTrip = false, 
                                 types={['(cities)']}
                                 placeholder={question.placeholder}
                                 className="question-input autocomplete-input"
-                                style={fallbackStyles.questionInput}
                                 autoFocus
                             />
                             {isLoadingDestination && (
@@ -322,7 +219,6 @@ const QuestionFlow = ({ isVisible, onComplete, onClose, isCreatingTrip = false, 
                         type="text"
                         placeholder={question.placeholder}
                         className="question-input"
-                        style={fallbackStyles.questionInput}
                         onKeyPress={(e) => {
                             if (e.key === 'Enter' && e.target.value.trim()) {
                                 handleAnswer(e.target.value.trim());
@@ -333,12 +229,11 @@ const QuestionFlow = ({ isVisible, onComplete, onClose, isCreatingTrip = false, 
                 );
             case 'select':
                 return (
-                    <div className="question-options" style={fallbackStyles.questionOptions}>
+                    <div className="question-options">
                         {question.options.map((option, index) => (
                             <button
                                 key={index}
                                 className="question-option"
-                                style={fallbackStyles.questionOption}
                                 onClick={() => handleAnswer(option)}
                             >
                                 {option}
@@ -661,28 +556,25 @@ const QuestionFlow = ({ isVisible, onComplete, onClose, isCreatingTrip = false, 
     const currentQuestion = questions[currentQuestionIndex];
 
     return (
-        <div className="question-flow-overlay" style={fallbackStyles.overlay}>
+        <div className="question-flow-overlay">
             <div className="question-flow-backdrop" onClick={handleClose}></div>
-            <div className={`question-box ${animationState}`} style={fallbackStyles.questionBox}>
-                <div className="question-header" style={fallbackStyles.questionHeader}>
-                    <span className="question-icon" style={fallbackStyles.questionIcon}>{currentQuestion.icon}</span>
-                    <button className="question-close-btn" style={fallbackStyles.closeBtn} onClick={handleClose}>
+            <div className={`question-box ${animationState}`}>
+                <div className="question-header">
+                    <span className="question-icon">{currentQuestion.icon}</span>
+                    <button className="question-close-btn" onClick={handleClose}>
                         ✕
                     </button>
                 </div>
                 <div className="question-content">
-                    <h3 className="question-text" style={fallbackStyles.questionText}>{currentQuestion.question}</h3>
+                    <h3 className="question-text">{currentQuestion.question}</h3>
                     {renderQuestionInput(currentQuestion)}
                 </div>
-                <div className="question-progress" style={fallbackStyles.progressContainer}>
+                <div className="question-progress">
                     <div
                         className="progress-bar"
-                        style={{
-                            ...fallbackStyles.progressBar,
-                            width: `${((currentQuestionIndex + 1) / questions.length) * 100}%`
-                        }}
+                        style={{ width: `${((currentQuestionIndex + 1) / questions.length) * 100}%` }}
                     ></div>
-                    <span className="progress-text" style={fallbackStyles.progressText}>
+                    <span className="progress-text">
                         {currentQuestionIndex + 1} of {questions.length}
                     </span>
                 </div>
