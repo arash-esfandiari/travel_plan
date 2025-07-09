@@ -104,10 +104,10 @@
 /* Two-Column Layout */
 .trip-details-wrapper {
     display: flex;
-    gap: 2rem;
-    max-width: 1400px;
-    margin: 0 auto;
-    padding: 2rem;
+    gap: 0;
+    max-width: none;
+    margin: 0;
+    padding: 0;
     min-height: 100vh;
     position: relative;
     z-index: 10;
@@ -116,19 +116,24 @@
 
 /* Left Column - Trip Info and Plans */
 .trip-details-left {
-    flex: 2;
+    flex: 1;
     display: flex;
     flex-direction: column;
     gap: 2rem;
+    padding: 2rem;
+    max-width: 60%;
+    overflow-y: auto;
 }
 
 /* Right Column - Map */
 .trip-details-right {
-    flex: 1;
-    position: sticky;
-    top: 2rem;
-    height: fit-content;
-    max-height: calc(100vh - 4rem);
+    flex: 0 0 40%;
+    position: fixed;
+    right: 0;
+    top: 0;
+    height: 100vh;
+    width: 40%;
+    z-index: 5;
 }
 
 @keyframes containerSlideIn {
@@ -339,18 +344,30 @@
 
 /* Map Section */
 .map-section {
-    background: rgba(255, 255, 255, 0.95);
+    background: rgba(255, 255, 255, 0.98);
     backdrop-filter: blur(20px);
-    border-radius: 25px;
-    padding: 1.5rem;
-    box-shadow: 0 15px 35px rgba(0, 0, 0, 0.2);
-    border: 2px solid rgba(255, 255, 255, 0.3);
+    border-radius: 0;
+    padding: 0;
+    box-shadow: -5px 0 20px rgba(0, 0, 0, 0.1);
+    border: none;
+    border-left: 3px solid rgba(255, 69, 0, 0.3);
     animation: sectionSlideIn 0.6s ease-out 0.4s both;
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
 }
 
 .map-header {
     text-align: center;
-    margin-bottom: 1rem;
+    padding: 1.5rem;
+    margin-bottom: 0;
+    background: linear-gradient(
+        135deg,
+        rgba(255, 69, 0, 0.1) 0%,
+        rgba(255, 107, 53, 0.1) 100%
+    );
+    border-bottom: 2px solid rgba(255, 69, 0, 0.2);
+    flex-shrink: 0;
 }
 
 .map-header h3 {
@@ -358,6 +375,10 @@
     font-weight: 700;
     color: #333;
     margin: 0;
+    background: linear-gradient(135deg, #ff4500 0%, #ff6b35 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
 }
 
 /* Days Container */
@@ -808,10 +829,12 @@
 
 /* Map Content */
 .map-container {
-    border-radius: 15px;
+    border-radius: 0;
     overflow: hidden;
-    height: 500px;
-    box-shadow: 0 15px 35px rgba(0, 0, 0, 0.2);
+    height: 100%;
+    flex: 1;
+    box-shadow: none;
+    background: #fff;
 }
 
 /* Loading States */
@@ -972,6 +995,11 @@
     text-align: center;
     padding: 3rem 2rem;
     color: #666;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
 }
 
 .no-rec-icon,
@@ -999,23 +1027,35 @@
 @media (max-width: 1024px) {
     .trip-details-wrapper {
         flex-direction: column;
-        gap: 1.5rem;
+        gap: 0;
+        padding: 0;
+    }
+
+    .trip-details-left {
+        max-width: 100%;
+        padding: 2rem;
     }
 
     .trip-details-right {
         position: static;
-        max-height: none;
+        width: 100%;
+        height: 50vh;
+        flex: none;
     }
 
     .map-container {
-        height: 400px;
+        height: 100%;
     }
 }
 
 @media (max-width: 768px) {
     .trip-details-wrapper {
+        padding: 0;
+        gap: 0;
+    }
+
+    .trip-details-left {
         padding: 1rem;
-        gap: 1rem;
     }
 
     .trip-main-title {
@@ -1046,7 +1086,7 @@
     }
 
     .map-container {
-        height: 300px;
+        height: 100%;
     }
 
     .error-actions {
@@ -1119,7 +1159,7 @@
     }
 
     .map-container {
-        height: 250px;
+        height: 100%;
     }
 
     .empty-day {
