@@ -6,6 +6,7 @@
     background: linear-gradient(135deg, #74ebd5 0%, #9face6 100%);
     font-family: "Fredoka", "Comic Sans MS", "Baloo", cursive, sans-serif;
     padding-top: 80px; /* Space for navbar */
+    padding-bottom: 200px; /* Extra space for footer */
 }
 
 /* Add subtle pattern overlay */
@@ -122,20 +123,20 @@
     flex-direction: column;
     gap: 2rem;
     padding: 2rem;
-    max-width: calc(60% - 20px); /* Account for map margins */
+    max-width: calc(55% - 20px); /* Account for wider map */
     overflow-y: auto;
 }
 
 /* Right Column - Map */
 .trip-details-right {
-    flex: 0 0 40%;
+    flex: 0 0 45%; /* Wider map */
     position: fixed;
     right: 20px; /* Margin from right side */
     top: 100px; /* Start below navbar with margin */
-    bottom: 100px; /* Margin from bottom (footer space) */
-    height: auto; /* Let it size naturally between top and bottom */
-    width: calc(40% - 40px); /* Account for left and right margins */
+    height: calc(100vh - 250px); /* Fixed height with more footer space */
+    width: calc(45% - 40px); /* Account for left and right margins */
     z-index: 10; /* Below navbar but above content */
+    max-height: calc(100vh - 250px); /* Ensure it doesn't exceed viewport */
 }
 
 @keyframes containerSlideIn {
@@ -1046,14 +1047,15 @@
     .trip-details-right {
         position: static;
         width: calc(100% - 40px); /* Account for margins */
-        height: 50vh;
+        height: 60vh; /* Taller on tablet */
         flex: none;
         right: 20px;
         left: 20px;
         top: auto;
         bottom: auto;
-        margin: 0 20px 20px 20px; /* Margins on all sides */
+        margin: 0 20px 40px 20px; /* More bottom margin for footer */
         border-radius: 25px;
+        max-height: none; /* Remove max-height restriction on mobile */
     }
 
     .map-container {
@@ -1077,8 +1079,9 @@
     }
 
     .trip-details-right {
-        margin: 0 10px 20px 10px; /* Smaller margins on mobile */
+        margin: 0 10px 40px 10px; /* More bottom margin for footer on mobile */
         width: calc(100% - 20px);
+        height: 55vh; /* Taller on mobile */
     }
 
     .trip-main-title {
@@ -1152,8 +1155,9 @@
     }
 
     .trip-details-right {
-        margin: 0 10px 20px 10px; /* Consistent small margins */
+        margin: 0 10px 40px 10px; /* More bottom margin for footer */
         width: calc(100% - 20px);
+        height: 50vh; /* Appropriate height for small mobile */
     }
 
     .trip-main-title {
