@@ -4,6 +4,7 @@ import { getTrips, createTripFromQuestionFlow } from '../../services/tripService
 import TripActions from './TripActions';
 import { formatDate } from '../../utils/formatDate';
 import QuestionFlow from '../Home/QuestionFlow';
+import SmartTripImage from '../Shared/SmartTripImage';
 import './TripList.css';
 
 // Component for the trip creation loading state
@@ -309,8 +310,8 @@ const TripList = () => {
                                 >
                                     <Link to={`/trips/${trip.id}`} className="trip-card">
                                         <div className="card-image-container">
-                                            <img
-                                                src={trip.image_url ? `${trip.image_url}` : '../assets/images/placeholder.jpg'}
+                                            <SmartTripImage
+                                                trip={trip}
                                                 alt={trip.trip_name}
                                                 className="trip-image"
                                             />

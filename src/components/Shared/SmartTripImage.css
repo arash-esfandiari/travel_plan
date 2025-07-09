@@ -1,0 +1,57 @@
+/* SmartTripImage Component Styles */
+
+.smart-image-loading {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+    border-radius: 8px;
+    min-height: 200px;
+}
+
+.loading-placeholder {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 1rem;
+    text-align: center;
+}
+
+.loading-spinner {
+    font-size: 2rem;
+    animation: loadingPulse 2s ease-in-out infinite;
+}
+
+@keyframes loadingPulse {
+    0%,
+    100% {
+        transform: scale(1);
+        opacity: 0.7;
+    }
+    50% {
+        transform: scale(1.2);
+        opacity: 1;
+    }
+}
+
+.loading-placeholder span {
+    font-size: 0.9rem;
+    color: #666;
+    font-weight: 500;
+}
+
+/* Responsive loading states */
+@media (max-width: 768px) {
+    .smart-image-loading {
+        min-height: 150px;
+    }
+
+    .loading-spinner {
+        font-size: 1.5rem;
+    }
+
+    .loading-placeholder span {
+        font-size: 0.8rem;
+    }
+}

@@ -6,6 +6,7 @@ import DailyPlanList from '../DailyPlan/DailyPlanList';
 import DailyPlanForm from '../DailyPlan/DailyPlanForm';
 import TripMap from './TripMap';
 import TripRecommendations from './TripRecommendations';
+import SmartTripImage from '../Shared/SmartTripImage';
 import { formatDate } from '../../utils/formatDate';
 import environment from '../../config/environment';
 import './TripDetails.css';
@@ -500,15 +501,13 @@ const TripDetails = () => {
 
                     {/* General Info Section */}
                     <div className="general-info-section">
-                        {trip.image_url && (
-                            <div className="trip-image-container">
-                                <img
-                                    src={`${trip.image_url}`}
-                                    alt={trip.trip_name}
-                                    className="trip-image"
-                                />
-                            </div>
-                        )}
+                        <div className="trip-image-container">
+                            <SmartTripImage
+                                trip={trip}
+                                alt={trip.trip_name}
+                                className="trip-image"
+                            />
+                        </div>
 
                         <div className="trip-info-grid">
                             <div className="info-card">
