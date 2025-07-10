@@ -132,11 +132,11 @@
     flex: 0 0 45%; /* Wider map */
     position: fixed;
     right: 20px; /* Margin from right side */
-    top: 100px; /* Start below navbar with margin */
-    height: calc(100vh - 50px); /* Fixed height with more footer space */
+    top: 80px; /* Start closer to navbar */
+    height: calc(100vh - 100px); /* Taller fixed height */
     width: calc(45% - 40px); /* Account for left and right margins */
     z-index: 10; /* Below navbar but above content */
-    max-height: calc(100vh - 250px); /* Ensure it doesn't exceed viewport */
+    max-height: calc(100vh - 120px); /* Less restrictive max height */
 }
 
 @keyframes containerSlideIn {
@@ -1047,7 +1047,7 @@
     .trip-details-right {
         position: static;
         width: calc(100% - 40px); /* Account for margins */
-        height: 70vh; /* Taller on tablet */
+        height: 75vh; /* Even taller on tablet */
         flex: none;
         right: 20px;
         left: 20px;
@@ -1081,7 +1081,7 @@
     .trip-details-right {
         margin: 0 10px 40px 10px; /* More bottom margin for footer on mobile */
         width: calc(100% - 20px);
-        height: 55vh; /* Taller on mobile */
+        height: 60vh; /* Even taller on mobile */
     }
 
     .trip-main-title {
@@ -1157,7 +1157,7 @@
     .trip-details-right {
         margin: 0 10px 40px 10px; /* More bottom margin for footer */
         width: calc(100% - 20px);
-        height: 50vh; /* Appropriate height for small mobile */
+        height: 55vh; /* Taller height for small mobile */
     }
 
     .trip-main-title {

@@ -4,59 +4,11 @@ import { getTrips, createTripFromQuestionFlow } from '../../services/tripService
 import TripActions from './TripActions';
 import { formatDate } from '../../utils/formatDate';
 import QuestionFlow from '../Home/QuestionFlow';
+import GeneratingTrip from './GeneratingTrip';
 import SmartTripImage from '../Shared/SmartTripImage';
 import './TripList.css';
 
-// Component for the trip creation loading state
-const GeneratingRecommendations = () => {
-    const [currentEmoji, setCurrentEmoji] = useState(0);
-    const emojis = ['✈️', '🗺️', '🌍', '🎒', '📸', '🏖️'];
 
-    useEffect(() => {
-        const interval = setInterval(() => {
-            setCurrentEmoji((prev) => (prev + 1) % emojis.length);
-        }, 1000);
-        return () => clearInterval(interval);
-    }, []);
-
-    return (
-        <div className="generating-container">
-            <div className="generating-content">
-                <div className="generating-emoji-container">
-                    <div className="generating-emoji rotating">
-                        {emojis[currentEmoji]}
-                    </div>
-                </div>
-                <h2 className="generating-title">Creating Your Dream Trip</h2>
-                <div className="generating-steps">
-                    <div className="generating-step">
-                        <span className="step-emoji">🤖</span>
-                        <span className="step-text">Analyzing your preferences...</span>
-                    </div>
-                    <div className="generating-step">
-                        <span className="step-emoji">🎯</span>
-                        <span className="step-text">Finding perfect matches...</span>
-                    </div>
-                    <div className="generating-step">
-                        <span className="step-emoji">✨</span>
-                        <span className="step-text">Crafting personalized recommendations...</span>
-                    </div>
-                </div>
-                <div className="generating-progress">
-                    <div className="progress-bar">
-                        <div className="progress-bar-fill"></div>
-                    </div>
-                </div>
-                <p className="generating-message">
-                    Hold tight! We're using AI to create your perfect travel itinerary
-                    <span className="generating-dots">
-                        <span>.</span><span>.</span><span>.</span>
-                    </span>
-                </p>
-            </div>
-        </div>
-    );
-};
 
 const TripList = () => {
     const [trips, setTrips] = useState([]);
@@ -209,7 +161,7 @@ const TripList = () => {
 
     // Show generating screen while creating trip
     if (isCreatingTrip) {
-        return <GeneratingRecommendations />;
+        return <GeneratingTrip />;
     }
 
     return (
