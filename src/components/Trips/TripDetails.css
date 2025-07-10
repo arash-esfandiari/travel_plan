@@ -133,7 +133,7 @@
     position: fixed;
     right: 20px; /* Margin from right side */
     top: 100px; /* Start below navbar with margin */
-    height: calc(100vh - 250px); /* Fixed height with more footer space */
+    height: calc(100vh - 50px); /* Fixed height with more footer space */
     width: calc(45% - 40px); /* Account for left and right margins */
     z-index: 10; /* Below navbar but above content */
     max-height: calc(100vh - 250px); /* Ensure it doesn't exceed viewport */
@@ -1047,7 +1047,7 @@
     .trip-details-right {
         position: static;
         width: calc(100% - 40px); /* Account for margins */
-        height: 60vh; /* Taller on tablet */
+        height: 70vh; /* Taller on tablet */
         flex: none;
         right: 20px;
         left: 20px;
