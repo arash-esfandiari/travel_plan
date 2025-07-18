@@ -2,6 +2,8 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { getTripById } from '../../services/tripService';
+import { createBulkDailyPlans } from '../../services/dailyPlanService';
+import { getTripWeatherForecast } from '../../services/weatherApi'; // Use the new efficient function
 import DailyPlanList from '../DailyPlan/DailyPlanList';
 import DailyPlanForm from '../DailyPlan/DailyPlanForm';
 import TripMap from './TripMap';
@@ -9,7 +11,7 @@ import TripRecommendations from './TripRecommendations';
 import GeneratingTrip from './GeneratingTrip';
 import SmartTripImage from '../Shared/SmartTripImage';
 import { formatDate } from '../../utils/formatDate';
-import environment from '../../config/environment';
+
 import './TripDetails.css';
 
 
@@ -24,6 +26,7 @@ const TripDetails = () => {
     const [dailyPlans, setDailyPlans] = useState([]);
     const [draggedPlan, setDraggedPlan] = useState(null);
     const [isDragging, setIsDragging] = useState(false);
+    const [weatherData, setWeatherData] = useState(null); // Keep as null
 
     // Animated emojis for floating background
     const floatingEmojis = ['✈️', '🗺️', '🏛️', '🌍', '🎒', '📸', '🏖️', '🗽', '🎡', '🏰'];
@@ -78,6 +81,43 @@ const TripDetails = () => {
                 console.log('📍 TripDetails: Using default coordinates (NYC)');
             }
         }
+    }, [trip]);
+
+    // Fetch weather for all visible dates
+    useEffect(() => {
+        const fetchTripWeather = async () => {
+            setWeatherData(null);
+
+            if (trip && trip.latitude && trip.longitude) {
+                const today = new Date();
+                today.setHours(0, 0, 0, 0);
+                const startDate = new Date(trip.start_date);
+                const endDate = new Date(trip.end_date);
+
+                const daysUntilTrip = Math.ceil((startDate - today) / (1000 * 60 * 60 * 24));
+
+                if (daysUntilTrip < 0 || daysUntilTrip > 14) {
+                    setWeatherData({});
+                    return;
+                }
+
+                const requiredDates = [];
+                for (let date = new Date(startDate); date <= endDate; date.setDate(date.getDate() + 1)) {
+                    requiredDates.push(date.toISOString().split('T')[0]);
+                }
+                const duration = requiredDates.length;
+
+                try {
+                    const weatherMap = await getTripWeatherForecast(trip.latitude, trip.longitude, duration, requiredDates);
+                    setWeatherData(weatherMap || {});
+                } catch (error) {
+                    console.error('❌ Error fetching trip weather data:', error);
+                    setWeatherData({});
+                }
+            }
+        };
+
+        fetchTripWeather();
     }, [trip]);
 
     const handleGoBack = () => {
@@ -145,7 +185,7 @@ const TripDetails = () => {
             setDailyPlans(updatedPlans);
 
             // Save to database using the correct backend schema
-            const response = await fetch(`${environment.api.baseUrl}/api/trips/${tripId}/daily-plans/${draggedPlan.id}`, {
+            const response = await fetch(`${process.env.REACT_APP_BACKEND_API_URL || 'http://localhost:5001'}/api/trips/${tripId}/daily-plans/${draggedPlan.id}`, {
                 method: 'PUT',
                 headers: {
                     'Content-Type': 'application/json',
@@ -178,6 +218,72 @@ const TripDetails = () => {
         setIsDragging(false);
     };
 
+    const handleParseToDailyPlans = async (parsedItems) => {
+        try {
+            console.log('🔄 handleParseToDailyPlans called with:', {
+                itemsCount: parsedItems.length,
+                tripId
+            });
+
+            if (!parsedItems || parsedItems.length === 0) {
+                console.warn('⚠️ No parsed items to create');
+                return [];
+            }
+
+            // De-duplicate against existing plans before creating new ones
+            console.log('🔍 Filtering out plans that already exist in the state...');
+            const existingPlans = new Set(
+                dailyPlans.map(plan => {
+                    const date = plan.plan_date.split('T')[0];
+                    const title = plan.title.toLowerCase().trim();
+                    return `${date}|${title}`;
+                })
+            );
+
+            const newPlansToCreate = parsedItems.filter(item => {
+                const date = item.plan_date.split('T')[0];
+                const title = item.title.toLowerCase().trim();
+                const key = `${date}|${title}`;
+                return !existingPlans.has(key);
+            });
+
+            if (newPlansToCreate.length === 0) {
+                console.log('✅ No new plans to add. All items are already in the daily plan.');
+                alert('All recommended plans have already been added.');
+                return [];
+            }
+
+            console.log(`✅ Found ${newPlansToCreate.length} truly new plans to create.`);
+
+            // Prepare plans for bulk creation
+            const plansToCreate = newPlansToCreate.map(item => ({
+                plan_date: item.plan_date,
+                category: item.category,
+                title: item.title,
+                description: item.description || ''
+            }));
+
+            // Create plans in bulk
+            const newPlans = await createBulkDailyPlans(tripId, plansToCreate);
+
+            if (!newPlans || newPlans.length === 0) {
+                console.warn('⚠️ API returned empty result after bulk create.');
+                return [];
+            }
+
+            // Update local state and refresh
+            setDailyPlans(prev => [...prev, ...newPlans]);
+            await handleRefresh();
+
+            console.log('✅ handleParseToDailyPlans completed successfully');
+            return newPlans;
+        } catch (error) {
+            console.error('❌ Error in handleParseToDailyPlans:', error);
+            alert(`Failed to create daily plans: ${error.message || 'Unknown error'}`);
+            throw error;
+        }
+    };
+
     const handleDeletePlan = async (planId) => {
         try {
             // Update local state immediately
@@ -185,7 +291,7 @@ const TripDetails = () => {
             setDailyPlans(updatedPlans);
 
             // Delete from database
-            const response = await fetch(`${environment.api.baseUrl}/api/trips/${tripId}/daily-plans/${planId}`, {
+            const response = await fetch(`${process.env.REACT_APP_BACKEND_API_URL || 'http://localhost:5001'}/api/trips/${tripId}/daily-plans/${planId}`, {
                 method: 'DELETE',
                 headers: {
                     'Authorization': `Bearer ${localStorage.getItem('token')}`
@@ -298,31 +404,25 @@ const TripDetails = () => {
 
     // Group plans by date with robust error handling
     const getGroupedPlans = () => {
-        console.log('🔍 Processing dailyPlans:', dailyPlans);
+        console.log('🔍 Processing dailyPlans for grouping:', dailyPlans);
         console.log('📊 DailyPlans array length:', dailyPlans?.length);
-        console.log('🔍 DailyPlans is array:', Array.isArray(dailyPlans));
 
-        // Ensure dailyPlans is an array
         if (!Array.isArray(dailyPlans)) {
             console.warn('⚠️ dailyPlans is not an array:', dailyPlans);
             return {};
         }
 
-        return dailyPlans.reduce((acc, plan, index) => {
-            console.log(`📋 Processing plan ${index}:`, plan);
+        return dailyPlans.reduce((acc, plan) => {
+            console.log(`📋 Processing plan for grouping:`, plan);
 
-            // Safety check to prevent errors with undefined plans
-            if (!plan || typeof plan !== 'object') {
-                console.warn(`⚠️ Invalid plan object at index ${index}:`, plan);
+            if (!plan || !plan.plan_date) {
+                console.warn(`⚠️ Invalid plan or missing plan_date:`, plan);
                 return acc;
             }
 
-            if (!plan.plan_date) {
-                console.warn(`⚠️ Plan missing plan_date at index ${index}:`, plan);
-                return acc;
-            }
+            // Normalize the date to 'YYYY-MM-DD' format to handle both date strings and timestamps
+            const date = plan.plan_date.split('T')[0];
 
-            const date = plan.plan_date;
             if (!acc[date]) {
                 acc[date] = [];
             }
@@ -364,14 +464,14 @@ const TripDetails = () => {
                 className={`plan-bubble ${isDragging && draggedPlan?.id === plan.id ? 'dragging' : ''}`}
                 draggable
                 onDragStart={(e) => handleDragStart(e, plan)}
+                title={plan.title} // Tooltip is useful for long, truncated titles
             >
                 <div className="plan-content">
                     <div className="plan-main">
                         <div className="plan-category">
-                            {categoryEmojis[plan.category] || '📋'} {plan.category}
+                            {categoryEmojis[plan.category] || '📋'}
                         </div>
                         <div className="plan-activity">{plan.title}</div>
-                        {plan.description && <div className="plan-description">📝 {plan.description}</div>}
                     </div>
                     <button
                         className="plan-delete-btn"
@@ -385,29 +485,47 @@ const TripDetails = () => {
         );
     };
 
-    const renderDaySection = (date, dayNumber) => (
-        <div
-            key={date}
-            className={`day-section ${isDragging ? 'drop-zone' : ''}`}
-            onDragOver={handleDragOver}
-            onDrop={(e) => handleDrop(e, date)}
-        >
-            <div className="day-header">
-                <h3>Day {dayNumber}</h3>
-                <span className="day-date">{formatDate(date)}</span>
-            </div>
-            <div className="day-plans">
-                {groupedPlans[date]?.length > 0 ? (
-                    groupedPlans[date].map(renderPlanBubble)
-                ) : (
-                    <div className="empty-day">
-                        <span className="empty-icon">📅</span>
-                        <span className="empty-text">Drop plans here or add new ones</span>
+    const renderDaySection = (date, dayNumber) => {
+        const dateKey = date.split('T')[0];
+        const dayWeather = weatherData ? weatherData[dateKey] : null;
+
+        return (
+            <div
+                key={dateKey}
+                className={`day-section ${isDragging ? 'drop-zone' : ''}`}
+                onDragOver={handleDragOver}
+                onDrop={(e) => handleDrop(e, dateKey)}
+            >
+                <div className="day-header">
+                    <div className="day-title">
+                        {dayWeather ? (
+                            <div className="weather-display" title={`${dayWeather.weather}, ${dayWeather.temperature.min}°C - ${dayWeather.temperature.max}°C`}>
+                                <img src={dayWeather.icon} alt={dayWeather.weather} className="weather-icon" />
+                                <span className="weather-temp">{Math.round(dayWeather.temperature.avg)}°C</span>
+                            </div>
+                        ) : (
+                            <div className="weather-display placeholder">
+                                <span className="weather-icon">--</span>
+                                <span className="weather-temp">--°C</span>
+                            </div>
+                        )}
+                        <h3>Day {dayNumber}</h3>
                     </div>
-                )}
+                    <span className="day-date">{formatDate(dateKey)}</span>
+                </div>
+                <div className="day-plans">
+                    {groupedPlans[dateKey]?.length > 0 ? (
+                        groupedPlans[dateKey].map(renderPlanBubble)
+                    ) : (
+                        <div className="empty-day">
+                            <span className="empty-icon">📅</span>
+                            <span className="empty-text">Drop plans here or add new ones</span>
+                        </div>
+                    )}
+                </div>
             </div>
-        </div>
-    );
+        );
+    };
 
     return (
         <div className="trip-details-page">
@@ -505,7 +623,11 @@ const TripDetails = () => {
                         {trip.recommendations && (
                             <div className="recommendations-section">
                                 <h3>🤖 AI Recommendations</h3>
-                                <TripRecommendations recommendations={trip.recommendations} />
+                                <TripRecommendations
+                                    recommendations={trip.recommendations}
+                                    trip={trip}
+                                    onParseToDailyPlans={handleParseToDailyPlans}
+                                />
                             </div>
                         )}
                     </div>

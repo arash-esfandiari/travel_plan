@@ -1,5 +1,6 @@
 // src/components/Trips/TripRecommendations.js
-import React from 'react';
+import React, { useState } from 'react';
+import { parseAIRecommendations } from '../../utils/itineraryTextParser';
 import './TripRecommendations.css';
 
 // Robust JSON parsing algorithm that handles any kind of response
@@ -133,13 +134,57 @@ const parseRecommendations = (rawData) => {
     };
 };
 
-const TripRecommendations = ({ recommendations }) => {
+const TripRecommendations = ({ recommendations, trip, onParseToDailyPlans }) => {
     console.log('🔍 TripRecommendations component received:', recommendations);
+
+    const [isParsingLoading, setIsParsingLoading] = useState(false);
+    const [parseSuccess, setParseSuccess] = useState(false);
+    const [activeTab, setActiveTab] = useState('itinerary');
 
     const parseResult = parseRecommendations(recommendations);
     const { success, data, method, rawText } = parseResult;
 
     console.log('📊 Parse result:', { success, method, dataKeys: Object.keys(data || {}) });
+
+    // Check if itinerary exists for parse button
+    const hasItinerary = data && data.itinerary && Object.keys(data.itinerary).length > 0;
+
+    const handleParseToDailyPlans = async () => {
+        if (!trip || !hasItinerary) {
+            console.warn('Missing trip data or itinerary for parsing');
+            return;
+        }
+
+        setIsParsingLoading(true);
+        setParseSuccess(false);
+
+        try {
+            // Parse AI recommendations into daily plan items
+            const parsedItems = parseAIRecommendations(
+                recommendations,
+                trip.start_date,
+                trip.end_date
+            );
+
+            console.log('📋 Parsed items:', parsedItems);
+
+            if (parsedItems.length === 0) {
+                console.warn('No items parsed from recommendations');
+                return;
+            }
+
+            // Call parent function to handle bulk creation
+            if (onParseToDailyPlans) {
+                await onParseToDailyPlans(parsedItems);
+                setParseSuccess(true);
+                setTimeout(() => setParseSuccess(false), 3000);
+            }
+        } catch (error) {
+            console.error('Error parsing to daily plans:', error);
+        } finally {
+            setIsParsingLoading(false);
+        }
+    };
 
     // Handle different parsing outcomes
     if (!success && method === 'raw_fallback') {
@@ -197,148 +242,115 @@ const TripRecommendations = ({ recommendations }) => {
             </div>
         );
 
-        // Handle nested itinerary structure
-        if (data.itinerary && typeof data.itinerary === 'object') {
-            const itineraryKeys = Object.keys(data.itinerary);
-            const otherKeys = Object.keys(data).filter(key => key !== 'itinerary');
+        const generalSections = {
+            budget: { icon: '💰', data: data.budget },
+            packing: { icon: '🎒', data: data.packing },
+            transportation: { icon: '🚗', data: data.transportation },
+            cultural_tips: { icon: '🌍', data: data.cultural_tips },
+            safety_considerations: { icon: '🛡️', data: data.safety_considerations }
+        };
 
-            return (
-                <div>
-                    {debugInfo}
-
-                    {/* General recommendations */}
-                    {otherKeys.length > 0 && (
-                        <div className="general-recommendations">
-                            <h4>General Information</h4>
-                            {otherKeys.map(key => (
-                                <div key={key} className="recommendation-detail">
-                                    <strong>{key.replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase())}:</strong>
-                                    <div style={{ marginTop: '0.5rem' }}>
-                                        {typeof data[key] === 'object' ?
-                                            JSON.stringify(data[key], null, 2) :
-                                            String(data[key])
-                                        }
-                                    </div>
-                                </div>
-                            ))}
-                        </div>
-                    )}
-
-                    {/* Day-by-day itinerary */}
-                    {itineraryKeys.length > 0 && (
-                        <div className="day-recommendations">
-                            <h4>Day-by-Day Itinerary</h4>
-                            {itineraryKeys.map(dayKey => {
-                                const dayData = data.itinerary[dayKey];
-                                return (
-                                    <div key={dayKey} className="recommendation-item">
-                                        <h5>{dayKey.replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase())}</h5>
-                                        {typeof dayData === 'object' ?
-                                            Object.entries(dayData).map(([subKey, content]) => (
-                                                <div key={subKey} className="recommendation-detail">
-                                                    <strong>{subKey.replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase())}:</strong>
-                                                    <div style={{ marginTop: '0.5rem' }}>
-                                                        {String(content)}
-                                                    </div>
-                                                </div>
-                                            )) :
-                                            <div className="recommendation-detail">
-                                                <div>{String(dayData)}</div>
-                                            </div>
-                                        }
-                                    </div>
-                                );
-                            })}
-                        </div>
-                    )}
-                </div>
-            );
-        }
-
-        // Handle flat structure or simple key-value pairs
-        const allKeys = Object.keys(data);
-        const dayKeys = allKeys.filter(key => key.toLowerCase().includes('day'));
-        const generalKeys = allKeys.filter(key => !key.toLowerCase().includes('day'));
+        const hasItineraryData = data.itinerary && typeof data.itinerary === 'object' && Object.keys(data.itinerary).length > 0;
+        const availableGeneralSections = Object.keys(generalSections).filter(key => generalSections[key].data);
 
         return (
-            <div>
-                {debugInfo}
+            <div className="recommendations-container">
+                <div className="recommendations-tabs">
+                    {hasItineraryData && (
+                        <button
+                            className={`tab-button ${activeTab === 'itinerary' ? 'active' : ''}`}
+                            onClick={() => setActiveTab('itinerary')}
+                        >
+                            📅 Itinerary
+                        </button>
+                    )}
+                    {availableGeneralSections.map(key => (
+                        <button
+                            key={key}
+                            className={`tab-button ${activeTab === key ? 'active' : ''}`}
+                            onClick={() => setActiveTab(key)}
+                        >
+                            {generalSections[key].icon} {key.replace(/_/g, ' ')}
+                        </button>
+                    ))}
+                </div>
 
-                {/* General recommendations */}
-                {generalKeys.length > 0 && (
-                    <div className="general-recommendations">
-                        <h4>General Recommendations</h4>
-                        {generalKeys.map(key => (
-                            <div key={key} className="recommendation-detail">
-                                <strong>{key.replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase())}:</strong>
-                                <div style={{ marginTop: '0.5rem' }}>
-                                    {typeof data[key] === 'object' ?
-                                        <pre style={{
-                                            fontFamily: 'inherit',
-                                            margin: 0,
-                                            whiteSpace: 'pre-wrap'
-                                        }}>
-                                            {JSON.stringify(data[key], null, 2)}
-                                        </pre> :
-                                        String(data[key])
-                                    }
+                <div className="recommendations-content">
+                    {activeTab === 'itinerary' && hasItineraryData && (
+                        <div className="tab-pane active">
+                            {/* Day-by-day itinerary */}
+                            <div className="day-recommendations">
+                                {Object.keys(data.itinerary).map(dayKey => {
+                                    const dayData = data.itinerary[dayKey];
+                                    return (
+                                        <div key={dayKey} className="recommendation-item">
+                                            <h5>{dayKey.replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase())}</h5>
+                                            {typeof dayData === 'object' ?
+                                                Object.entries(dayData).map(([subKey, content]) => (
+                                                    <div key={subKey} className="recommendation-detail">
+                                                        <strong>{subKey.replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase())}:</strong>
+                                                        <div style={{ marginTop: '0.5rem' }}>
+                                                            {String(content)}
+                                                        </div>
+                                                    </div>
+                                                )) :
+                                                <div className="recommendation-detail">
+                                                    <div>{String(dayData)}</div>
+                                                </div>
+                                            }
+                                        </div>
+                                    );
+                                })}
+                            </div>
+                        </div>
+                    )}
+
+                    {availableGeneralSections.map(key =>
+                        activeTab === key && (
+                            <div key={key} className="tab-pane active">
+                                <div className="general-recommendations-card">
+                                    <div className="recommendation-detail">
+                                        <p>{String(generalSections[key].data)}</p>
+                                    </div>
                                 </div>
                             </div>
-                        ))}
-                    </div>
-                )}
-
-                {/* Day-specific recommendations */}
-                {dayKeys.length > 0 && (
-                    <div className="day-recommendations">
-                        <h4>Day-by-Day Information</h4>
-                        {dayKeys.map(dayKey => (
-                            <div key={dayKey} className="recommendation-item">
-                                <h5>{dayKey.replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase())}</h5>
-                                <div className="recommendation-detail">
-                                    {typeof data[dayKey] === 'object' ?
-                                        <pre style={{
-                                            fontFamily: 'inherit',
-                                            margin: 0,
-                                            whiteSpace: 'pre-wrap'
-                                        }}>
-                                            {JSON.stringify(data[dayKey], null, 2)}
-                                        </pre> :
-                                        String(data[dayKey])
-                                    }
-                                </div>
-                            </div>
-                        ))}
-                    </div>
-                )}
-
-                {/* Fallback for unexpected structure */}
-                {generalKeys.length === 0 && dayKeys.length === 0 && (
-                    <div className="no-structured-data">
-                        <p>Recommendations received but in unexpected format.</p>
-                        <details>
-                            <summary>View raw data</summary>
-                            <pre style={{
-                                whiteSpace: 'pre-wrap',
-                                fontFamily: 'monospace',
-                                fontSize: '0.8rem',
-                                background: '#f5f5f5',
-                                padding: '1rem',
-                                borderRadius: '4px',
-                                overflow: 'auto'
-                            }}>
-                                {JSON.stringify(data, null, 2)}
-                            </pre>
-                        </details>
-                    </div>
-                )}
+                        )
+                    )}
+                </div>
             </div>
         );
     };
 
     return (
         <div className="trip-recommendations">
-            <h3>Trip Recommendations</h3>
+            <div className="recommendations-header">
+                <h3>Trip Recommendations</h3>
+                {hasItinerary && (
+                    <button
+                        className={`parse-button ${isParsingLoading ? 'loading' : ''} ${parseSuccess ? 'success' : ''}`}
+                        onClick={handleParseToDailyPlans}
+                        disabled={isParsingLoading || !onParseToDailyPlans}
+                        title="Convert itinerary items to draggable daily plans"
+                    >
+                        {isParsingLoading ? (
+                            <>
+                                <span className="loading-spinner">⏳</span>
+                                Parsing...
+                            </>
+                        ) : parseSuccess ? (
+                            <>
+                                <span className="success-icon">✅</span>
+                                Parsed Successfully!
+                            </>
+                        ) : (
+                            <>
+                                <span className="parse-icon">📅</span>
+                                Parse to Daily Plans
+                            </>
+                        )}
+                    </button>
+                )}
+            </div>
             {renderRecommendations()}
         </div>
     );

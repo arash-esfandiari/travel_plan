@@ -10,6 +10,37 @@ export const createDailyPlan = async (tripId, plan_date, category, title, descri
     return response.data;
 };
 
+export const createBulkDailyPlans = async (tripId, plans) => {
+    try {
+        console.log('🌐 API: Creating bulk daily plans', {
+            tripId,
+            plansCount: plans.length,
+            endpoint: `/api/trips/${tripId}/daily-plans/bulk`,
+            plans
+        });
+
+        const response = await api.post(`/api/trips/${tripId}/daily-plans/bulk`, { plans });
+
+        console.log('✅ API: Bulk creation successful', {
+            status: response.status,
+            dataCount: response.data?.length,
+            data: response.data
+        });
+
+        return response.data;
+    } catch (error) {
+        console.error('❌ API: Bulk creation failed', {
+            message: error.message,
+            status: error.response?.status,
+            statusText: error.response?.statusText,
+            data: error.response?.data,
+            tripId,
+            plansCount: plans.length
+        });
+        throw error;
+    }
+};
+
 export const updateDailyPlan = async (tripId, planId, planData) => {
     const response = await api.put(`/api/trips/${tripId}/daily-plans/${planId}`, planData);
     return response.data;

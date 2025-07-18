@@ -283,10 +283,6 @@ const TripList = () => {
                                                         {formatDate(trip.start_date)} - {formatDate(trip.end_date)}
                                                     </span>
                                                 </div>
-                                                <div className="info-item">
-                                                    <span className="info-icon">📝</span>
-                                                    <span className="info-text">{trip.description}</span>
-                                                </div>
                                             </div>
                                         </div>
                                     </Link>

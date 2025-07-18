@@ -1,9 +1,8 @@
 // src/services/api.js
 import axios from 'axios'; // Import the axios library for making HTTP requests
-import environment from '../config/environment';
 
-// Define the base URL for the API using environment configuration
-const API_BASE_URL = environment.api.backendUrl;
+// Define the base URL for the API using environment variables
+const API_BASE_URL = process.env.REACT_APP_BACKEND_API_URL || 'http://localhost:5001';
 
 // Create an axios instance with the base URL
 const api = axios.create({
