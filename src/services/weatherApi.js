@@ -50,11 +50,13 @@ export const getTripWeatherForecast = async (lat, lon, days, requiredDates) => {
     try {
         const query = `${lat},${lon}`;
         console.log(`Weather API: Fetching ${days} days for query: ${query}`);
+        console.log('Weather API: Required dates:', requiredDates);
+
         const response = await axios.get(WEATHER_API_URL, {
             params: {
                 key: API_KEY,
                 q: query,
-                days: Math.min(days, 14),
+                days: Math.min(days, 14), // API maximum is 14 days
                 aqi: 'no',
                 alerts: 'no'
             }
@@ -62,26 +64,41 @@ export const getTripWeatherForecast = async (lat, lon, days, requiredDates) => {
 
         console.log('Weather API: Received response.');
         const forecastDays = response.data.forecast.forecastday;
+        console.log('Weather API: Raw forecast days:', forecastDays);
 
-        // Validate that the API returned data for the dates we actually need
-        const validWeatherMap = forecastDays.reduce((acc, day) => {
-            if (requiredDates.includes(day.date)) {
-                acc[day.date] = {
-                    date: day.date,
-                    temperature: {
-                        min: day.day.mintemp_c,
-                        max: day.day.maxtemp_c,
-                        avg: day.day.avgtemp_c
-                    },
-                    weather: day.day.condition.text,
-                    icon: `https:${day.day.condition.icon}`,
-                };
+        // Create a map of dates to weather data for available dates
+        const availableWeatherMap = {};
+
+        forecastDays.forEach(day => {
+            // Process all available days, not just required ones
+            availableWeatherMap[day.date] = {
+                date: day.date,
+                temperature: {
+                    min: Math.round(day.day.mintemp_c),
+                    max: Math.round(day.day.maxtemp_c),
+                    avg: Math.round(day.day.avgtemp_c)
+                },
+                weather: day.day.condition.text,
+                icon: day.day.condition.icon.startsWith('//')
+                    ? `https:${day.day.condition.icon}`
+                    : day.day.condition.icon
+            };
+        });
+
+        console.log('Weather API: All available weather data:', availableWeatherMap);
+
+        // Filter to only include dates that are in our required dates
+        const filteredWeatherMap = {};
+        requiredDates.forEach(date => {
+            if (availableWeatherMap[date]) {
+                filteredWeatherMap[date] = availableWeatherMap[date];
             }
-            return acc;
-        }, {});
+        });
 
-        console.log('Weather API: Processed and validated weather map:', validWeatherMap);
-        return validWeatherMap;
+        console.log('Weather API: Filtered weather map for required dates:', filteredWeatherMap);
+
+        // Return the filtered data (even if partial)
+        return Object.keys(filteredWeatherMap).length > 0 ? filteredWeatherMap : null;
     } catch (error) {
         console.error('Error fetching trip weather forecast:', error.response ? error.response.data : error.message);
         return null;

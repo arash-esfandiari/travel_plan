@@ -28,25 +28,6 @@ const TripList = () => {
             setIsLoading(true);
             setFetchError(null);
             const data = await getTrips();
-            console.log('✅ TripList: Trips fetched successfully:', data);
-            console.log('📊 TripList: Number of trips:', data?.length || 0);
-
-            // Log each trip for debugging
-            if (data && Array.isArray(data)) {
-                data.forEach((trip, index) => {
-                    console.log(`Trip ${index + 1}:`, {
-                        id: trip.id,
-                        trip_name: trip.trip_name,
-                        start_date: trip.start_date,
-                        end_date: trip.end_date,
-                        image_url: trip.image_url,
-                        description: trip.description,
-                        hasRecommendations: !!trip.recommendations
-                    });
-                });
-            } else {
-                console.warn('⚠️ TripList: Unexpected data format:', typeof data, data);
-            }
 
             setTrips(data || []);
         } catch (error) {
@@ -81,33 +62,45 @@ const TripList = () => {
     };
 
     const handleQuestionFlowComplete = async (answers, destinationCoords) => {
-        console.log('Question flow completed in TripList. Starting trip creation...');
-        console.log('Answers received:', answers);
-        console.log('Coordinates received:', destinationCoords);
 
         setIsCreatingTrip(true);
         setCreationError(null);
 
         try {
             // Debug: Check what dates we have
-            console.log('Raw answers object:', answers);
-            console.log('Start date from answers:', answers.startDate, typeof answers.startDate);
-            console.log('End date from answers:', answers.endDate, typeof answers.endDate);
 
             // Handle flexible dates - convert to actual dates if needed
             let startDate = answers.startDate;
             let endDate = answers.endDate;
 
-            // If we don't have specific dates (user chose flexible dates), create default dates
+            // If we don't have specific dates (user chose flexible dates), create appropriate dates
             if (!startDate || !endDate) {
                 const today = new Date();
-                const tomorrow = new Date(today);
-                tomorrow.setDate(today.getDate() + 1);
+                const futureStartDate = new Date(today);
+                futureStartDate.setDate(today.getDate() + 7); // Default to next week
 
-                startDate = today.toISOString().split('T')[0]; // yyyy-MM-dd format
-                endDate = tomorrow.toISOString().split('T')[0]; // yyyy-MM-dd format
+                let duration = 3; // Default duration in days
 
-                console.log('Using default dates - Start:', startDate, 'End:', endDate);
+                // Parse flexible date selection to determine duration
+                if (answers.dates) {
+                    if (answers.dates.includes('1-3 days')) {
+                        duration = 3;
+                    } else if (answers.dates.includes('4-7 days')) {
+                        duration = 7;
+                    } else if (answers.dates.includes('1-2 weeks')) {
+                        duration = 10;
+                    } else if (answers.dates.includes('2+ weeks')) {
+                        duration = 14;
+                    }
+                }
+
+                const futureEndDate = new Date(futureStartDate);
+                futureEndDate.setDate(futureStartDate.getDate() + duration - 1);
+
+                startDate = futureStartDate.toISOString().split('T')[0];
+                endDate = futureEndDate.toISOString().split('T')[0];
+
+                console.log('Using flexible dates - Start:', startDate, 'End:', endDate, 'Duration:', duration);
             }
 
             const questionFlowData = {
@@ -123,12 +116,8 @@ const TripList = () => {
                 longitude: destinationCoords?.lng
             };
 
-            console.log('Preparing to create trip with data:', questionFlowData);
-            console.log('Data being sent to backend:', JSON.stringify(questionFlowData, null, 2));
-
             // Create the trip and get the initial response
             const newTrip = await createTripFromQuestionFlow(questionFlowData);
-            console.log('Trip created successfully:', newTrip);
 
             // Close the question flow modal
             setShowQuestionFlow(false);
@@ -137,7 +126,6 @@ const TripList = () => {
             // Add the new trip to the list
             handleTripCreated(newTrip);
 
-            console.log('Navigating to trip details page...');
             // Navigate to the trip details page where the loading screen will be shown
             navigate(`/trips/${newTrip.id}`);
         } catch (error) {

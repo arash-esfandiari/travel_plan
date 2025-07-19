@@ -9,14 +9,9 @@ const parseRecommendations = (rawData) => {
     console.log('📝 Raw data type:', typeof rawData);
     console.log('📏 Raw data length:', rawData?.length);
 
-    if (typeof rawData === 'string') {
-        console.log('🔤 First 300 chars:', rawData.substring(0, 300));
-        console.log('🔚 Last 200 chars:', rawData.substring(Math.max(0, rawData.length - 200)));
-    }
 
     // Strategy 1: Already an object
     if (typeof rawData === 'object' && rawData !== null) {
-        console.log('✅ Strategy 1: Already an object');
         return { success: true, data: rawData, method: 'object' };
     }
 
@@ -135,7 +130,6 @@ const parseRecommendations = (rawData) => {
 };
 
 const TripRecommendations = ({ recommendations, trip, onParseToDailyPlans }) => {
-    console.log('🔍 TripRecommendations component received:', recommendations);
 
     const [isParsingLoading, setIsParsingLoading] = useState(false);
     const [parseSuccess, setParseSuccess] = useState(false);
@@ -144,7 +138,6 @@ const TripRecommendations = ({ recommendations, trip, onParseToDailyPlans }) => 
     const parseResult = parseRecommendations(recommendations);
     const { success, data, method, rawText } = parseResult;
 
-    console.log('📊 Parse result:', { success, method, dataKeys: Object.keys(data || {}) });
 
     // Check if itinerary exists for parse button
     const hasItinerary = data && data.itinerary && Object.keys(data.itinerary).length > 0;

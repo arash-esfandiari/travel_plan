@@ -27,6 +27,7 @@ const TripDetails = () => {
     const [draggedPlan, setDraggedPlan] = useState(null);
     const [isDragging, setIsDragging] = useState(false);
     const [weatherData, setWeatherData] = useState(null); // Keep as null
+    const [weatherStatus, setWeatherStatus] = useState('loading'); // 'loading', 'available', 'unavailable'
 
     // Animated emojis for floating background
     const floatingEmojis = ['✈️', '🗺️', '🏛️', '🌍', '🎒', '📸', '🏖️', '🗽', '🎡', '🏰'];
@@ -38,11 +39,14 @@ const TripDetails = () => {
                 setLoading(true);
                 const data = await getTripById(tripId);
                 console.log('✅ TripDetails: Trip data received:', data);
+                console.log('🗓️ Trip dates from backend:', {
+                    start_date: data.trip.start_date,
+                    end_date: data.trip.end_date
+                });
                 setTrip(data.trip);
 
                 // Filter out any undefined/null plans and log the filtering process
                 const rawPlans = data.trip.daily_plans || [];
-                console.log('🔍 Raw plans from backend:', rawPlans);
 
                 const validPlans = rawPlans.filter((plan, index) => {
                     const isValid = plan && typeof plan === 'object' && plan.plan_date;
@@ -52,7 +56,6 @@ const TripDetails = () => {
                     return isValid;
                 });
 
-                console.log('✅ Valid plans after filtering:', validPlans);
                 setDailyPlans(validPlans);
                 setError(null);
             } catch (error) {
@@ -87,6 +90,7 @@ const TripDetails = () => {
     useEffect(() => {
         const fetchTripWeather = async () => {
             setWeatherData(null);
+            setWeatherStatus('loading');
 
             if (trip && trip.latitude && trip.longitude) {
                 const today = new Date();
@@ -95,9 +99,21 @@ const TripDetails = () => {
                 const endDate = new Date(trip.end_date);
 
                 const daysUntilTrip = Math.ceil((startDate - today) / (1000 * 60 * 60 * 24));
+                const daysUntilTripEnd = Math.ceil((endDate - today) / (1000 * 60 * 60 * 24));
 
-                if (daysUntilTrip < 0 || daysUntilTrip > 14) {
-                    setWeatherData({});
+                console.log('🌤️ Weather Debug - Trip dates analysis:', {
+                    today: today.toISOString().split('T')[0],
+                    tripStart: startDate.toISOString().split('T')[0],
+                    tripEnd: endDate.toISOString().split('T')[0],
+                    daysUntilTrip,
+                    daysUntilTripEnd
+                });
+
+                // Only fetch weather if trip end is within the next 14 days
+                if (daysUntilTripEnd < 0 || daysUntilTripEnd > 14) {
+                    console.log('Weather API: Trip end outside 14-day window:', { daysUntilTripEnd });
+                    setWeatherStatus('unavailable');
+                    setWeatherData(null);
                     return;
                 }
 
@@ -105,14 +121,34 @@ const TripDetails = () => {
                 for (let date = new Date(startDate); date <= endDate; date.setDate(date.getDate() + 1)) {
                     requiredDates.push(date.toISOString().split('T')[0]);
                 }
-                const duration = requiredDates.length;
+
+                // Calculate how many days from today we need to fetch to cover all trip dates
+                const lastTripDate = new Date(endDate);
+                const daysToFetch = Math.ceil((lastTripDate - today) / (1000 * 60 * 60 * 24)) + 1;
+                const duration = Math.min(daysToFetch, 14); // Cap at API maximum
+
+                console.log('🌤️ Weather Debug - Requesting weather for dates:', requiredDates);
+                console.log('🌤️ Weather Debug - Days to fetch from today:', duration);
 
                 try {
                     const weatherMap = await getTripWeatherForecast(trip.latitude, trip.longitude, duration, requiredDates);
-                    setWeatherData(weatherMap || {});
+
+                    console.log('🌤️ Weather Debug - API returned:', weatherMap);
+                    console.log('🌤️ Weather Debug - Available dates in response:', weatherMap ? Object.keys(weatherMap) : 'null');
+
+                    if (weatherMap && Object.keys(weatherMap).length > 0) {
+                        setWeatherData(weatherMap);
+                        setWeatherStatus('available');
+                        console.log('🌤️ Weather Debug - Set status to available');
+                    } else {
+                        setWeatherData(null);
+                        setWeatherStatus('unavailable');
+                        console.log('🌤️ Weather Debug - Set status to unavailable (empty data)');
+                    }
                 } catch (error) {
                     console.error('❌ Error fetching trip weather data:', error);
-                    setWeatherData({});
+                    setWeatherData(null);
+                    setWeatherStatus('unavailable');
                 }
             }
         };
@@ -134,7 +170,6 @@ const TripDetails = () => {
 
                 // Filter out any undefined/null plans and log the filtering process
                 const rawPlans = data.trip.daily_plans || [];
-                console.log('🔍 Raw plans from backend (refresh):', rawPlans);
 
                 const validPlans = rawPlans.filter((plan, index) => {
                     const isValid = plan && typeof plan === 'object' && plan.plan_date;
@@ -404,8 +439,6 @@ const TripDetails = () => {
 
     // Group plans by date with robust error handling
     const getGroupedPlans = () => {
-        console.log('🔍 Processing dailyPlans for grouping:', dailyPlans);
-        console.log('📊 DailyPlans array length:', dailyPlans?.length);
 
         if (!Array.isArray(dailyPlans)) {
             console.warn('⚠️ dailyPlans is not an array:', dailyPlans);
@@ -413,7 +446,6 @@ const TripDetails = () => {
         }
 
         return dailyPlans.reduce((acc, plan) => {
-            console.log(`📋 Processing plan for grouping:`, plan);
 
             if (!plan || !plan.plan_date) {
                 console.warn(`⚠️ Invalid plan or missing plan_date:`, plan);
@@ -435,13 +467,39 @@ const TripDetails = () => {
 
     // Generate all dates between start and end
     const generateDateRange = (startDate, endDate) => {
-        const dates = [];
-        const start = new Date(startDate);
-        const end = new Date(endDate);
+        console.log('🗓️ generateDateRange called with:', { startDate, endDate });
 
-        for (let date = new Date(start); date <= end; date.setDate(date.getDate() + 1)) {
-            dates.push(new Date(date).toISOString().split('T')[0]);
+        const dates = [];
+
+        // Extract just the date part to avoid timezone issues
+        const startDateString = startDate.split('T')[0]; // '2025-07-21'
+        const endDateString = endDate.split('T')[0];     // '2025-07-24'
+
+        console.log('🗓️ Working with date strings:', {
+            start: startDateString,
+            end: endDateString
+        });
+
+        // Work directly with date strings to avoid timezone conversion
+        const [startYear, startMonth, startDay] = startDateString.split('-').map(Number);
+        const [endYear, endMonth, endDay] = endDateString.split('-').map(Number);
+
+        const currentDate = new Date(startYear, startMonth - 1, startDay); // Month is 0-indexed
+        const endDateObj = new Date(endYear, endMonth - 1, endDay);
+
+        while (currentDate <= endDateObj) {
+            const year = currentDate.getFullYear();
+            const month = String(currentDate.getMonth() + 1).padStart(2, '0'); // Month is 0-indexed
+            const day = String(currentDate.getDate()).padStart(2, '0');
+            const dateString = `${year}-${month}-${day}`;
+
+            dates.push(dateString);
+            console.log('🗓️ Generated date:', dateString);
+
+            currentDate.setDate(currentDate.getDate() + 1);
         }
+
+        console.log('🗓️ Final date range:', dates);
         return dates;
     };
 
@@ -487,7 +545,17 @@ const TripDetails = () => {
 
     const renderDaySection = (date, dayNumber) => {
         const dateKey = date.split('T')[0];
-        const dayWeather = weatherData ? weatherData[dateKey] : null;
+        const dayWeather = weatherData?.[dateKey];
+
+        // Enhanced debug logging
+        console.log(`🌤️ Rendering day section for ${dateKey}:`, {
+            dateKey,
+            hasWeatherData: weatherData !== null,
+            weatherDataKeys: weatherData ? Object.keys(weatherData) : 'null',
+            dayWeather,
+            weatherStatus,
+            hasExactMatch: weatherData && weatherData.hasOwnProperty(dateKey)
+        });
 
         return (
             <div
@@ -498,9 +566,17 @@ const TripDetails = () => {
             >
                 <div className="day-header">
                     <div className="day-title">
-                        {dayWeather ? (
+                        {weatherStatus === 'available' && dayWeather ? (
                             <div className="weather-display" title={`${dayWeather.weather}, ${dayWeather.temperature.min}°C - ${dayWeather.temperature.max}°C`}>
-                                <img src={dayWeather.icon} alt={dayWeather.weather} className="weather-icon" />
+                                <img
+                                    src={dayWeather.icon}
+                                    alt={dayWeather.weather}
+                                    className="weather-icon"
+                                    onError={(e) => {
+                                        console.error('Failed to load weather icon:', dayWeather.icon);
+                                        e.target.style.display = 'none';
+                                    }}
+                                />
                                 <span className="weather-temp">{Math.round(dayWeather.temperature.avg)}°C</span>
                             </div>
                         ) : (
@@ -638,6 +714,12 @@ const TripDetails = () => {
                             <h2>📅 Daily Plans</h2>
                             <p className="drag-hint">Drag plans between days or click × to remove</p>
                         </div>
+
+                        {weatherStatus === 'unavailable' && (
+                            <div className="weather-notice">
+                                <p>ℹ️ Weather forecast is only available for trips starting within the next 14 days.</p>
+                            </div>
+                        )}
 
                         <div className="days-container">
                             {allDates.map((date, index) => renderDaySection(date, index + 1))}

@@ -16,12 +16,13 @@ const QuestionFlow = ({ isVisible, onComplete, onClose, isCreatingTrip = false, 
     const [isLoadingDestination, setIsLoadingDestination] = useState(false);
 
     const calendarRef = useRef(null);
+    const isTransitioning = useRef(false); // Track if a transition is in progress
 
     // Date range picker state
     const [dateRange, setDateRange] = useState([
         {
-            startDate: new Date(),
-            endDate: addDays(new Date(), 1),
+            startDate: null,
+            endDate: null,
             key: 'selection'
         }
     ]);
@@ -30,6 +31,34 @@ const QuestionFlow = ({ isVisible, onComplete, onClose, isCreatingTrip = false, 
 
     // Tab state for date selection
     const [activeDateTab, setActiveDateTab] = useState('calendar');
+
+    // Centralized function to move to next question (prevents double transitions)
+    const nextQuestion = () => {
+        if (isTransitioning.current) {
+            console.log('Transition already in progress, skipping...');
+            return false; // Transition already in progress
+        }
+
+        if (currentQuestionIndex >= questions.length - 1) {
+            console.log('Already at last question, cannot advance');
+            return false; // Already at last question
+        }
+
+        console.log(`Moving from question ${currentQuestionIndex} to ${currentQuestionIndex + 1}`);
+        isTransitioning.current = true;
+
+        setAnimationState('exiting');
+        setTimeout(() => {
+            setCurrentQuestionIndex(prev => prev + 1);
+            setAnimationState('entering');
+            setTimeout(() => {
+                setAnimationState('visible');
+                isTransitioning.current = false; // Reset transition flag
+            }, 300);
+        }, 400);
+
+        return true; // Transition initiated successfully
+    };
 
     const questions = [
         {
@@ -113,27 +142,16 @@ const QuestionFlow = ({ isVisible, onComplete, onClose, isCreatingTrip = false, 
             [questions[currentQuestionIndex].id]: answer
         }));
 
-        // Start exit animation
-        setAnimationState('exiting');
-
-        setTimeout(() => {
-            if (currentQuestionIndex < questions.length - 1) {
-                setCurrentQuestionIndex(prev => prev + 1);
-                setAnimationState('entering');
-                setTimeout(() => {
-                    setAnimationState('visible');
-                }, 300);
-            } else {
-                // All questions completed (this case shouldn't happen with summary handling above)
-                const finalAnswers = { ...answers, [questions[currentQuestionIndex].id]: answer };
-                console.log('Question flow completed. Final answers:', finalAnswers);
-                console.log('Destination coordinates:', destinationCoords);
-                onComplete(finalAnswers, destinationCoords);
-            }
-        }, 400);
+        // Use centralized transition function
+        nextQuestion();
     };
 
     const handlePlaceSelected = (place) => {
+        if (isTransitioning.current) {
+            console.log('Transition in progress, ignoring place selection');
+            return;
+        }
+
         setIsLoadingDestination(true);
 
         try {
@@ -146,7 +164,24 @@ const QuestionFlow = ({ isVisible, onComplete, onClose, isCreatingTrip = false, 
                 setDestinationCoords({ lat, lng });
             }
 
-            handleAnswer(destination);
+            // Set the answer for the destination
+            setAnswers(prev => ({
+                ...prev,
+                [questions[currentQuestionIndex].id]: destination
+            }));
+
+            // Use centralized transition function
+            const transitionStarted = nextQuestion();
+
+            if (transitionStarted) {
+                // Reset loading state after transition completes
+                setTimeout(() => {
+                    setIsLoadingDestination(false);
+                }, 700); // 400ms exit + 300ms enter
+            } else {
+                setIsLoadingDestination(false);
+            }
+
         } catch (error) {
             console.error('Error processing selected place:', error);
             setIsLoadingDestination(false);
@@ -155,30 +190,41 @@ const QuestionFlow = ({ isVisible, onComplete, onClose, isCreatingTrip = false, 
 
     const handleDateRangeChange = (item) => {
         setDateRange([item.selection]);
-        // Only set datesSelected to true if the dates are different from default
-        const defaultStartDate = new Date();
-        const defaultEndDate = addDays(new Date(), 1);
-
-        if (item.selection.startDate.getTime() !== defaultStartDate.getTime() ||
-            item.selection.endDate.getTime() !== defaultEndDate.getTime()) {
+        // A selection is made when both start and end dates are set.
+        if (item.selection.startDate && item.selection.endDate) {
             setDatesSelected(true);
         }
     };
 
     const handleDateRangeConfirm = () => {
+        console.log('🗓️ Date range confirmation - raw dates:', {
+            startDate: dateRange[0].startDate,
+            endDate: dateRange[0].endDate
+        });
+
         const startDate = format(dateRange[0].startDate, 'yyyy-MM-dd');
         const endDate = format(dateRange[0].endDate, 'yyyy-MM-dd');
         const dateRangeString = `${format(dateRange[0].startDate, 'MMM dd, yyyy')} - ${format(dateRange[0].endDate, 'MMM dd, yyyy')}`;
 
+        console.log('🗓️ Formatted dates:', {
+            startDate,
+            endDate,
+            displayString: dateRangeString
+        });
+
+        // Set both the structured dates AND the display string
         setAnswers(prev => ({
             ...prev,
             startDate,
-            endDate
+            endDate,
+            dates: dateRangeString // Store the display string for the dates question
         }));
 
         setShowCalendar(false);
         setDatesSelected(false);
-        handleAnswer(dateRangeString);
+
+        // Use centralized transition function
+        nextQuestion();
     };
 
     const handleClose = () => {
@@ -187,6 +233,10 @@ const QuestionFlow = ({ isVisible, onComplete, onClose, isCreatingTrip = false, 
             onClose();
             setCurrentQuestionIndex(0);
             setAnswers({});
+            // Reset date state as well
+            setDateRange([{ startDate: null, endDate: null, key: 'selection' }]);
+            setDatesSelected(false);
+            setShowCalendar(false);
             setAnimationState('entering');
         }, 400);
     };
@@ -323,7 +373,10 @@ const QuestionFlow = ({ isVisible, onComplete, onClose, isCreatingTrip = false, 
                                             }}
                                         >
                                             <span className="date-range-text">
-                                                {`${format(dateRange[0].startDate, 'MMM dd, yyyy')} - ${format(dateRange[0].endDate, 'MMM dd, yyyy')}`}
+                                                {dateRange[0].startDate && dateRange[0].endDate
+                                                    ? `${format(dateRange[0].startDate, 'MMM dd, yyyy')} - ${format(dateRange[0].endDate, 'MMM dd, yyyy')}`
+                                                    : 'Select your dates'
+                                                }
                                             </span>
                                             <span className="date-range-icon">📅</span>
                                         </div>
