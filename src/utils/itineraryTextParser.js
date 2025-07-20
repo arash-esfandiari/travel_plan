@@ -9,12 +9,7 @@ import { format, addDays } from 'date-fns';
  */
 export const parseAIRecommendations = (recommendations, startDate, endDate) => {
     try {
-        console.log('🔍 parseAIRecommendations called with:', {
-            recommendationsType: typeof recommendations,
-            startDate,
-            endDate,
-            recommendationsLength: recommendations?.length || 'N/A'
-        });
+
 
         // Parse recommendations if it's a string
         let data = recommendations;
@@ -23,12 +18,6 @@ export const parseAIRecommendations = (recommendations, startDate, endDate) => {
             data = JSON.parse(recommendations);
             console.log('✅ Successfully parsed JSON');
         }
-
-        console.log('📊 Parsed data structure:', {
-            hasData: !!data,
-            hasItinerary: !!(data && data.itinerary),
-            itineraryKeys: data?.itinerary ? Object.keys(data.itinerary) : []
-        });
 
         // Extract itinerary section
         if (!data || !data.itinerary) {
@@ -40,17 +29,13 @@ export const parseAIRecommendations = (recommendations, startDate, endDate) => {
         const parsedItems = [];
         let tempId = 1;
 
-        console.log('🔄 Processing itinerary with keys:', Object.keys(itinerary));
 
         // Process each day in the itinerary
         Object.keys(itinerary).forEach((dayKey, dayIndex) => {
-            console.log(`📅 Processing ${dayKey} (index: ${dayIndex})`);
             const dayData = itinerary[dayKey];
             const dayDate = addDays(new Date(startDate), dayIndex);
             const formattedDate = format(dayDate, 'yyyy-MM-dd');
 
-            console.log(`📅 Day date: ${formattedDate}`);
-            console.log(`📝 Day data:`, dayData);
 
             // Process day_plan content
             if (dayData.day_plan) {
@@ -93,7 +78,6 @@ export const parseAIRecommendations = (recommendations, startDate, endDate) => {
             }
         });
 
-        console.log(`�� Total parsed items before deduplication: ${parsedItems.length}`);
 
         // Deduplicate the results to prevent repetitive entries
         const uniqueItems = [];
@@ -111,7 +95,6 @@ export const parseAIRecommendations = (recommendations, startDate, endDate) => {
             }
         }
 
-        console.log(`✅ Total unique items after deduplication: ${uniqueItems.length}`);
         return uniqueItems;
     } catch (error) {
         console.error('❌ Error parsing AI recommendations:', error);

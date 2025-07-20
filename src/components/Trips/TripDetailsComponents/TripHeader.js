@@ -1,23 +1,32 @@
 // src/components/Trips/TripDetailsComponents/TripHeader.js
 import React from 'react';
+import { useNavigate } from 'react-router-dom';
 
 const TripHeader = ({ trip, loading, onGoBack, onRefresh }) => {
+    const navigate = useNavigate();
+
+    const handleTripSplit = () => {
+        navigate(`/trips/${trip.id}/split`);
+    };
+
     return (
         <div className="trip-header">
-            <div className="header-navigation">
-                <button className="back-button" onClick={onGoBack}>
-                    <span className="back-icon">←</span>
-                    <span className="back-text">Back to Trips</span>
+            <div className="header-nav">
+                <button onClick={onGoBack} className="back-button">
+                    ← Back
                 </button>
-
-                <button
-                    className="refresh-button"
-                    onClick={onRefresh}
-                    disabled={loading}
-                    title="Refresh trip data"
-                >
-                    {loading ? '⏳' : '🔄'}
-                </button>
+                <div className="header-actions">
+                    <button onClick={handleTripSplit} className="trip-split-btn">
+                        💰 Trip Split
+                    </button>
+                    <button
+                        onClick={onRefresh}
+                        className="refresh-button"
+                        disabled={loading}
+                    >
+                        {loading ? '⏳' : '🔄'}
+                    </button>
+                </div>
             </div>
 
             <div className="trip-title-section">

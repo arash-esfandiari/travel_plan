@@ -118,6 +118,42 @@
     text-align: center;
     margin-bottom: 3rem;
     animation: headerSlideIn 0.8s ease-out;
+    padding: 2rem;
+    background: rgba(255, 255, 255, 0.6);
+    backdrop-filter: blur(25px);
+    -webkit-backdrop-filter: blur(25px);
+    border-radius: 25px;
+    box-shadow: 0 20px 50px rgba(0, 0, 0, 0.1),
+        inset 0 1px 2px rgba(255, 255, 255, 0.5);
+    border: 1px solid rgba(255, 255, 255, 0.8);
+    position: relative;
+    overflow: hidden;
+}
+
+.trips-header::before {
+    content: "";
+    position: absolute;
+    top: -50%;
+    left: -50%;
+    width: 200%;
+    height: 200%;
+    background: radial-gradient(
+        circle,
+        rgba(255, 107, 53, 0.15) 0%,
+        rgba(255, 69, 0, 0.05) 30%,
+        transparent 70%
+    );
+    animation: sunbeam 15s linear infinite;
+    z-index: 0;
+}
+
+@keyframes sunbeam {
+    0% {
+        transform: rotate(0deg) scale(1.2);
+    }
+    100% {
+        transform: rotate(360deg) scale(1.2);
+    }
 }
 
 @keyframes headerSlideIn {
@@ -132,60 +168,43 @@
 }
 
 .header-content {
-    background: rgba(255, 255, 255, 0.95);
-    backdrop-filter: blur(20px);
-    border-radius: 25px;
-    padding: 2rem;
-    box-shadow: 0 15px 35px rgba(0, 0, 0, 0.2);
-    border: 2px solid rgba(255, 255, 255, 0.3);
+    background: transparent;
+    backdrop-filter: none;
+    border-radius: 0;
+    padding: 0;
+    box-shadow: none;
+    border: none;
     display: flex;
     justify-content: space-between;
     align-items: center;
+    position: relative;
+    z-index: 1;
+}
+
+.header-content-centered {
+    background: transparent;
+    backdrop-filter: none;
+    border-radius: 0;
+    padding: 0;
+    box-shadow: none;
+    border: none;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    position: relative;
+    z-index: 1;
 }
 
 .header-left {
     flex: 1;
-}
-
-.header-actions {
-    display: flex;
-    align-items: center;
-    gap: 1rem;
-}
-
-.refresh-btn {
-    background: rgba(255, 255, 255, 0.9);
-    border: 2px solid rgba(255, 69, 0, 0.3);
-    border-radius: 50%;
-    width: 50px;
-    height: 50px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    cursor: pointer;
-    transition: all 0.3s ease;
-    font-size: 1.2rem;
-    backdrop-filter: blur(10px);
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-}
-
-.refresh-btn:hover:not(:disabled) {
-    background: rgba(255, 69, 0, 0.1);
-    border-color: rgba(255, 69, 0, 0.5);
-    transform: translateY(-2px) scale(1.05);
-    box-shadow: 0 6px 16px rgba(255, 69, 0, 0.2);
-}
-
-.refresh-btn:disabled {
-    opacity: 0.6;
-    cursor: not-allowed;
-    transform: none;
+    text-align: left;
 }
 
 .header-logo {
     display: flex;
     align-items: center;
-    justify-content: center;
+    justify-content: flex-start;
     gap: 1rem;
     margin-bottom: 1rem;
 }
@@ -213,16 +232,17 @@
     -webkit-text-fill-color: transparent;
     background-clip: text;
     margin: 0;
-    animation: titleGlow 3s ease-in-out infinite;
+    text-shadow: 0 2px 10px rgba(255, 255, 255, 0.5);
+    animation: titleGlow 4s ease-in-out infinite;
 }
 
 @keyframes titleGlow {
     0%,
     100% {
-        filter: drop-shadow(0 0 5px rgba(255, 69, 0, 0.3));
+        filter: drop-shadow(0 0 8px rgba(255, 69, 0, 0.3));
     }
     50% {
-        filter: drop-shadow(0 0 15px rgba(255, 69, 0, 0.6));
+        filter: drop-shadow(0 0 20px rgba(255, 69, 0, 0.5));
     }
 }
 
@@ -233,22 +253,11 @@
     animation: subtitleSlideUp 0.8s ease-out 0.3s both;
 }
 
-@keyframes subtitleSlideUp {
-    0% {
-        opacity: 0;
-        transform: translateY(20px);
-    }
-    100% {
-        opacity: 1;
-        transform: translateY(0);
-    }
-}
-
 /* Create Trip Section */
 .create-trip-section {
     text-align: center;
     margin-bottom: 3rem;
-    animation: createSectionSlideIn 0.8s ease-out 0.5s both;
+    /* animation: createSectionSlideIn 0.8s ease-out 0.5s both; */
 }
 
 @keyframes createSectionSlideIn {
@@ -262,35 +271,26 @@
     }
 }
 
+/* Create Trip Button */
 .create-trip-btn {
     background: linear-gradient(135deg, #ff4500 0%, #ff6b35 100%);
-    color: white;
-    border: none;
-    border-radius: 50px;
-    font-size: 1.2rem;
+    border: 1px solid transparent;
+    border-radius: 20px;
+    padding: 1rem 2rem;
+    font-size: 1.1rem;
     font-weight: 600;
-    font-family: inherit;
+    color: #fff;
     cursor: pointer;
-    transition: all 0.7s cubic-bezier(0.22, 1, 0.36, 1);
-    box-shadow: 0 10px 30px rgba(255, 69, 0, 0.3);
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    box-shadow: 0 8px 25px rgba(255, 69, 0, 0.3);
     display: inline-flex;
     align-items: center;
-    justify-content: center;
-    position: relative;
-    overflow: hidden;
-    width: 60px;
-    height: 60px;
-    padding: 0;
+    gap: 0.75rem;
 }
 
 .create-trip-btn:hover {
-    transform: translateY(-3px) scale(1.05);
-    box-shadow: 0 15px 40px rgba(255, 69, 0, 0.4);
-    width: 280px;
-    border-radius: 50px;
-    gap: 1rem;
-    padding: 0 2rem;
-    transition: all 0.7s cubic-bezier(0.22, 1, 0.36, 1);
+    transform: translateY(-3px) scale(1.03);
+    box-shadow: 0 12px 35px rgba(255, 69, 0, 0.4);
 }
 
 .btn-icon {
@@ -375,15 +375,17 @@
     margin: 0;
 }
 
-/* Empty State */
+/* Empty State Redesign */
 .empty-state {
-    text-align: center;
-    padding: 4rem 2rem;
-    background: rgba(255, 255, 255, 0.95);
-    backdrop-filter: blur(20px);
+    background: rgba(255, 255, 255, 0.6);
+    backdrop-filter: blur(25px);
+    -webkit-backdrop-filter: blur(25px);
     border-radius: 25px;
-    box-shadow: 0 15px 35px rgba(0, 0, 0, 0.2);
-    animation: emptyStateSlideIn 0.8s ease-out;
+    padding: 4rem;
+    box-shadow: 0 20px 50px rgba(0, 0, 0, 0.1),
+        inset 0 1px 2px rgba(255, 255, 255, 0.5);
+    border: 1px solid rgba(255, 255, 255, 0.8);
+    text-align: center;
 }
 
 @keyframes emptyStateSlideIn {
@@ -478,24 +480,25 @@
     }
 }
 
-/* Trip Card */
+/* Trip Card Redesign */
 .trip-card {
-    display: block;
-    background: rgba(255, 255, 255, 0.95);
-    backdrop-filter: blur(20px);
-    border-radius: 20px;
+    background: rgba(255, 255, 255, 0.6);
+    backdrop-filter: blur(25px);
+    -webkit-backdrop-filter: blur(25px);
+    border-radius: 25px;
+    box-shadow: 0 20px 50px rgba(0, 0, 0, 0.1),
+        inset 0 1px 2px rgba(255, 255, 255, 0.5);
+    border: 1px solid rgba(255, 255, 255, 0.8);
     overflow: hidden;
-    box-shadow: 0 15px 35px rgba(0, 0, 0, 0.2);
-    border: 2px solid rgba(255, 255, 255, 0.3);
     transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-    text-decoration: none;
-    color: inherit;
-    position: relative;
+    display: flex;
+    flex-direction: column;
 }
 
 .trip-card:hover {
-    transform: translateY(-10px) scale(1.02);
-    box-shadow: 0 25px 50px rgba(0, 0, 0, 0.3);
+    transform: translateY(-5px) scale(1.02);
+    box-shadow: 0 25px 60px rgba(0, 0, 0, 0.15),
+        inset 0 1px 2px rgba(255, 255, 255, 0.6);
 }
 
 /* Card Image Container */
@@ -545,67 +548,73 @@
     text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
 }
 
-/* Trip Details */
+/* Trip Details Redesign */
 .trip-details {
     padding: 1.5rem;
-}
-
-.trip-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 1rem;
+    position: relative;
+    z-index: 1;
 }
 
 .trip-title {
-    font-size: 1.4rem;
+    font-size: 1.5rem;
     font-weight: 700;
     color: #333;
-    margin: 0;
+    margin: 0 0 1rem;
     background: linear-gradient(135deg, #ff4500 0%, #ff6b35 100%);
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
     background-clip: text;
+    padding-right: 40px; /* Space for the actions button */
 }
 
-.trip-status {
-    background: linear-gradient(135deg, #4caf50 0%, #45a049 100%);
-    color: white;
-    padding: 0.3rem 0.8rem;
-    border-radius: 12px;
-    font-size: 0.8rem;
-    font-weight: 600;
+/* Trip Actions Redesign */
+.trip-actions {
+    position: absolute;
+    top: 1.5rem;
+    right: 1.5rem;
+    z-index: 5;
 }
 
 .trip-info {
     display: flex;
     flex-direction: column;
-    gap: 0.8rem;
+    gap: 1rem;
+    border-top: 1px solid rgba(0, 0, 0, 0.05);
+    padding-top: 1rem;
 }
 
 .info-item {
     display: flex;
     align-items: center;
     gap: 0.8rem;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    padding: 0.5rem;
+    border-radius: 12px;
+}
+
+.info-item:hover {
+    background: rgba(255, 69, 0, 0.05);
+    transform: translateX(5px);
 }
 
 .info-icon {
-    font-size: 1.1rem;
-    opacity: 0.7;
+    font-size: 1.2rem;
+    color: #ff6b35;
+    background: rgba(255, 69, 0, 0.1);
+    border-radius: 50%;
+    width: 36px;
+    height: 36px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
 }
 
 .info-text {
-    font-size: 0.95rem;
-    color: #666;
+    font-size: 1rem;
+    color: #555;
     line-height: 1.4;
-}
-
-/* Trip Actions */
-.trip-actions {
-    position: absolute;
-    top: 1rem;
-    right: 1rem;
-    z-index: 5;
+    font-weight: 500;
 }
 
 /* Responsive Design */
@@ -717,16 +726,17 @@
     background-color: #e03e00;
 }
 
-/* Error State */
+/* Error State Redesign */
 .error-state {
-    text-align: center;
-    padding: 4rem 2rem;
-    background: rgba(255, 245, 245, 0.95);
-    backdrop-filter: blur(20px);
+    background: rgba(255, 229, 229, 0.6);
+    backdrop-filter: blur(25px);
+    -webkit-backdrop-filter: blur(25px);
     border-radius: 25px;
-    box-shadow: 0 15px 35px rgba(255, 0, 0, 0.1);
-    border: 2px solid rgba(255, 69, 0, 0.2);
-    animation: errorStateSlideIn 0.8s ease-out;
+    padding: 4rem;
+    box-shadow: 0 20px 50px rgba(220, 53, 69, 0.1),
+        inset 0 1px 2px rgba(255, 255, 255, 0.5);
+    border: 1px solid rgba(220, 53, 69, 0.3);
+    text-align: center;
 }
 
 @keyframes errorStateSlideIn {
@@ -778,21 +788,21 @@
 }
 
 .retry-btn {
-    background: linear-gradient(135deg, #4caf50 0%, #66bb6a 100%);
-    color: white;
-    border: none;
-    border-radius: 15px;
+    background: linear-gradient(135deg, #dc3545 0%, #c82333 100%);
+    border: 1px solid transparent;
+    border-radius: 20px;
     padding: 1rem 2rem;
     font-size: 1.1rem;
     font-weight: 600;
+    color: #fff;
     cursor: pointer;
-    transition: all 0.3s ease;
-    box-shadow: 0 8px 25px rgba(76, 175, 80, 0.3);
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    box-shadow: 0 8px 25px rgba(220, 53, 69, 0.3);
 }
 
 .retry-btn:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 12px 35px rgba(76, 175, 80, 0.4);
+    transform: translateY(-3px) scale(1.03);
+    box-shadow: 0 12px 35px rgba(220, 53, 69, 0.4);
 }
 
 /* Responsive adjustments for new elements */

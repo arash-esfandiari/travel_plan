@@ -1,0 +1,261 @@
+/* GeneratingTrip.css */
+
+@import url("https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;600;700&display=swap");
+
+.generating-container {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 100vh;
+    background-color: #0c0c1e;
+    font-family: "Montserrat", sans-serif;
+    color: #fff;
+    overflow: hidden;
+    position: relative;
+    text-align: center;
+}
+
+.background-animation {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 0;
+}
+
+.stars,
+.twinkling,
+.clouds {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    width: 100%;
+    height: 100%;
+    display: block;
+}
+
+.stars {
+    background: #0c0c1e
+        url("https://www.transparenttextures.com/patterns/stardust.png") repeat
+        top center;
+    z-index: 1;
+}
+
+.twinkling {
+    background: transparent
+        url("https://www.transparenttextures.com/patterns/twinkles.png") repeat
+        top center;
+    z-index: 2;
+    animation: move-twink-back 200s linear infinite;
+}
+
+.clouds {
+    background: transparent
+        url("https://www.transparenttextures.com/patterns/fog.png") repeat top
+        center;
+    z-index: 3;
+    opacity: 0.4;
+    animation: move-clouds-back 200s linear infinite;
+}
+
+@keyframes move-twink-back {
+    from {
+        background-position: 0 0;
+    }
+    to {
+        background-position: -10000px 5000px;
+    }
+}
+
+@keyframes move-clouds-back {
+    from {
+        background-position: 0 0;
+    }
+    to {
+        background-position: 10000px 0;
+    }
+}
+
+.generating-content {
+    position: relative;
+    z-index: 4;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 2rem;
+    background: rgba(12, 12, 30, 0.2);
+    border-radius: 20px;
+    backdrop-filter: blur(5px);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.globe-container {
+    width: 200px;
+    height: 200px;
+    margin-bottom: 2rem;
+    position: relative;
+    animation: float 6s ease-in-out infinite;
+}
+
+.globe {
+    width: 100%;
+    height: 100%;
+    border-radius: 50%;
+    background: radial-gradient(circle at 30% 30%, #87ceeb, #1e90ff);
+    box-shadow: 0 0 50px rgba(30, 144, 255, 0.7),
+        inset 0 0 20px rgba(0, 0, 0, 0.3);
+    position: relative;
+    overflow: hidden;
+    animation: rotate-globe 20s linear infinite;
+}
+
+.plane {
+    width: 50px;
+    height: 50px;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="white"><path d="M21 16v-2l-8-5V3.5c0-.83-.67-1.5-1.5-1.5S10 2.67 10 3.5V9l-8 5v2l8-2.5V19l-2 1.5V22l3.5-1 3.5 1v-1.5L13 19v-5.5l8 2.5z"/></svg>')
+        no-repeat center center;
+    background-size: contain;
+    animation: fly-around 20s linear infinite;
+}
+
+@keyframes rotate-globe {
+    from {
+        background-position: 0% 50%;
+    }
+    to {
+        background-position: 200% 50%;
+    }
+}
+
+@keyframes fly-around {
+    0% {
+        transform: translate(-50%, -50%) rotate(0deg) translateX(70px)
+            rotate(0deg);
+    }
+    100% {
+        transform: translate(-50%, -50%) rotate(360deg) translateX(70px)
+            rotate(-360deg);
+    }
+}
+
+@keyframes float {
+    0%,
+    100% {
+        transform: translateY(0px);
+    }
+    50% {
+        transform: translateY(-20px);
+    }
+}
+
+.generating-title {
+    font-size: 2.5rem;
+    font-weight: 700;
+    margin-bottom: 2rem;
+    text-shadow: 0 0 15px rgba(255, 255, 255, 0.5);
+    animation: text-flicker 4s linear infinite;
+}
+
+@keyframes text-flicker {
+    0%,
+    18%,
+    22%,
+    25%,
+    53%,
+    57%,
+    100% {
+        text-shadow: 0 0 4px #fff, 0 0 11px #fff, 0 0 19px #fff, 0 0 40px #0ff,
+            0 0 80px #0ff, 0 0 90px #0ff, 0 0 100px #0ff, 0 0 150px #0ff;
+    }
+    20%,
+    24%,
+    55% {
+        text-shadow: none;
+    }
+}
+
+.status-messages {
+    height: 30px; /* Set a fixed height */
+    overflow: hidden;
+    position: relative;
+    margin-bottom: 2rem;
+    width: 300px;
+}
+
+.status-message {
+    position: absolute;
+    width: 100%;
+    text-align: center;
+    opacity: 0;
+    animation: slide-up 12s ease-in-out infinite;
+    font-size: 1.1rem;
+    font-weight: 300;
+    color: #ccc;
+}
+
+.status-message:nth-child(1) {
+    animation-delay: 0s;
+}
+.status-message:nth-child(2) {
+    animation-delay: 3s;
+}
+.status-message:nth-child(3) {
+    animation-delay: 6s;
+}
+.status-message:nth-child(4) {
+    animation-delay: 9s;
+}
+
+@keyframes slide-up {
+    0%,
+    25% {
+        transform: translateY(0);
+        opacity: 1;
+    }
+    30%,
+    100% {
+        transform: translateY(-30px);
+        opacity: 0;
+    }
+}
+
+.progress-bar-container {
+    width: 80%;
+    max-width: 400px;
+    height: 8px;
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 4px;
+    overflow: hidden;
+    margin-bottom: 1.5rem;
+}
+
+.progress-bar {
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, #1e90ff, #87ceeb, #1e90ff);
+    background-size: 200% 200%;
+    border-radius: 4px;
+    animation: progress-animation 2s linear infinite;
+}
+
+@keyframes progress-animation {
+    0% {
+        background-position: 200% 0;
+    }
+    100% {
+        background-position: -200% 0;
+    }
+}
+
+.loading-message {
+    font-size: 1rem;
+    font-weight: 300;
+    color: #999;
+}

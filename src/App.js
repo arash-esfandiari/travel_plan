@@ -12,11 +12,12 @@ import MainPage from './components/Home/MainPage';
 import TripList from './components/Trips/TripList';
 import TripDetails from './components/Trips/TripDetails';
 import TripEdit from './components/Trips/TripEdit';
+import TripSplit from './components/Trips/TripSplit';
 
 function App() {
   return (
     <LoadScript
-      googleMapsApiKey={process.env.REACT_APP_GOOGLE_MAPS_API_KEY}
+      googleMapsApiKey={process.env.REACT_APP_GOOGLE_API_KEY}
       libraries={['places']}
       onLoad={() => console.log('Google Maps API loaded')}
     >
@@ -30,6 +31,7 @@ function App() {
             <Route path="/trips" element={<TripList />} />
             <Route path="/trips/:tripId" element={<TripDetails />} />
             <Route path="/trips/:tripId/edit" element={<TripEdit />} />
+            <Route path="/trips/:tripId/split" element={<TripSplit />} />
             <Route path="*" element={<NotFound />} />
           </Routes>
         </main>

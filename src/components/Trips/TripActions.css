@@ -1,16 +1,15 @@
-/* Trip Actions Styling */
+/* Trip Actions Redesign */
 .trip-actions {
     position: absolute;
-    top: 1rem;
-    right: 1rem;
+    top: 1.5rem;
+    right: 1.5rem;
     z-index: 5;
 }
 
-/* Actions Button */
+/* Actions Button Redesign */
 .actions-btn {
-    background: rgba(255, 255, 255, 0.9);
-    backdrop-filter: blur(10px);
-    border: 2px solid rgba(255, 255, 255, 0.3);
+    background: rgba(255, 69, 0, 0.08);
+    border: 1px solid rgba(255, 69, 0, 0.2);
     border-radius: 50%;
     width: 40px;
     height: 40px;
@@ -18,38 +17,48 @@
     align-items: center;
     justify-content: center;
     cursor: pointer;
-    transition: all 0.3s ease;
-    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
 }
 
 .actions-btn:hover {
+    transform: scale(1.1);
+    background: rgba(255, 69, 0, 0.15);
+    border-color: rgba(255, 69, 0, 0.4);
+    box-shadow: 0 8px 25px rgba(255, 69, 0, 0.2);
+}
+
+.actions-btn.menu-open {
     transform: scale(1.1) rotate(90deg);
-    background: rgba(255, 255, 255, 1);
-    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.3);
+    background: rgba(255, 69, 0, 0.15);
+    border-color: rgba(255, 69, 0, 0.4);
+    box-shadow: 0 8px 25px rgba(255, 69, 0, 0.2);
 }
 
 .actions-icon {
     font-size: 1.2rem;
+    color: #ff4500;
     transition: transform 0.3s ease;
 }
 
-.actions-btn:hover .actions-icon {
-    transform: scale(1.1);
-}
-
-/* Actions Dropdown */
+/* Actions Dropdown Redesign */
 .actions-dropdown {
     position: absolute;
     top: 50px;
     right: 0;
-    background: rgba(255, 255, 255, 0.95);
-    backdrop-filter: blur(20px);
+    background: rgba(255, 255, 255, 0.6);
+    backdrop-filter: blur(25px);
+    -webkit-backdrop-filter: blur(25px);
     border-radius: 15px;
-    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
-    border: 2px solid rgba(255, 255, 255, 0.3);
+    box-shadow: 0 20px 50px rgba(0, 0, 0, 0.1),
+        inset 0 1px 2px rgba(255, 255, 255, 0.5);
+    border: 1px solid rgba(255, 255, 255, 0.8);
     overflow: hidden;
     animation: dropdownSlideIn 0.3s ease-out;
-    min-width: 150px;
+    min-width: 180px;
+    padding: 0.5rem;
 }
 
 @keyframes dropdownSlideIn {
@@ -72,14 +81,16 @@
     background: none;
     width: 100%;
     cursor: pointer;
-    transition: all 0.3s ease;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
     font-family: inherit;
-    font-size: 0.9rem;
+    font-size: 1rem;
     color: #333;
+    border-radius: 10px;
 }
 
 .action-item:hover {
     background: rgba(255, 69, 0, 0.1);
+    transform: translateX(5px);
 }
 
 .action-item:first-child {
@@ -106,7 +117,7 @@
     color: #e74c3c;
 }
 
-/* Confirm Modal */
+/* Confirm Modal Redesign */
 .confirm-overlay {
     position: fixed;
     top: 0;
@@ -132,13 +143,15 @@
 }
 
 .confirm-modal {
-    background: rgba(255, 255, 255, 0.95);
-    backdrop-filter: blur(20px);
+    background: rgba(255, 255, 255, 0.6);
+    backdrop-filter: blur(25px);
+    -webkit-backdrop-filter: blur(25px);
     border-radius: 20px;
-    padding: 2rem;
-    box-shadow: 0 20px 50px rgba(0, 0, 0, 0.3);
-    border: 2px solid rgba(255, 255, 255, 0.3);
-    max-width: 400px;
+    padding: 2.5rem;
+    box-shadow: 0 20px 50px rgba(0, 0, 0, 0.1),
+        inset 0 1px 2px rgba(255, 255, 255, 0.5);
+    border: 1px solid rgba(255, 255, 255, 0.8);
+    max-width: 450px;
     width: 90%;
     text-align: center;
     animation: modalSlideIn 0.3s ease-out;

@@ -24,6 +24,7 @@ const PlanBubble = ({
             draggable
             onDragStart={(e) => onDragStart(e, plan)}
             title={plan.title} // Tooltip is useful for long, truncated titles
+            data-category={plan.category} // Add this for CSS category-specific styling
         >
             <div className="plan-content">
                 <div className="plan-main">

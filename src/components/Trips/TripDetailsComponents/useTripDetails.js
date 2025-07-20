@@ -271,7 +271,6 @@ export const useTripDetails = (tripId) => {
 
             if (newPlansToCreate.length === 0) {
                 console.log('✅ No new plans to add. All items are already in the daily plan.');
-                alert('All recommended plans have already been added.');
                 return [];
             }
 
@@ -404,7 +403,8 @@ export const useTripDetails = (tripId) => {
         const currentDate = new Date(startYear, startMonth - 1, startDay); // Month is 0-indexed
         const endDateObj = new Date(endYear, endMonth - 1, endDay);
 
-        while (currentDate <= endDateObj) {
+        // Exclude the last day by using < instead of <=
+        while (currentDate < endDateObj) {
             const year = currentDate.getFullYear();
             const month = String(currentDate.getMonth() + 1).padStart(2, '0'); // Month is 0-indexed
             const day = String(currentDate.getDate()).padStart(2, '0');
@@ -416,7 +416,7 @@ export const useTripDetails = (tripId) => {
             currentDate.setDate(currentDate.getDate() + 1);
         }
 
-        console.log('🗓️ Final date range:', dates);
+        console.log('🗓️ Final date range (excluding last day):', dates);
         return dates;
     };
 

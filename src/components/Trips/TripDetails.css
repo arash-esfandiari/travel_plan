@@ -132,7 +132,7 @@
     flex: 0 0 45%; /* Wider map */
     position: fixed;
     right: 20px; /* Margin from right side */
-    top: 80px; /* Start closer to navbar */
+    top: 90px; /* Start closer to navbar */
     height: calc(100vh - 100px); /* Taller fixed height */
     width: calc(45% - 40px); /* Account for left and right margins */
     z-index: 10; /* Below navbar but above content */
@@ -150,16 +150,47 @@
     }
 }
 
-/* Header Section */
+/* TripHeader Redesign - Light, Elegant, and Interactive */
 .trip-header {
-    background: rgba(255, 255, 255, 0.95);
-    backdrop-filter: blur(20px);
+    background: rgba(255, 255, 255, 0.6); /* Light glass background */
+    backdrop-filter: blur(25px);
+    -webkit-backdrop-filter: blur(25px);
     border-radius: 25px;
-    padding: 2rem;
+    padding: 2.5rem;
     margin-bottom: 2rem;
-    box-shadow: 0 15px 35px rgba(0, 0, 0, 0.2);
-    border: 2px solid rgba(255, 255, 255, 0.3);
+    box-shadow: 0 20px 50px rgba(0, 0, 0, 0.1),
+        /* Lighter shadow */ inset 0 1px 2px rgba(255, 255, 255, 0.5); /* Light inset highlight */
+    border: 1px solid rgba(255, 255, 255, 0.8);
     animation: headerSlideIn 0.8s ease-out 0.2s both;
+    position: relative;
+    overflow: hidden;
+}
+
+/* Sunbeam background effect */
+.trip-header::before {
+    content: "";
+    position: absolute;
+    top: -50%;
+    left: -50%;
+    width: 200%;
+    height: 200%;
+    background: radial-gradient(
+        circle,
+        rgba(255, 107, 53, 0.15) 0%,
+        /* Light orange tint */ rgba(255, 69, 0, 0.05) 30%,
+        transparent 70%
+    );
+    animation: sunbeam 15s linear infinite;
+    z-index: 0;
+}
+
+@keyframes sunbeam {
+    0% {
+        transform: rotate(0deg) scale(1.2);
+    }
+    100% {
+        transform: rotate(360deg) scale(1.2);
+    }
 }
 
 @keyframes headerSlideIn {
@@ -173,55 +204,59 @@
     }
 }
 
+/* Ensure content is above the sunbeam effect */
+.header-navigation,
+.trip-title-section {
+    position: relative;
+    z-index: 1;
+}
+
 .header-navigation {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    margin-bottom: 1.5rem;
+    margin-bottom: 2rem;
 }
 
+/* Back Button Redesign */
 .back-button {
     display: flex;
     align-items: center;
-    gap: 0.5rem;
-    background: linear-gradient(
-        135deg,
-        rgba(255, 69, 0, 0.1) 0%,
-        rgba(255, 107, 53, 0.1) 100%
-    );
-    border: 2px solid rgba(255, 69, 0, 0.3);
+    gap: 0.75rem;
+    background: rgba(255, 69, 0, 0.08); /* Light orange background */
+    border: 1px solid rgba(255, 69, 0, 0.2);
     border-radius: 15px;
     padding: 0.8rem 1.5rem;
     font-family: inherit;
     font-weight: 600;
-    color: #ff4500;
+    color: #ff4500; /* Orange text */
     cursor: pointer;
-    transition: all 0.3s ease;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
     backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
 }
 
 .back-button:hover {
-    background: linear-gradient(
-        135deg,
-        rgba(255, 69, 0, 0.2) 0%,
-        rgba(255, 107, 53, 0.2) 100%
-    );
-    transform: translateY(-2px) scale(1.02);
-    box-shadow: 0 8px 20px rgba(255, 69, 0, 0.3);
+    background: rgba(255, 69, 0, 0.15);
+    border-color: rgba(255, 69, 0, 0.4);
+    transform: translateY(-2px) scale(1.03);
+    box-shadow: 0 8px 25px rgba(255, 69, 0, 0.2);
 }
 
 .back-icon {
-    font-size: 1.2rem;
+    font-size: 1.3rem;
     transition: transform 0.3s ease;
 }
 
 .back-button:hover .back-icon {
-    transform: translateX(-3px);
+    transform: translateX(-5px);
 }
 
+/* Refresh Button Redesign */
 .refresh-button {
-    background: rgba(255, 255, 255, 0.9);
-    border: 2px solid rgba(255, 69, 0, 0.3);
+    background: rgba(255, 69, 0, 0.08); /* Light orange background */
+    border: 1px solid rgba(255, 69, 0, 0.2);
     border-radius: 50%;
     width: 50px;
     height: 50px;
@@ -229,54 +264,64 @@
     align-items: center;
     justify-content: center;
     cursor: pointer;
-    transition: all 0.3s ease;
-    font-size: 1.2rem;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    font-size: 1.5rem;
+    color: #ff4500; /* Orange icon */
     backdrop-filter: blur(10px);
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    -webkit-backdrop-filter: blur(10px);
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
 }
 
 .refresh-button:hover:not(:disabled) {
-    background: rgba(255, 69, 0, 0.1);
-    border-color: rgba(255, 69, 0, 0.5);
-    transform: translateY(-2px) scale(1.05);
-    box-shadow: 0 6px 16px rgba(255, 69, 0, 0.2);
+    background: rgba(255, 69, 0, 0.15);
+    border-color: rgba(255, 69, 0, 0.4);
+    transform: translateY(-2px) scale(1.05) rotate(90deg);
+    box-shadow: 0 8px 25px rgba(255, 69, 0, 0.2);
 }
 
 .refresh-button:disabled {
     opacity: 0.6;
     cursor: not-allowed;
+    transform: none;
+    animation: none;
 }
 
 .trip-title-section {
     text-align: center;
 }
 
+/* Main Title Redesign */
 .trip-main-title {
-    font-size: 3rem;
+    font-size: 3.5rem;
     font-weight: 700;
     background: linear-gradient(135deg, #ff4500 0%, #ff6b35 100%);
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
     background-clip: text;
     margin: 0 0 0.5rem;
-    animation: titleGlow 3s ease-in-out infinite;
+    text-shadow: 0 2px 10px rgba(255, 255, 255, 0.5); /* Light shadow */
+    animation: titleGlow 4s ease-in-out infinite;
 }
 
 @keyframes titleGlow {
     0%,
     100% {
-        filter: drop-shadow(0 0 5px rgba(255, 69, 0, 0.3));
+        filter: drop-shadow(0 0 8px rgba(255, 69, 0, 0.3));
     }
     50% {
-        filter: drop-shadow(0 0 15px rgba(255, 69, 0, 0.6));
+        filter: drop-shadow(0 0 20px rgba(255, 69, 0, 0.5));
     }
 }
 
+/* Subtitle Redesign */
 .trip-subtitle {
-    font-size: 1.2rem;
-    color: #666;
+    font-size: 1.3rem;
+    color: #666; /* Dark gray for readability */
     margin: 0;
     animation: subtitleSlideUp 0.8s ease-out 0.4s both;
+    font-weight: 400;
+    letter-spacing: 0.5px;
+    text-shadow: none; /* Removed shadow */
 }
 
 @keyframes subtitleSlideUp {
@@ -290,15 +335,30 @@
     }
 }
 
-/* General Info Section */
+/* General Info Section - Glassmorphism */
 .general-info-section {
-    background: rgba(255, 255, 255, 0.95);
-    backdrop-filter: blur(20px);
+    background: rgba(255, 255, 255, 0.6);
+    backdrop-filter: blur(25px);
+    -webkit-backdrop-filter: blur(25px);
     border-radius: 25px;
-    padding: 2rem;
-    box-shadow: 0 15px 35px rgba(0, 0, 0, 0.2);
-    border: 2px solid rgba(255, 255, 255, 0.3);
+    padding: 2.5rem;
+    box-shadow: 0 20px 50px rgba(0, 0, 0, 0.1),
+        inset 0 1px 2px rgba(255, 255, 255, 0.5);
+    border: 1px solid rgba(255, 255, 255, 0.8);
     animation: sectionSlideIn 0.6s ease-out;
+}
+
+/* Daily Plans Section - Glassmorphism */
+.daily-plans-section {
+    background: rgba(255, 255, 255, 0.6);
+    backdrop-filter: blur(25px);
+    -webkit-backdrop-filter: blur(25px);
+    border-radius: 25px;
+    padding: 2.5rem;
+    box-shadow: 0 20px 50px rgba(0, 0, 0, 0.1),
+        inset 0 1px 2px rgba(255, 255, 255, 0.5);
+    border: 1px solid rgba(255, 255, 255, 0.8);
+    animation: sectionSlideIn 0.6s ease-out 0.2s both;
 }
 
 @keyframes sectionSlideIn {
@@ -312,15 +372,21 @@
     }
 }
 
-/* Daily Plans Section */
-.daily-plans-section {
-    background: rgba(255, 255, 255, 0.95);
-    backdrop-filter: blur(20px);
+/* Map Section - Glassmorphism */
+.map-section {
+    background: rgba(255, 255, 255, 0.6);
+    backdrop-filter: blur(25px);
+    -webkit-backdrop-filter: blur(25px);
     border-radius: 25px;
-    padding: 2rem;
-    box-shadow: 0 15px 35px rgba(0, 0, 0, 0.2);
-    border: 2px solid rgba(255, 255, 255, 0.3);
-    animation: sectionSlideIn 0.6s ease-out 0.2s both;
+    padding: 0;
+    box-shadow: 0 20px 50px rgba(0, 0, 0, 0.1),
+        inset 0 1px 2px rgba(255, 255, 255, 0.5);
+    border: 1px solid rgba(255, 255, 255, 0.8);
+    animation: sectionSlideIn 0.6s ease-out 0.4s both;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
 }
 
 .section-header {
@@ -346,20 +412,6 @@
 }
 
 /* Map Section */
-.map-section {
-    background: rgba(255, 255, 255, 0.98);
-    backdrop-filter: blur(20px);
-    border-radius: 25px;
-    padding: 0;
-    box-shadow: 0 15px 35px rgba(0, 0, 0, 0.2);
-    border: 3px solid rgba(255, 69, 0, 0.3);
-    animation: sectionSlideIn 0.6s ease-out 0.4s both;
-    height: 100%;
-    display: flex;
-    flex-direction: column;
-    overflow: hidden; /* Ensure content respects rounded corners */
-}
-
 .map-header {
     text-align: center;
     padding: 1.5rem;
@@ -389,29 +441,88 @@
 .days-container {
     display: flex;
     flex-direction: column;
-    gap: 2rem;
+    gap: 2.5rem;
     margin-bottom: 2rem;
+    padding: 0 0.5rem; /* Add subtle padding for better alignment */
+}
+
+/* Enhanced Daily Plans Section Header */
+.daily-plans-section .section-header {
+    text-align: center;
+    margin-bottom: 2rem;
+    padding: 1.5rem;
+    background: linear-gradient(
+        135deg,
+        rgba(255, 255, 255, 0.8) 0%,
+        rgba(255, 255, 255, 0.6) 100%
+    );
+    border-radius: 20px;
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 69, 0, 0.1);
+    box-shadow: 0 4px 20px rgba(255, 69, 0, 0.05);
+}
+
+.daily-plans-section .section-header h2 {
+    font-size: 2rem;
+    font-weight: 700;
+    background: linear-gradient(135deg, #ff4500 0%, #ff6b35 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    margin: 0 0 0.5rem;
+    text-shadow: none;
+}
+
+.daily-plans-section .drag-hint {
+    font-size: 1rem;
+    color: rgba(255, 69, 0, 0.8);
+    font-weight: 500;
+    margin: 0;
+    padding: 0.5rem 1rem;
+    background: rgba(255, 69, 0, 0.1);
+    border-radius: 15px;
+    display: inline-block;
 }
 
 /* Day Section */
 .day-section {
     background: linear-gradient(
         135deg,
-        rgba(255, 255, 255, 0.9) 0%,
-        rgba(255, 255, 255, 0.7) 100%
+        rgba(255, 255, 255, 0.95) 0%,
+        rgba(255, 255, 255, 0.85) 100%
     );
-    border-radius: 20px;
-    padding: 1.5rem;
-    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+    border-radius: 24px;
+    padding: 2rem;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1), 0 2px 8px rgba(0, 0, 0, 0.05);
     border: 2px solid rgba(255, 69, 0, 0.1);
-    transition: all 0.3s ease;
+    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
     animation: daySlideIn 0.6s ease-out both;
+    backdrop-filter: blur(10px);
+    position: relative;
+    overflow: hidden;
+}
+
+/* Subtle gradient overlay for enhanced depth */
+.day-section::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: linear-gradient(
+        135deg,
+        rgba(255, 69, 0, 0.02) 0%,
+        rgba(255, 107, 53, 0.02) 100%
+    );
+    pointer-events: none;
+    border-radius: inherit;
 }
 
 @keyframes daySlideIn {
     0% {
         opacity: 0;
-        transform: translateY(20px) scale(0.95);
+        transform: translateY(30px) scale(0.95);
     }
     100% {
         opacity: 1;
@@ -439,14 +550,25 @@
     border-color: rgba(255, 69, 0, 0.4);
     background: linear-gradient(
         135deg,
-        rgba(255, 69, 0, 0.05) 0%,
-        rgba(255, 107, 53, 0.05) 100%
+        rgba(255, 69, 0, 0.08) 0%,
+        rgba(255, 107, 53, 0.08) 100%
     );
     transform: scale(1.02);
-    box-shadow: 0 12px 30px rgba(255, 69, 0, 0.2);
+    box-shadow: 0 12px 40px rgba(255, 69, 0, 0.2), 0 4px 12px rgba(0, 0, 0, 0.1);
+    animation: dropZonePulse 2s ease-in-out infinite;
 }
 
-/* Day Header Styles */
+@keyframes dropZonePulse {
+    0%,
+    100% {
+        border-color: rgba(255, 69, 0, 0.4);
+    }
+    50% {
+        border-color: rgba(255, 69, 0, 0.6);
+    }
+}
+
+/* Enhanced Day Header Styles */
 .day-header {
     display: flex;
     justify-content: space-between;
@@ -454,6 +576,7 @@
     margin-bottom: 1.5rem;
     padding-bottom: 1rem;
     border-bottom: 2px solid rgba(255, 69, 0, 0.1);
+    position: relative;
 }
 
 .day-title {
@@ -463,38 +586,51 @@
 }
 
 .day-header h3 {
-    font-size: 1.5rem;
+    font-size: 1.6rem;
     font-weight: 700;
-    color: #333;
+    background: linear-gradient(135deg, #ff4500 0%, #ff6b35 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
     margin: 0;
 }
 
-/* Weather Display Styles */
+/* Enhanced Weather Display Styles */
 .weather-display {
     display: flex;
     align-items: center;
     gap: 0.5rem;
-    background-color: #f0f4f8;
-    padding: 0.5rem 0.75rem;
-    border-radius: 12px;
-    cursor: help; /* To indicate the tooltip on hover */
-    transition: background-color 0.3s ease;
+    background: linear-gradient(135deg, #fff4e6 0%, #ffe8cc 100%);
+    padding: 0.75rem 1rem;
+    border-radius: 16px;
+    cursor: help;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    border: 1px solid rgba(255, 69, 0, 0.1);
+    box-shadow: 0 2px 8px rgba(255, 69, 0, 0.1);
+}
+
+.weather-display:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 16px rgba(255, 69, 0, 0.2);
 }
 
 .weather-display.placeholder {
-    background-color: #e9ecef;
+    background: linear-gradient(135deg, #f1f3f4 0%, #e8eaed 100%);
     cursor: default;
+    border-color: rgba(0, 0, 0, 0.1);
 }
 
 .weather-icon {
-    width: 32px;
-    height: 32px;
+    width: 36px;
+    height: 36px;
+    filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.1));
 }
 
 .weather-temp {
     font-size: 1.1rem;
-    font-weight: 600;
+    font-weight: 700;
     color: #2c3e50;
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
 }
 
 .weather-display.placeholder .weather-icon,
@@ -503,153 +639,353 @@
 }
 
 .day-date {
-    font-size: 1rem;
-    color: #666;
+    font-size: 1.1rem;
+    color: #fff;
     font-weight: 600;
-    background: rgba(255, 69, 0, 0.1);
-    padding: 0.5rem 1rem;
-    border-radius: 15px;
+    background: linear-gradient(135deg, #ff4500 0%, #ff6b35 100%);
+    padding: 0.75rem 1.25rem;
+    border-radius: 20px;
+    box-shadow: 0 4px 12px rgba(255, 69, 0, 0.3);
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
 }
 
-/* Day Plans Container */
+/* Enhanced Day Plans Container */
 .day-plans {
     display: flex;
     flex-wrap: wrap;
-    gap: 0.5rem;
-    min-height: 40px;
+    gap: 0.75rem;
+    min-height: 60px;
+    position: relative;
 }
 
-/* Plan Bubble Styles */
+/* Plan Bubble Styles - Glassy Design */
 .plan-bubble {
-    background: linear-gradient(135deg, #ff4500 0%, #ff6b35 100%);
-    border-radius: 20px; /* Pill shape */
-    width: auto; /* Auto width based on content */
-    height: auto; /* Auto height based on content */
-    min-height: 40px; /* Maintain a minimum height */
-    padding: 0.5rem 1rem; /* Add vertical padding for wrapped text */
+    background: rgba(255, 255, 255, 0.05); /* More see-through base */
+    border-radius: 16px;
+    width: auto;
+    height: auto;
+    min-height: 50px;
+    padding: 0.75rem 1.25rem;
     display: flex;
     justify-content: space-between;
     align-items: center;
-    box-shadow: 0 3px 10px rgba(255, 69, 0, 0.2);
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1), 0 2px 8px rgba(0, 0, 0, 0.05);
     cursor: grab;
-    transition: all 0.2s ease-in-out;
-    border: 1px solid rgba(255, 255, 255, 0.15);
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    border: 1px solid rgba(255, 255, 255, 0.2);
     position: relative;
-    /* No overflow or max-width to let it grow */
+    overflow: hidden;
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+}
+
+/* Subtle glassmorphism effect */
+.plan-bubble::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: linear-gradient(
+        135deg,
+        rgba(255, 255, 255, 0.15) 0%,
+        rgba(255, 255, 255, 0.05) 100%
+    );
+    border-radius: inherit;
+    pointer-events: none;
+}
+
+/* Intensified but still subtle tinted glass for different categories */
+.plan-bubble[data-category="Hotel"] {
+    background: rgba(102, 126, 234, 0.15); /* Intensified from 0.08 */
+    border-color: rgba(102, 126, 234, 0.35);
+}
+
+.plan-bubble[data-category="Restaurant"] {
+    background: rgba(240, 147, 251, 0.15); /* Intensified from 0.08 */
+    border-color: rgba(240, 147, 251, 0.35);
+}
+
+.plan-bubble[data-category="Attraction"] {
+    background: rgba(79, 172, 254, 0.15); /* Intensified from 0.08 */
+    border-color: rgba(79, 172, 254, 0.35);
+}
+
+.plan-bubble[data-category="Activity"] {
+    background: rgba(67, 233, 123, 0.15); /* Intensified from 0.08 */
+    border-color: rgba(67, 233, 123, 0.35);
+}
+
+.plan-bubble[data-category="Transportation"] {
+    background: rgba(250, 112, 154, 0.15); /* Intensified from 0.08 */
+    border-color: rgba(250, 112, 154, 0.35);
+}
+
+.plan-bubble[data-category="Comment"] {
+    background: rgba(168, 237, 234, 0.15); /* Intensified from 0.08 */
+    border-color: rgba(168, 237, 234, 0.35);
 }
 
 .plan-bubble:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 6px 15px rgba(255, 69, 0, 0.3);
+    transform: translateY(-3px) scale(1.02);
+    box-shadow: 0 12px 40px rgba(0, 0, 0, 0.15), 0 4px 12px rgba(0, 0, 0, 0.1);
+    background: rgba(255, 255, 255, 0.1); /* More see-through on hover */
+    border-color: rgba(255, 255, 255, 0.4);
+    animation: gentlePulse 0.6s ease-in-out;
+}
+
+/* Enhanced hover effects for categories - more vibrant but still glassy */
+.plan-bubble[data-category="Hotel"]:hover {
+    background: rgba(102, 126, 234, 0.25); /* Increased from 0.15 */
+    border-color: rgba(102, 126, 234, 0.5);
+}
+
+.plan-bubble[data-category="Restaurant"]:hover {
+    background: rgba(240, 147, 251, 0.25); /* Increased from 0.15 */
+    border-color: rgba(240, 147, 251, 0.5);
+}
+
+.plan-bubble[data-category="Attraction"]:hover {
+    background: rgba(79, 172, 254, 0.25); /* Increased from 0.15 */
+    border-color: rgba(79, 172, 254, 0.5);
+}
+
+.plan-bubble[data-category="Activity"]:hover {
+    background: rgba(67, 233, 123, 0.25); /* Increased from 0.15 */
+    border-color: rgba(67, 233, 123, 0.5);
+}
+
+.plan-bubble[data-category="Transportation"]:hover {
+    background: rgba(250, 112, 154, 0.25); /* Increased from 0.15 */
+    border-color: rgba(250, 112, 154, 0.5);
+}
+
+.plan-bubble[data-category="Comment"]:hover {
+    background: rgba(168, 237, 234, 0.25); /* Increased from 0.15 */
+    border-color: rgba(168, 237, 234, 0.5);
+}
+
+@keyframes gentlePulse {
+    0%,
+    100% {
+        transform: translateY(-3px) scale(1.02);
+    }
+    50% {
+        transform: translateY(-3px) scale(1.04);
+    }
 }
 
 .plan-bubble:active {
     cursor: grabbing;
     transform: scale(1.05);
+    animation: grabEffect 0.2s ease-out;
+}
+
+@keyframes grabEffect {
+    0% {
+        transform: scale(1.02);
+    }
+    50% {
+        transform: scale(1.08);
+    }
+    100% {
+        transform: scale(1.05);
+    }
 }
 
 .plan-bubble.dragging {
-    opacity: 0.8;
+    opacity: 0.9;
     z-index: 1000;
-    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3), 0 8px 20px rgba(0, 0, 0, 0.2);
+    transform: rotate(3deg) scale(1.05);
+    background: rgba(255, 255, 255, 0.3);
+    backdrop-filter: blur(25px);
+    -webkit-backdrop-filter: blur(25px);
+    animation: dragFloat 2s ease-in-out infinite;
+}
+
+@keyframes dragFloat {
+    0%,
+    100% {
+        transform: rotate(3deg) scale(1.05) translateY(0px);
+    }
+    50% {
+        transform: rotate(3deg) scale(1.05) translateY(-5px);
+    }
 }
 
 /* Plan Content */
 .plan-content {
     display: flex;
-    justify-content: space-between; /* Space out icon/title from delete button */
+    justify-content: space-between;
     align-items: center;
-    color: white;
+    color: #1a1a1a; /* Changed to black text */
     width: 100%;
-    gap: 0.5rem; /* Space between icon and text */
+    gap: 0.75rem;
+    z-index: 1;
+    position: relative;
 }
 
 .plan-main {
     display: flex;
     align-items: center;
-    gap: 0.5rem;
-    overflow: hidden; /* For text truncation */
+    gap: 0.75rem;
+    overflow: hidden;
 }
 
 .plan-category {
-    font-size: 1.2rem;
+    font-size: 1.4rem;
     line-height: 1;
-    flex-shrink: 0; /* Prevent icon from shrinking */
+    flex-shrink: 0;
+    filter: drop-shadow(0 1px 2px rgba(0, 0, 0, 0.1));
+    animation: iconBob 3s ease-in-out infinite;
 }
 
-/* Show title and style it */
+@keyframes iconBob {
+    0%,
+    100% {
+        transform: translateY(0px);
+    }
+    50% {
+        transform: translateY(-2px);
+    }
+}
+
+/* Enhanced title styling with black text */
 .plan-activity {
     display: block;
-    font-size: 0.85rem;
-    font-weight: 500;
-    white-space: normal; /* Allow text to wrap */
-    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.2);
-    /* Removed overflow and text-overflow to show full text */
+    font-size: 0.9rem;
+    font-weight: 600;
+    white-space: normal;
+    color: #1a1a1a; /* Black text */
+    text-shadow: 0 1px 2px rgba(255, 255, 255, 0.5); /* Light text shadow for contrast */
+    line-height: 1.3;
+    letter-spacing: 0.3px;
 }
 
 .plan-description {
     display: none;
 }
 
-/* Delete Button */
+/* Enhanced Delete Button */
 .plan-delete-btn {
-    background: rgba(255, 255, 255, 0.15);
+    background: rgba(0, 0, 0, 0.1);
     border: none;
     border-radius: 50%;
-    width: 22px;
-    height: 22px;
+    width: 28px;
+    height: 28px;
     display: flex;
     align-items: center;
     justify-content: center;
-    color: white;
-    font-size: 0.8rem;
+    color: #1a1a1a; /* Black text */
+    font-size: 0.9rem;
     font-weight: bold;
     cursor: pointer;
-    transition: all 0.2s ease;
-    flex-shrink: 0; /* Prevent button from shrinking */
-    opacity: 0.7;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    flex-shrink: 0;
+    opacity: 0;
+    transform: scale(0.8);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
 }
 
 .plan-bubble:hover .plan-delete-btn {
     opacity: 1;
-    background: rgba(255, 255, 255, 0.3);
+    transform: scale(1);
+    background: rgba(0, 0, 0, 0.15);
 }
 
 .plan-delete-btn:hover {
-    background: rgba(220, 20, 60, 1);
-    transform: scale(1.1);
+    background: rgba(220, 53, 69, 0.8);
+    color: white;
+    transform: scale(1.15);
+    box-shadow: 0 4px 15px rgba(220, 53, 69, 0.3);
 }
 
-/* Empty Day State */
+.plan-delete-btn:active {
+    transform: scale(0.95);
+}
+
+/* Subtle shine effect on hover */
+.plan-bubble:hover::after {
+    content: "";
+    position: absolute;
+    top: -50%;
+    left: -50%;
+    width: 200%;
+    height: 200%;
+    background: linear-gradient(
+        45deg,
+        transparent 30%,
+        rgba(255, 255, 255, 0.2) 50%,
+        transparent 70%
+    );
+    transform: rotate(45deg);
+    animation: shine 0.8s ease-in-out;
+}
+
+@keyframes shine {
+    0% {
+        transform: translateX(-100%) translateY(-100%) rotate(45deg);
+    }
+    100% {
+        transform: translateX(100%) translateY(100%) rotate(45deg);
+    }
+}
+
+/* Enhanced Empty Day State */
 .empty-day {
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    padding: 2rem;
+    padding: 2.5rem;
     border: 3px dashed rgba(255, 69, 0, 0.3);
-    border-radius: 15px;
-    background: rgba(255, 69, 0, 0.05);
-    color: #666;
-    transition: all 0.3s ease;
-    min-height: 100px;
+    border-radius: 20px;
+    background: linear-gradient(
+        135deg,
+        rgba(255, 69, 0, 0.05) 0%,
+        rgba(255, 107, 53, 0.05) 100%
+    );
+    color: #667;
+    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    min-height: 120px;
+    backdrop-filter: blur(5px);
 }
 
 .empty-day:hover {
     border-color: rgba(255, 69, 0, 0.5);
-    background: rgba(255, 69, 0, 0.1);
+    background: linear-gradient(
+        135deg,
+        rgba(255, 69, 0, 0.1) 0%,
+        rgba(255, 107, 53, 0.1) 100%
+    );
+    transform: scale(1.02);
 }
 
 .empty-icon {
-    font-size: 2rem;
-    margin-bottom: 0.5rem;
+    font-size: 2.5rem;
+    margin-bottom: 0.75rem;
     opacity: 0.7;
+    animation: floatIcon 3s ease-in-out infinite;
+}
+
+@keyframes floatIcon {
+    0%,
+    100% {
+        transform: translateY(0px);
+    }
+    50% {
+        transform: translateY(-8px);
+    }
 }
 
 .empty-text {
-    font-size: 1rem;
+    font-size: 1.1rem;
     font-weight: 600;
     opacity: 0.8;
+    text-align: center;
 }
 
 /* Add Plan Section */
@@ -1243,18 +1579,19 @@
     }
 }
 
-/* Weather Notice for trips far in the future */
+/* Enhanced Weather Notice */
 .weather-notice {
-    background-color: #e9f5fd;
-    border: 1px solid #b3d7f3;
-    color: #0d6efd;
-    padding: 1rem;
-    border-radius: 8px;
-    margin-bottom: 1.5rem;
+    background: linear-gradient(135deg, #fef3e2 0%, #fcf4dd 100%);
+    border: 1px solid rgba(245, 158, 11, 0.2);
+    border-radius: 16px;
+    padding: 1rem 1.5rem;
+    margin-bottom: 2rem;
     text-align: center;
+    box-shadow: 0 2px 8px rgba(245, 158, 11, 0.1);
 }
 
 .weather-notice p {
     margin: 0;
+    color: #92400e;
     font-weight: 500;
 }

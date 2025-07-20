@@ -169,24 +169,12 @@ const TripList = () => {
             <div className="trips-container">
                 {/* Header Section */}
                 <div className="trips-header">
-                    <div className="header-content">
-                        <div className="header-left">
-                            <div className="header-logo">
-                                <span className="logo-emoji">🗺️</span>
-                                <h1 className="trips-title">Your Adventures</h1>
-                            </div>
-                            <p className="trips-subtitle">All your planned and completed journeys in one place</p>
+                    <div className="header-content-centered">
+                        <div className="header-logo">
+                            <span className="logo-emoji">🗺️</span>
+                            <h1 className="trips-title">Your Adventures</h1>
                         </div>
-                        <div className="header-actions">
-                            <button
-                                className="refresh-btn"
-                                onClick={fetchTrips}
-                                disabled={isLoading}
-                                title="Refresh trips list"
-                            >
-                                {isLoading ? '⏳' : '🔄'}
-                            </button>
-                        </div>
+                        <p className="trips-subtitle">All your planned and completed journeys in one place</p>
                     </div>
                 </div>
 
@@ -248,22 +236,23 @@ const TripList = () => {
                                     className="trip-card-wrapper"
                                     style={{ animationDelay: `${index * 0.1}s` }}
                                 >
-                                    <Link to={`/trips/${trip.id}`} className="trip-card">
+                                    <div
+                                        className="trip-card"
+                                        onClick={() => navigate(`/trips/${trip.id}`)}
+                                        style={{ cursor: 'pointer' }}
+                                    >
                                         <div className="card-image-container">
-                                            <SmartTripImage
-                                                trip={trip}
-                                                alt={trip.trip_name}
-                                                className="trip-image"
-                                            />
+                                            <SmartTripImage trip={trip} alt={trip.trip_name} className="trip-image" />
                                             <div className="card-overlay">
-                                                <span className="view-details">View Details ➤</span>
+                                                <span className="view-details">View Details</span>
                                             </div>
                                         </div>
                                         <div className="trip-details">
-                                            <div className="trip-header">
-                                                <h3 className="trip-title">{trip.trip_name}</h3>
-                                                <span className="trip-status">Active</span>
-                                            </div>
+                                            <TripActions
+                                                trip={trip}
+                                                onDeleted={handleTripDeleted}
+                                            />
+                                            <h3 className="trip-title">{trip.trip_name}</h3>
                                             <div className="trip-info">
                                                 <div className="info-item">
                                                     <span className="info-icon">📅</span>
@@ -271,25 +260,27 @@ const TripList = () => {
                                                         {formatDate(trip.start_date)} - {formatDate(trip.end_date)}
                                                     </span>
                                                 </div>
+                                                <div className="info-item">
+                                                    <span className="info-icon">👥</span>
+                                                    <span className="info-text">{trip.number_of_people} {trip.number_of_people === 1 ? 'Person' : 'People'}</span>
+                                                </div>
                                             </div>
                                         </div>
-                                    </Link>
-                                    <TripActions trip={trip} onDeleted={handleTripDeleted} />
+                                    </div>
                                 </div>
                             ))}
                         </div>
                     )}
                 </div>
-            </div>
 
-            {/* Question Flow Component */}
-            <QuestionFlow
-                isVisible={showQuestionFlow}
-                onComplete={handleQuestionFlowComplete}
-                onClose={handleQuestionFlowClose}
-                isCreatingTrip={isCreatingTrip}
-                creationError={creationError}
-            />
+                <QuestionFlow
+                    isVisible={showQuestionFlow}
+                    onComplete={handleQuestionFlowComplete}
+                    onClose={handleQuestionFlowClose}
+                    isCreatingTrip={isCreatingTrip}
+                    creationError={creationError}
+                />
+            </div>
         </div>
     );
 };

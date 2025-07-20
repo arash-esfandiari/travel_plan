@@ -1,5 +1,5 @@
 // src/components/Trips/TripRecommendations.js
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { parseAIRecommendations } from '../../utils/itineraryTextParser';
 import './TripRecommendations.css';
 
@@ -94,7 +94,7 @@ const parseRecommendations = (rawData) => {
 
         // Look for common section patterns
         const sectionPatterns = [
-            /(?:Day\s*\d+|Budget|Packing|Transportation|Cultural|Safety|Food|Itinerary)[\s:]+([^]*?)(?=(?:Day\s*\d+|Budget|Packing|Transportation|Cultural|Safety|Food|Itinerary)|$)/gi,
+            /(?:Day\s*\d+|Budget|Packing|Transportation|Cultural|Safety|Food)[\s:]+([^]*?)(?=(?:Day\s*\d+|Budget|Packing|Transportation|Cultural|Safety|Food)|$)/gi,
             /(\w+(?:\s+\w+)*):\s*([^]*?)(?=\w+(?:\s+\w+)*:|$)/g,
             /\*\*([^*]+)\*\*\s*([^]*?)(?=\*\*|$)/g  // Markdown bold headers
         ];
@@ -133,51 +133,50 @@ const TripRecommendations = ({ recommendations, trip, onParseToDailyPlans }) => 
 
     const [isParsingLoading, setIsParsingLoading] = useState(false);
     const [parseSuccess, setParseSuccess] = useState(false);
-    const [activeTab, setActiveTab] = useState('itinerary');
+    const [hasAutoParsed, setHasAutoParsed] = useState(false);
+    const [activeTab, setActiveTab] = useState('budget');
 
     const parseResult = parseRecommendations(recommendations);
     const { success, data, method, rawText } = parseResult;
 
-
-    // Check if itinerary exists for parse button
-    const hasItinerary = data && data.itinerary && Object.keys(data.itinerary).length > 0;
-
-    const handleParseToDailyPlans = async () => {
-        if (!trip || !hasItinerary) {
-            console.warn('Missing trip data or itinerary for parsing');
-            return;
-        }
-
-        setIsParsingLoading(true);
-        setParseSuccess(false);
-
-        try {
-            // Parse AI recommendations into daily plan items
-            const parsedItems = parseAIRecommendations(
-                recommendations,
-                trip.start_date,
-                trip.end_date
-            );
-
-            console.log('📋 Parsed items:', parsedItems);
-
-            if (parsedItems.length === 0) {
-                console.warn('No items parsed from recommendations');
+    // Auto-parse recommendations to daily plans when available
+    useEffect(() => {
+        const autoParseToDailyPlans = async () => {
+            if (!trip || hasAutoParsed || !onParseToDailyPlans || !data) {
                 return;
             }
 
-            // Call parent function to handle bulk creation
-            if (onParseToDailyPlans) {
-                await onParseToDailyPlans(parsedItems);
-                setParseSuccess(true);
-                setTimeout(() => setParseSuccess(false), 3000);
+            console.log('🤖 Auto-parsing recommendations to daily plans...');
+            setIsParsingLoading(true);
+
+            try {
+                // Parse AI recommendations into daily plan items
+                const parsedItems = parseAIRecommendations(
+                    recommendations,
+                    trip.start_date,
+                    trip.end_date
+                );
+
+                console.log('📋 Auto-parsed items:', parsedItems);
+
+                if (parsedItems.length > 0) {
+                    // Call parent function to handle bulk creation
+                    await onParseToDailyPlans(parsedItems);
+                    setParseSuccess(true);
+                    setHasAutoParsed(true);
+                    setTimeout(() => setParseSuccess(false), 3000);
+                }
+            } catch (error) {
+                console.error('❌ Error auto-parsing to daily plans:', error);
+            } finally {
+                setIsParsingLoading(false);
             }
-        } catch (error) {
-            console.error('Error parsing to daily plans:', error);
-        } finally {
-            setIsParsingLoading(false);
-        }
-    };
+        };
+
+        // Small delay to ensure all components are loaded
+        const timeoutId = setTimeout(autoParseToDailyPlans, 1000);
+        return () => clearTimeout(timeoutId);
+    }, [trip, data, hasAutoParsed, onParseToDailyPlans, recommendations]);
 
     // Handle different parsing outcomes
     if (!success && method === 'raw_fallback') {
@@ -185,6 +184,18 @@ const TripRecommendations = ({ recommendations, trip, onParseToDailyPlans }) => 
         return (
             <div className="trip-recommendations">
                 <h3>Trip Recommendations</h3>
+                {isParsingLoading && (
+                    <div className="auto-parse-status">
+                        <span className="loading-spinner">⏳</span>
+                        Auto-adding recommendations to your daily plans...
+                    </div>
+                )}
+                {parseSuccess && (
+                    <div className="auto-parse-status success">
+                        <span className="success-icon">✅</span>
+                        Recommendations automatically added to daily plans!
+                    </div>
+                )}
                 <div className="parse-info">
                     <small style={{ color: '#666' }}>
                         ⚠️ Content parsed as text (Method: {method})
@@ -215,7 +226,7 @@ const TripRecommendations = ({ recommendations, trip, onParseToDailyPlans }) => 
     if (!data) {
         return (
             <div className="trip-recommendations">
-                <h3>Trip Recommendations</h3>
+                <h3>🌟 AI Travel Guide</h3>
                 <div className="no-recommendations">
                     <p>No recommendations available at this time.</p>
                     <small style={{ color: '#666' }}>Parse method: {method}</small>
@@ -243,61 +254,28 @@ const TripRecommendations = ({ recommendations, trip, onParseToDailyPlans }) => 
             safety_considerations: { icon: '🛡️', data: data.safety_considerations }
         };
 
-        const hasItineraryData = data.itinerary && typeof data.itinerary === 'object' && Object.keys(data.itinerary).length > 0;
         const availableGeneralSections = Object.keys(generalSections).filter(key => generalSections[key].data);
+
+        // Set default active tab to the first available section
+        if (availableGeneralSections.length > 0 && !availableGeneralSections.includes(activeTab)) {
+            setActiveTab(availableGeneralSections[0]);
+        }
 
         return (
             <div className="recommendations-container">
                 <div className="recommendations-tabs">
-                    {hasItineraryData && (
-                        <button
-                            className={`tab-button ${activeTab === 'itinerary' ? 'active' : ''}`}
-                            onClick={() => setActiveTab('itinerary')}
-                        >
-                            📅 Itinerary
-                        </button>
-                    )}
                     {availableGeneralSections.map(key => (
                         <button
                             key={key}
                             className={`tab-button ${activeTab === key ? 'active' : ''}`}
                             onClick={() => setActiveTab(key)}
                         >
-                            {generalSections[key].icon} {key.replace(/_/g, ' ')}
+                            {generalSections[key].icon} {key.replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase())}
                         </button>
                     ))}
                 </div>
 
                 <div className="recommendations-content">
-                    {activeTab === 'itinerary' && hasItineraryData && (
-                        <div className="tab-pane active">
-                            {/* Day-by-day itinerary */}
-                            <div className="day-recommendations">
-                                {Object.keys(data.itinerary).map(dayKey => {
-                                    const dayData = data.itinerary[dayKey];
-                                    return (
-                                        <div key={dayKey} className="recommendation-item">
-                                            <h5>{dayKey.replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase())}</h5>
-                                            {typeof dayData === 'object' ?
-                                                Object.entries(dayData).map(([subKey, content]) => (
-                                                    <div key={subKey} className="recommendation-detail">
-                                                        <strong>{subKey.replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase())}:</strong>
-                                                        <div style={{ marginTop: '0.5rem' }}>
-                                                            {String(content)}
-                                                        </div>
-                                                    </div>
-                                                )) :
-                                                <div className="recommendation-detail">
-                                                    <div>{String(dayData)}</div>
-                                                </div>
-                                            }
-                                        </div>
-                                    );
-                                })}
-                            </div>
-                        </div>
-                    )}
-
                     {availableGeneralSections.map(key =>
                         activeTab === key && (
                             <div key={key} className="tab-pane active">
@@ -317,31 +295,21 @@ const TripRecommendations = ({ recommendations, trip, onParseToDailyPlans }) => 
     return (
         <div className="trip-recommendations">
             <div className="recommendations-header">
-                <h3>Trip Recommendations</h3>
-                {hasItinerary && (
-                    <button
-                        className={`parse-button ${isParsingLoading ? 'loading' : ''} ${parseSuccess ? 'success' : ''}`}
-                        onClick={handleParseToDailyPlans}
-                        disabled={isParsingLoading || !onParseToDailyPlans}
-                        title="Convert itinerary items to draggable daily plans"
-                    >
+                <h3>🌟 AI Travel Guide</h3>
+                {(isParsingLoading || parseSuccess) && (
+                    <div className={`auto-parse-status ${parseSuccess ? 'success' : ''}`}>
                         {isParsingLoading ? (
                             <>
                                 <span className="loading-spinner">⏳</span>
-                                Parsing...
+                                Auto-adding to daily plans...
                             </>
                         ) : parseSuccess ? (
                             <>
                                 <span className="success-icon">✅</span>
-                                Parsed Successfully!
+                                Added to daily plans!
                             </>
-                        ) : (
-                            <>
-                                <span className="parse-icon">📅</span>
-                                Parse to Daily Plans
-                            </>
-                        )}
-                    </button>
+                        ) : null}
+                    </div>
                 )}
             </div>
             {renderRecommendations()}

@@ -58,7 +58,6 @@ const TripInfo = ({ trip, onParseToDailyPlans }) => {
 
             {trip.recommendations && (
                 <div className="recommendations-section">
-                    <h3>🤖 AI Recommendations</h3>
                     <TripRecommendations
                         recommendations={trip.recommendations}
                         trip={trip}

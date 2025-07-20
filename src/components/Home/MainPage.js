@@ -2,6 +2,7 @@ import React, { useContext, useState, useEffect } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import './MainPage.css';
 import { AuthContext } from '../../context/AuthContext'; // Import AuthContext
+import { createTripFromQuestionFlow } from '../../services/tripService';
 import QuestionFlow from './QuestionFlow';
 
 // Import local images from assets/images/places
@@ -21,6 +22,8 @@ const MainPage = () => {
     const location = useLocation();
     const { user } = useContext(AuthContext); // Access the user from AuthContext
     const [showQuestionFlow, setShowQuestionFlow] = useState(false);
+    const [isCreatingTrip, setIsCreatingTrip] = useState(false);
+    const [creationError, setCreationError] = useState(null);
 
     // Check if we should show question flow after login
     useEffect(() => {
@@ -53,19 +56,88 @@ const MainPage = () => {
         }
     };
 
-    const handleQuestionFlowComplete = (answers, destinationCoords) => {
+    const handleQuestionFlowComplete = async (answers, destinationCoords) => {
         console.log('Question flow completed with answers:', answers);
         console.log('Destination coordinates:', destinationCoords);
-        // Here you can process the answers and navigate accordingly
-        if (user) {
-            navigate('/trips', { state: { answers, destinationCoords } });
-        } else {
+
+        if (!user) {
             navigate('/login', { state: { answers, destinationCoords } });
+            return;
+        }
+
+        setIsCreatingTrip(true);
+        setCreationError(null);
+
+        try {
+            // Handle flexible dates - convert to actual dates if needed
+            let startDate = answers.startDate;
+            let endDate = answers.endDate;
+
+            // If we don't have specific dates (user chose flexible dates), create appropriate dates
+            if (!startDate || !endDate) {
+                const today = new Date();
+                const futureStartDate = new Date(today);
+                futureStartDate.setDate(today.getDate() + 7); // Default to next week
+
+                let duration = 3; // Default duration in days
+
+                // Parse flexible date selection to determine duration
+                if (answers.dates) {
+                    if (answers.dates.includes('1-3 days')) {
+                        duration = 3;
+                    } else if (answers.dates.includes('4-7 days')) {
+                        duration = 7;
+                    } else if (answers.dates.includes('1-2 weeks')) {
+                        duration = 10;
+                    } else if (answers.dates.includes('2+ weeks')) {
+                        duration = 14;
+                    }
+                }
+
+                const futureEndDate = new Date(futureStartDate);
+                futureEndDate.setDate(futureStartDate.getDate() + duration - 1);
+
+                startDate = futureStartDate.toISOString().split('T')[0];
+                endDate = futureEndDate.toISOString().split('T')[0];
+
+                console.log('Using flexible dates - Start:', startDate, 'End:', endDate, 'Duration:', duration);
+            }
+
+            const questionFlowData = {
+                destination: answers.destination,
+                startDate: startDate,
+                endDate: endDate,
+                numberOfPeople: 1, // Default value
+                preferences: answers,
+                travelStyle: answers.travelStyle,
+                budgetRange: answers.budget,
+                interests: answers.interests,
+                latitude: destinationCoords?.lat,
+                longitude: destinationCoords?.lng
+            };
+
+            // Create the trip and get the initial response
+            const newTrip = await createTripFromQuestionFlow(questionFlowData);
+
+            // Close the question flow modal
+            setShowQuestionFlow(false);
+            setIsCreatingTrip(false);
+
+            // Navigate to the trip details page where the loading screen will be shown
+            navigate(`/trips/${newTrip.id}`);
+        } catch (error) {
+            console.error('Error in trip creation:', error);
+            setCreationError('Failed to create trip. Please try again.');
+            setIsCreatingTrip(false);
+            // Don't close the question flow on error, let user try again
         }
     };
 
     const handleQuestionFlowClose = () => {
-        setShowQuestionFlow(false);
+        if (!isCreatingTrip) { // Only allow closing if not creating a trip
+            setShowQuestionFlow(false);
+            setCreationError(null);
+        }
     };
 
     return (
@@ -216,8 +288,8 @@ const MainPage = () => {
                 isVisible={showQuestionFlow}
                 onComplete={handleQuestionFlowComplete}
                 onClose={handleQuestionFlowClose}
-                isCreatingTrip={false}
-                creationError={null}
+                isCreatingTrip={isCreatingTrip}
+                creationError={creationError}
             />
         </div>
     );

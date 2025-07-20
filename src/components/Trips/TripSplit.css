@@ -1,0 +1,1128 @@
+/* TripSplit.css */
+
+.trip-split-container {
+    min-height: 100vh;
+    position: relative;
+    background: linear-gradient(135deg, #74ebd5 0%, #9face6 100%);
+    font-family: "Fredoka", "Comic Sans MS", "Baloo", cursive, sans-serif;
+    padding: 2rem;
+    padding-top: 100px; /* Space for navbar */
+}
+
+/* Header Styling */
+.trip-split-header {
+    background: rgba(255, 255, 255, 0.6);
+    backdrop-filter: blur(25px);
+    -webkit-backdrop-filter: blur(25px);
+    border-radius: 25px;
+    padding: 2rem;
+    margin-bottom: 2rem;
+    box-shadow: 0 20px 50px rgba(0, 0, 0, 0.1);
+    border: 1px solid rgba(255, 255, 255, 0.8);
+}
+
+.header-nav {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1.5rem;
+}
+
+.back-button,
+.refresh-button {
+    background: rgba(255, 69, 0, 0.08);
+    border: 1px solid rgba(255, 69, 0, 0.2);
+    border-radius: 50px;
+    padding: 0.8rem 1.5rem;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    font-family: inherit;
+    font-weight: 500;
+    color: #ff4500;
+    backdrop-filter: blur(10px);
+}
+
+.back-button:hover,
+.refresh-button:hover {
+    background: rgba(255, 69, 0, 0.15);
+    transform: translateY(-2px);
+    box-shadow: 0 8px 25px rgba(255, 69, 0, 0.2);
+}
+
+.header-content {
+    text-align: center;
+}
+
+.split-title {
+    font-size: 3rem;
+    font-weight: 700;
+    background: linear-gradient(135deg, #ff4500 0%, #ff6b35 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    margin: 0 0 0.5rem;
+}
+
+.trip-name {
+    font-size: 1.5rem;
+    font-weight: 600;
+    color: #333;
+    margin: 0 0 0.5rem;
+}
+
+.trip-dates {
+    font-size: 1.1rem;
+    color: #666;
+    margin: 0;
+}
+
+/* Tab Navigation */
+.tab-navigation {
+    display: flex;
+    gap: 1rem;
+    margin-bottom: 2rem;
+    background: rgba(255, 255, 255, 0.4);
+    padding: 0.5rem;
+    border-radius: 15px;
+    backdrop-filter: blur(15px);
+    -webkit-backdrop-filter: blur(15px);
+    border: 1px solid rgba(255, 255, 255, 0.6);
+}
+
+.tab-btn {
+    flex: 1;
+    padding: 1rem 2rem;
+    border: none;
+    border-radius: 10px;
+    background: transparent;
+    color: #666;
+    font-family: inherit;
+    font-weight: 500;
+    font-size: 1.1rem;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.tab-btn.active {
+    background: rgba(255, 69, 0, 0.1);
+    color: #ff4500;
+    box-shadow: 0 4px 15px rgba(255, 69, 0, 0.2);
+}
+
+.tab-btn:hover {
+    background: rgba(255, 69, 0, 0.05);
+    color: #ff4500;
+}
+
+/* Tab Content */
+.tab-content {
+    background: rgba(255, 255, 255, 0.6);
+    backdrop-filter: blur(25px);
+    -webkit-backdrop-filter: blur(25px);
+    border-radius: 20px;
+    padding: 2rem;
+    box-shadow: 0 20px 50px rgba(0, 0, 0, 0.1);
+    border: 1px solid rgba(255, 255, 255, 0.8);
+    min-height: 400px;
+}
+
+/* Loading and Error States */
+.loading-state,
+.error-state {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 4rem 2rem;
+    text-align: center;
+}
+
+.loading-spinner,
+.error-icon {
+    font-size: 3rem;
+    margin-bottom: 1rem;
+    animation: pulse 2s infinite;
+}
+
+@keyframes pulse {
+    0%,
+    100% {
+        opacity: 1;
+    }
+    50% {
+        opacity: 0.5;
+    }
+}
+
+.back-btn {
+    background: rgba(255, 69, 0, 0.1);
+    border: 1px solid rgba(255, 69, 0, 0.3);
+    border-radius: 25px;
+    padding: 0.8rem 2rem;
+    color: #ff4500;
+    font-family: inherit;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    margin-top: 1rem;
+}
+
+.back-btn:hover {
+    background: rgba(255, 69, 0, 0.2);
+    transform: translateY(-2px);
+}
+
+/* Participants Section */
+.participants-section {
+    position: relative;
+}
+
+.section-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 2rem;
+}
+
+.section-header h2 {
+    font-size: 2rem;
+    color: #333;
+    margin: 0;
+}
+
+.add-participant-btn,
+.empty-action-btn {
+    background: rgba(255, 69, 0, 0.1);
+    border: 1px solid rgba(255, 69, 0, 0.3);
+    border-radius: 25px;
+    padding: 0.8rem 1.5rem;
+    color: #ff4500;
+    font-family: inherit;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.add-participant-btn:hover,
+.empty-action-btn:hover {
+    background: rgba(255, 69, 0, 0.2);
+    transform: translateY(-2px);
+    box-shadow: 0 8px 25px rgba(255, 69, 0, 0.2);
+}
+
+/* Error Message */
+.error-message {
+    background: rgba(255, 0, 0, 0.1);
+    border: 1px solid rgba(255, 0, 0, 0.3);
+    border-radius: 10px;
+    padding: 1rem;
+    margin-bottom: 1rem;
+    color: #d32f2f;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.error-icon {
+    font-size: 1.2rem;
+}
+
+/* Modal Styling */
+.add-participant-modal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    z-index: 1000;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.modal-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.5);
+    backdrop-filter: blur(5px);
+}
+
+.modal-content {
+    background: rgba(255, 255, 255, 0.95);
+    backdrop-filter: blur(25px);
+    border-radius: 20px;
+    padding: 2rem;
+    width: 90%;
+    max-width: 500px;
+    position: relative;
+    z-index: 1001;
+    box-shadow: 0 20px 50px rgba(0, 0, 0, 0.2);
+    border: 1px solid rgba(255, 255, 255, 0.8);
+}
+
+.modal-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1.5rem;
+}
+
+.modal-header h3 {
+    margin: 0;
+    color: #333;
+    font-size: 1.5rem;
+}
+
+.close-btn {
+    background: none;
+    border: none;
+    font-size: 1.5rem;
+    cursor: pointer;
+    color: #666;
+    padding: 0.5rem;
+    border-radius: 50%;
+    transition: all 0.3s ease;
+}
+
+.close-btn:hover {
+    background: rgba(255, 0, 0, 0.1);
+    color: #d32f2f;
+}
+
+/* Add Method Selector */
+.add-method-selector {
+    display: flex;
+    gap: 1rem;
+    margin-bottom: 1.5rem;
+}
+
+.method-option {
+    flex: 1;
+    padding: 1rem;
+    border: 2px solid rgba(255, 69, 0, 0.2);
+    border-radius: 10px;
+    background: rgba(255, 255, 255, 0.5);
+    cursor: pointer;
+    transition: all 0.3s ease;
+    text-align: center;
+    font-weight: 500;
+    color: #666;
+}
+
+.method-option.active {
+    border-color: #ff4500;
+    background: rgba(255, 69, 0, 0.1);
+    color: #ff4500;
+}
+
+.method-option input[type="radio"] {
+    display: none;
+}
+
+/* Form Groups */
+.form-group {
+    margin-bottom: 1rem;
+}
+
+.form-group input {
+    width: 100%;
+    padding: 1rem;
+    border: 2px solid rgba(255, 69, 0, 0.2);
+    border-radius: 10px;
+    background: rgba(255, 255, 255, 0.8);
+    font-family: inherit;
+    font-size: 1rem;
+    transition: border-color 0.3s ease;
+}
+
+.form-group input:focus {
+    outline: none;
+    border-color: #ff4500;
+}
+
+/* Modal Actions */
+.modal-actions {
+    display: flex;
+    gap: 1rem;
+    justify-content: flex-end;
+    margin-top: 2rem;
+}
+
+.cancel-btn,
+.add-btn {
+    padding: 0.8rem 1.5rem;
+    border-radius: 25px;
+    font-family: inherit;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.cancel-btn {
+    background: rgba(128, 128, 128, 0.1);
+    border: 1px solid rgba(128, 128, 128, 0.3);
+    color: #666;
+}
+
+.cancel-btn:hover {
+    background: rgba(128, 128, 128, 0.2);
+}
+
+.add-btn {
+    background: rgba(255, 69, 0, 0.1);
+    border: 1px solid rgba(255, 69, 0, 0.3);
+    color: #ff4500;
+}
+
+.add-btn:hover:not(:disabled) {
+    background: rgba(255, 69, 0, 0.2);
+    transform: translateY(-2px);
+}
+
+.add-btn:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+}
+
+/* Participants List */
+.participants-list {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+
+.empty-state {
+    text-align: center;
+    padding: 4rem 2rem;
+}
+
+.empty-icon {
+    font-size: 4rem;
+    margin-bottom: 1rem;
+}
+
+.empty-state h3 {
+    color: #333;
+    margin-bottom: 0.5rem;
+}
+
+.empty-state p {
+    color: #666;
+    margin-bottom: 2rem;
+}
+
+/* Participant Cards */
+.participant-card {
+    background: rgba(255, 255, 255, 0.4);
+    backdrop-filter: blur(15px);
+    border-radius: 15px;
+    padding: 1.5rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border: 1px solid rgba(255, 255, 255, 0.6);
+    transition: all 0.3s ease;
+}
+
+.participant-card:hover {
+    background: rgba(255, 255, 255, 0.6);
+    transform: translateY(-2px);
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+}
+
+.participant-info {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+}
+
+.participant-avatar {
+    font-size: 2rem;
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+    background: rgba(255, 69, 0, 0.1);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: 2px solid rgba(255, 69, 0, 0.2);
+}
+
+.participant-details h4 {
+    margin: 0 0 0.25rem;
+    color: #333;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.owner-badge {
+    background: #ff4500;
+    color: white;
+    padding: 0.2rem 0.5rem;
+    border-radius: 10px;
+    font-size: 0.7rem;
+    font-weight: 500;
+}
+
+.participant-contact {
+    margin: 0 0 0.25rem;
+    color: #666;
+    font-size: 0.9rem;
+}
+
+.username {
+    color: #ff4500;
+    font-weight: 500;
+    margin-left: 0.5rem;
+}
+
+.participant-joined {
+    margin: 0;
+    color: #888;
+    font-size: 0.8rem;
+}
+
+.remove-btn {
+    background: rgba(255, 0, 0, 0.1);
+    border: 1px solid rgba(255, 0, 0, 0.3);
+    border-radius: 50%;
+    width: 40px;
+    height: 40px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    font-size: 1.1rem;
+}
+
+.remove-btn:hover {
+    background: rgba(255, 0, 0, 0.2);
+    transform: scale(1.1);
+}
+
+/* Trip Header Updates */
+.header-nav {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1.5rem;
+}
+
+.header-actions {
+    display: flex;
+    gap: 1rem;
+    align-items: center;
+}
+
+.trip-split-btn {
+    background: rgba(255, 69, 0, 0.1);
+    border: 1px solid rgba(255, 69, 0, 0.3);
+    border-radius: 25px;
+    padding: 0.8rem 1.5rem;
+    color: #ff4500;
+    font-family: inherit;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    backdrop-filter: blur(10px);
+}
+
+.trip-split-btn:hover {
+    background: rgba(255, 69, 0, 0.2);
+    transform: translateY(-2px);
+    box-shadow: 0 8px 25px rgba(255, 69, 0, 0.2);
+}
+
+/* Expenses Section Styling */
+.expenses-section {
+    position: relative;
+}
+
+.add-expense-btn,
+.calculate-btn {
+    background: rgba(255, 69, 0, 0.1);
+    border: 1px solid rgba(255, 69, 0, 0.3);
+    border-radius: 25px;
+    padding: 0.8rem 1.5rem;
+    color: #ff4500;
+    font-family: inherit;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.add-expense-btn:hover,
+.calculate-btn:hover:not(:disabled) {
+    background: rgba(255, 69, 0, 0.2);
+    transform: translateY(-2px);
+    box-shadow: 0 8px 25px rgba(255, 69, 0, 0.2);
+}
+
+.calculate-btn:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+}
+
+/* Add/Edit Expense Modal */
+.add-expense-modal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    z-index: 1000;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.add-expense-modal .modal-content {
+    max-width: 600px;
+    max-height: 90vh;
+    overflow-y: auto;
+}
+
+/* Form Row Layout */
+.form-row {
+    display: flex;
+    gap: 1rem;
+    margin-bottom: 1rem;
+}
+
+.form-row .form-group {
+    flex: 1;
+    margin-bottom: 0;
+}
+
+.form-group label {
+    display: block;
+    margin-bottom: 0.5rem;
+    font-weight: 500;
+    color: #333;
+}
+
+.form-group select,
+.form-group textarea {
+    width: 100%;
+    padding: 1rem;
+    border: 2px solid rgba(255, 69, 0, 0.2);
+    border-radius: 10px;
+    background: rgba(255, 255, 255, 0.8);
+    font-family: inherit;
+    font-size: 1rem;
+    transition: border-color 0.3s ease;
+    resize: vertical;
+}
+
+.form-group select:focus,
+.form-group textarea:focus {
+    outline: none;
+    border-color: #ff4500;
+}
+
+/* Expense Type Selector */
+.expense-type-selector {
+    display: flex;
+    gap: 0.5rem;
+    margin-top: 0.5rem;
+}
+
+.type-option {
+    flex: 1;
+    padding: 0.8rem;
+    border: 2px solid rgba(255, 69, 0, 0.2);
+    border-radius: 10px;
+    background: rgba(255, 255, 255, 0.5);
+    cursor: pointer;
+    transition: all 0.3s ease;
+    text-align: center;
+    font-weight: 500;
+    color: #666;
+    font-size: 0.9rem;
+}
+
+.type-option.active {
+    border-color: #ff4500;
+    background: rgba(255, 69, 0, 0.1);
+    color: #ff4500;
+}
+
+.type-option input[type="radio"] {
+    display: none;
+}
+
+/* Custom Split Section */
+.custom-split-section {
+    background: rgba(255, 255, 255, 0.3);
+    border-radius: 10px;
+    padding: 1rem;
+    margin-top: 1rem;
+}
+
+.split-inputs {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    margin-top: 0.5rem;
+}
+
+.split-input-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 1rem;
+}
+
+.participant-name {
+    font-weight: 500;
+    color: #333;
+}
+
+.split-input-row input {
+    width: 100px;
+    padding: 0.5rem;
+    border: 1px solid rgba(255, 69, 0, 0.3);
+    border-radius: 5px;
+    background: rgba(255, 255, 255, 0.8);
+}
+
+.split-summary {
+    margin-top: 0.5rem;
+    text-align: right;
+    color: #666;
+}
+
+.save-btn {
+    background: rgba(255, 69, 0, 0.1);
+    border: 1px solid rgba(255, 69, 0, 0.3);
+    color: #ff4500;
+}
+
+.save-btn:hover:not(:disabled) {
+    background: rgba(255, 69, 0, 0.2);
+    transform: translateY(-2px);
+}
+
+/* Expenses List */
+.expenses-list {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+
+.expense-card {
+    background: rgba(255, 255, 255, 0.4);
+    backdrop-filter: blur(15px);
+    border-radius: 15px;
+    padding: 1.5rem;
+    border: 1px solid rgba(255, 255, 255, 0.6);
+    transition: all 0.3s ease;
+    position: relative;
+}
+
+.expense-card:hover {
+    background: rgba(255, 255, 255, 0.6);
+    transform: translateY(-2px);
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+}
+
+.expense-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1rem;
+}
+
+.expense-category {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.category-icon {
+    font-size: 1.5rem;
+}
+
+.category-name {
+    font-weight: 500;
+    color: #666;
+}
+
+.expense-amount {
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: #ff4500;
+}
+
+.expense-title {
+    margin: 0 0 0.5rem;
+    color: #333;
+    font-size: 1.2rem;
+}
+
+.expense-description {
+    margin: 0 0 1rem;
+    color: #666;
+    font-size: 0.9rem;
+}
+
+.expense-meta {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1rem;
+    align-items: center;
+    font-size: 0.9rem;
+    color: #888;
+}
+
+.expense-type {
+    padding: 0.2rem 0.5rem;
+    border-radius: 10px;
+    font-size: 0.8rem;
+    font-weight: 500;
+}
+
+.expense-type.personal {
+    background: rgba(128, 128, 128, 0.2);
+    color: #666;
+}
+
+.expense-type.group {
+    background: rgba(0, 128, 0, 0.2);
+    color: #006400;
+}
+
+.expense-type.shared {
+    background: rgba(255, 165, 0, 0.2);
+    color: #ff8c00;
+}
+
+.expense-actions {
+    position: absolute;
+    top: 1rem;
+    right: 1rem;
+    display: flex;
+    gap: 0.5rem;
+}
+
+.edit-btn,
+.delete-btn {
+    background: rgba(255, 255, 255, 0.8);
+    border: 1px solid rgba(0, 0, 0, 0.1);
+    border-radius: 50%;
+    width: 35px;
+    height: 35px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    font-size: 1rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.edit-btn:hover {
+    background: rgba(255, 165, 0, 0.2);
+    transform: scale(1.1);
+}
+
+.delete-btn:hover {
+    background: rgba(255, 0, 0, 0.2);
+    transform: scale(1.1);
+}
+
+/* Settlements Section Styling */
+.settlements-section {
+    position: relative;
+}
+
+.balances-summary {
+    margin-bottom: 2rem;
+}
+
+.balances-summary h3 {
+    color: #333;
+    margin-bottom: 1rem;
+}
+
+.balances-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 1rem;
+}
+
+.balance-card {
+    background: rgba(255, 255, 255, 0.4);
+    backdrop-filter: blur(15px);
+    border-radius: 15px;
+    padding: 1.5rem;
+    border: 1px solid rgba(255, 255, 255, 0.6);
+    transition: all 0.3s ease;
+}
+
+.balance-card:hover {
+    background: rgba(255, 255, 255, 0.6);
+    transform: translateY(-2px);
+}
+
+.balance-participant {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    margin-bottom: 1rem;
+}
+
+.balance-amount {
+    font-size: 1.5rem;
+    font-weight: 700;
+    text-align: center;
+    margin-bottom: 1rem;
+}
+
+.balance-amount.positive {
+    color: #28a745;
+}
+
+.balance-amount.negative {
+    color: #dc3545;
+}
+
+.balance-amount.neutral {
+    color: #6c757d;
+}
+
+.balance-details {
+    display: flex;
+    justify-content: space-between;
+    font-size: 0.9rem;
+    color: #666;
+}
+
+.balance-detail {
+    display: flex;
+    flex-direction: column;
+    text-align: center;
+}
+
+/* Settlements Cards */
+.settlements-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1.5rem;
+}
+
+.settlements-summary {
+    font-weight: 500;
+    color: #ff4500;
+}
+
+.settlement-card {
+    background: rgba(255, 255, 255, 0.4);
+    backdrop-filter: blur(15px);
+    border-radius: 15px;
+    padding: 2rem;
+    margin-bottom: 1rem;
+    border: 1px solid rgba(255, 255, 255, 0.6);
+    transition: all 0.3s ease;
+}
+
+.settlement-card.settled {
+    background: rgba(40, 167, 69, 0.1);
+    border-color: rgba(40, 167, 69, 0.3);
+}
+
+.settlement-card.pending {
+    background: rgba(255, 193, 7, 0.1);
+    border-color: rgba(255, 193, 7, 0.3);
+}
+
+.settlement-participants {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 1rem;
+}
+
+.participant {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    flex: 1;
+}
+
+.participant h4 {
+    margin: 0;
+    color: #333;
+}
+
+.participant p {
+    margin: 0;
+    color: #666;
+    font-size: 0.9rem;
+}
+
+.settlement-arrow {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin: 0 2rem;
+    position: relative;
+}
+
+.arrow-line {
+    width: 60px;
+    height: 2px;
+    background: #ff4500;
+    margin-bottom: 0.5rem;
+}
+
+.arrow-head {
+    font-size: 1.5rem;
+    color: #ff4500;
+    margin-bottom: 0.5rem;
+}
+
+.settlement-amount {
+    font-weight: 700;
+    color: #ff4500;
+    font-size: 1.1rem;
+}
+
+.settlement-status {
+    text-align: center;
+}
+
+.status-settled {
+    color: #28a745;
+    font-weight: 500;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+}
+
+.mark-paid-btn {
+    background: rgba(40, 167, 69, 0.1);
+    border: 1px solid rgba(40, 167, 69, 0.3);
+    border-radius: 25px;
+    padding: 0.8rem 1.5rem;
+    color: #28a745;
+    font-family: inherit;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.mark-paid-btn:hover {
+    background: rgba(40, 167, 69, 0.2);
+    transform: translateY(-2px);
+}
+
+.all-settled {
+    text-align: center;
+    padding: 3rem 2rem;
+    background: rgba(40, 167, 69, 0.1);
+    border-radius: 15px;
+    border: 1px solid rgba(40, 167, 69, 0.3);
+}
+
+.celebration-icon {
+    font-size: 4rem;
+    margin-bottom: 1rem;
+}
+
+.all-settled h3 {
+    color: #28a745;
+    margin-bottom: 0.5rem;
+}
+
+.all-settled p {
+    color: #666;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .trip-split-container {
+        padding: 1rem;
+        padding-top: 80px;
+    }
+
+    .tab-navigation {
+        flex-direction: column;
+        gap: 0.5rem;
+    }
+
+    .header-nav {
+        flex-direction: column;
+        gap: 1rem;
+    }
+
+    .header-actions {
+        justify-content: center;
+    }
+
+    .participant-card {
+        flex-direction: column;
+        text-align: center;
+        gap: 1rem;
+    }
+
+    .add-method-selector {
+        flex-direction: column;
+    }
+
+    .modal-actions {
+        flex-direction: column;
+    }
+
+    .form-row {
+        flex-direction: column;
+        gap: 0;
+    }
+
+    .form-row .form-group {
+        margin-bottom: 1rem;
+    }
+
+    .expense-type-selector {
+        flex-direction: column;
+        gap: 0.5rem;
+    }
+
+    .expense-actions {
+        position: static;
+        justify-content: center;
+        margin-top: 1rem;
+    }
+
+    .expense-meta {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 0.5rem;
+    }
+
+    .balances-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .settlement-participants {
+        flex-direction: column;
+        gap: 1rem;
+    }
+
+    .settlement-arrow {
+        margin: 1rem 0;
+        transform: rotate(90deg);
+    }
+
+    .split-inputs {
+        gap: 1rem;
+    }
+
+    .split-input-row {
+        flex-direction: column;
+        gap: 0.5rem;
+        text-align: center;
+    }
+}
