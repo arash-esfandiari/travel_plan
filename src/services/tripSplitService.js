@@ -1,6 +1,12 @@
 // src/services/tripSplitService.js
 import api from './api';
 
+// User trips API
+export const getUserParticipatingTrips = async () => {
+    const response = await api.get('/api/trip-split/user/trips');
+    return response.data;
+};
+
 // Participants API
 export const addParticipant = async (tripId, participantData) => {
     const response = await api.post(`/api/trip-split/trips/${tripId}/participants`, participantData);

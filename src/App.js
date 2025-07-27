@@ -13,6 +13,7 @@ import TripList from './components/Trips/TripList';
 import TripDetails from './components/Trips/TripDetails';
 import TripEdit from './components/Trips/TripEdit';
 import TripSplit from './components/Trips/TripSplit';
+import TripSplitPage from './components/TripSplit/TripSplitPage';
 
 function App() {
   return (
@@ -29,6 +30,7 @@ function App() {
             <Route path="/login" element={<Login />} />
             <Route path="/signup" element={<Signup />} />
             <Route path="/trips" element={<TripList />} />
+            <Route path="/trip-split" element={<TripSplitPage />} />
             <Route path="/trips/:tripId" element={<TripDetails />} />
             <Route path="/trips/:tripId/edit" element={<TripEdit />} />
             <Route path="/trips/:tripId/split" element={<TripSplit />} />

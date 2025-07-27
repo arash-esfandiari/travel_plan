@@ -55,6 +55,7 @@ const Header = () => {
                 {user ? (
                     <>
                         <Link to="/trips">My Trips</Link>
+                        <Link to="/trip-split">💰 Split</Link>
                         <div className="user-dropdown">
                             <button
                                 className="user-name"
