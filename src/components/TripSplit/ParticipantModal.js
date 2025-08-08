@@ -4,10 +4,7 @@ import { addParticipant } from '../../services/tripSplitService';
 
 const ParticipantModal = ({ trip, onClose }) => {
     const [submitting, setSubmitting] = useState(false);
-    const [formData, setFormData] = useState({
-        email: '',
-        name: ''
-    });
+    const [formData, setFormData] = useState({ identifier: '' });
 
     const handleInputChange = (e) => {
         const { name, value } = e.target;
@@ -19,14 +16,17 @@ const ParticipantModal = ({ trip, onClose }) => {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
-        if (!formData.email || !formData.name) {
-            alert('Please fill in all required fields');
+        if (!formData.identifier) {
+            alert("Provide an email or a username");
             return;
         }
 
         setSubmitting(true);
         try {
-            await addParticipant(trip.id, formData);
+            const value = (formData.identifier || '').trim();
+            const isEmail = /.+@.+\..+/.test(value);
+            const payload = isEmail ? { email: value } : { username: value };
+            await addParticipant(trip.id, payload);
             onClose(); // This will trigger refresh in parent
         } catch (error) {
             console.error('Error adding participant:', error);
@@ -55,30 +55,16 @@ const ParticipantModal = ({ trip, onClose }) => {
                     </div>
 
                     <div className="form-group">
-                        <label>Friend's Name *</label>
+                        <label>Email or Username</label>
                         <input
                             type="text"
-                            name="name"
-                            value={formData.name}
+                            name="identifier"
+                            value={formData.identifier}
                             onChange={handleInputChange}
-                            placeholder="Enter their name"
+                            placeholder="Enter email or username"
                             required
                         />
-                    </div>
-
-                    <div className="form-group">
-                        <label>Friend's Email *</label>
-                        <input
-                            type="email"
-                            name="email"
-                            value={formData.email}
-                            onChange={handleInputChange}
-                            placeholder="Enter their email address"
-                            required
-                        />
-                        <small className="form-hint">
-                            If they don't have an account, they'll be invited to create one.
-                        </small>
+                        <small className="form-hint">We’ll detect whether it’s an email or a username.</small>
                     </div>
 
                     <div className="modal-actions">

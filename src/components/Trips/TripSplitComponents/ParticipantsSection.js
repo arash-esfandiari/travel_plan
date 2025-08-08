@@ -6,12 +6,7 @@ const ParticipantsSection = ({ tripId, refreshTrigger, onDataChange }) => {
     const [participants, setParticipants] = useState([]);
     const [loading, setLoading] = useState(true);
     const [showAddForm, setShowAddForm] = useState(false);
-    const [addMethod, setAddMethod] = useState('email'); // 'email' or 'username'
-    const [formData, setFormData] = useState({
-        email: '',
-        username: '',
-        display_name: ''
-    });
+    const [formData, setFormData] = useState({ identifier: '' });
     const [adding, setAdding] = useState(false);
     const [error, setError] = useState(null);
 
@@ -39,20 +34,14 @@ const ParticipantsSection = ({ tripId, refreshTrigger, onDataChange }) => {
         setError(null);
 
         try {
-            const participantData = {
-                display_name: formData.display_name
-            };
-
-            if (addMethod === 'email') {
-                participantData.email = formData.email;
-            } else {
-                participantData.username = formData.username;
-            }
+            const value = (formData.identifier || '').trim();
+            const isEmail = /.+@.+\..+/.test(value);
+            const participantData = isEmail ? { email: value } : { username: value };
 
             await addParticipant(tripId, participantData);
 
             // Reset form
-            setFormData({ email: '', username: '', display_name: '' });
+            setFormData({ identifier: '' });
             setShowAddForm(false);
 
             // Refresh data
@@ -82,7 +71,7 @@ const ParticipantsSection = ({ tripId, refreshTrigger, onDataChange }) => {
     };
 
     const resetForm = () => {
-        setFormData({ email: '', username: '', display_name: '' });
+        setFormData({ identifier: '' });
         setShowAddForm(false);
         setError(null);
     };
@@ -128,57 +117,18 @@ const ParticipantsSection = ({ tripId, refreshTrigger, onDataChange }) => {
                         </div>
 
                         <form onSubmit={handleAddParticipant}>
-                            <div className="add-method-selector">
-                                <label className={`method-option ${addMethod === 'email' ? 'active' : ''}`}>
-                                    <input
-                                        type="radio"
-                                        name="addMethod"
-                                        value="email"
-                                        checked={addMethod === 'email'}
-                                        onChange={(e) => setAddMethod(e.target.value)}
-                                    />
-                                    📧 Add by Email
-                                </label>
-                                <label className={`method-option ${addMethod === 'username' ? 'active' : ''}`}>
-                                    <input
-                                        type="radio"
-                                        name="addMethod"
-                                        value="username"
-                                        checked={addMethod === 'username'}
-                                        onChange={(e) => setAddMethod(e.target.value)}
-                                    />
-                                    👤 Add by Username
-                                </label>
-                            </div>
-
-                            <div className="form-group">
-                                {addMethod === 'email' ? (
-                                    <input
-                                        type="email"
-                                        placeholder="friend@example.com"
-                                        value={formData.email}
-                                        onChange={(e) => setFormData({ ...formData, email: e.target.value })}
-                                        required
-                                    />
-                                ) : (
-                                    <input
-                                        type="text"
-                                        placeholder="username"
-                                        value={formData.username}
-                                        onChange={(e) => setFormData({ ...formData, username: e.target.value })}
-                                        required
-                                    />
-                                )}
-                            </div>
-
                             <div className="form-group">
                                 <input
                                     type="text"
-                                    placeholder="Display name (optional)"
-                                    value={formData.display_name}
-                                    onChange={(e) => setFormData({ ...formData, display_name: e.target.value })}
+                                    placeholder="Enter email or username"
+                                    value={formData.identifier}
+                                    onChange={(e) => setFormData({ identifier: e.target.value })}
+                                    required
                                 />
+                                <small className="form-hint">We’ll detect whether it’s an email or a username.</small>
                             </div>
+
+                            {/* No display name needed */}
 
                             <div className="modal-actions">
                                 <button type="button" onClick={resetForm} className="cancel-btn">
