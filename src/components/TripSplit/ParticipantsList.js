@@ -12,8 +12,23 @@ const ParticipantsList = ({ participants, tripId, tripOwner, onRefresh }) => {
         );
     }
 
+    // Sort by owner first, then name
+    const others = participants
+        .filter(p => p.username !== tripOwner)
+        .slice()
+        .sort((a, b) => {
+            const an = `${a.first_name || ''} ${a.last_name || ''}`.trim().toLowerCase();
+            const bn = `${b.first_name || ''} ${b.last_name || ''}`.trim().toLowerCase();
+            return an.localeCompare(bn);
+        });
+
     return (
         <div className="participants-list">
+            <div className="list-header">
+                <div className="list-title">People</div>
+                <div className="list-total">{participants.length} total</div>
+            </div>
+
             {/* Trip Owner */}
             <div className="participant-item owner">
                 <div className="participant-avatar">👑</div>
@@ -25,21 +40,23 @@ const ParticipantsList = ({ participants, tripId, tripOwner, onRefresh }) => {
             </div>
 
             {/* Other Participants */}
-            {participants.map((participant) => (
-                <div key={participant.id} className="participant-item">
+            {others.map((participant) => (
+                <div key={participant.user_id || participant.id} className="participant-item">
                     <div className="participant-avatar">🤝</div>
                     <div className="participant-details">
                         <div className="participant-name">
-                            {participant.user_name || participant.invited_name || 'Unknown'}
+                            {participant.first_name && participant.last_name
+                                ? `${participant.first_name} ${participant.last_name}`
+                                : (participant.username || 'Unknown')}
                         </div>
-                        <div className="participant-email">
-                            {participant.user_email || participant.invited_email}
-                        </div>
-                    </div>
-                    <div className={`participant-status ${participant.status}`}>
-                        {participant.status === 'accepted' && '✅ Joined'}
-                        {participant.status === 'pending' && '⏳ Invited'}
-                        {participant.status === 'declined' && '❌ Declined'}
+                        {participant.email && (
+                            <div className="participant-email">{participant.email}</div>
+                        )}
+                        {participant.joined_at && (
+                            <div className="participant-joined">
+                                Joined {new Date(participant.joined_at).toLocaleDateString()}
+                            </div>
+                        )}
                     </div>
                 </div>
             ))}

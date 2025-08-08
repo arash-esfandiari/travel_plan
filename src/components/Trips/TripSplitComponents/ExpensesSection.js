@@ -33,7 +33,7 @@ const ExpensesSection = ({ tripId, refreshTrigger, onDataChange }) => {
 
     useEffect(() => {
         fetchData();
-    }, [tripId, refreshTrigger]);
+    }, [tripId, refreshTrigger]); // fetchData is recreated each render, so it's safe to not include it
 
     const fetchData = async () => {
         try {
@@ -55,13 +55,13 @@ const ExpensesSection = ({ tripId, refreshTrigger, onDataChange }) => {
 
     const calculateEqualSplits = (amount, excludePayer = false) => {
         const availableParticipants = excludePayer
-            ? participants.filter(p => p.id !== parseInt(formData.payer_id))
+            ? participants.filter(p => p.user_id !== formData.payer_id)
             : participants;
 
         const splitAmount = parseFloat(amount) / availableParticipants.length;
 
         return availableParticipants.map(participant => ({
-            participant_id: participant.id,
+            participant_id: participant.user_id,
             split_amount: splitAmount.toFixed(2),
             split_percentage: (100 / availableParticipants.length).toFixed(2)
         }));
@@ -84,9 +84,16 @@ const ExpensesSection = ({ tripId, refreshTrigger, onDataChange }) => {
 
             const expenseData = {
                 ...formData,
+                paid_by: formData.payer_id, // Map payer_id to paid_by for backend
                 amount: parseFloat(formData.amount),
-                splits: splits
+                participants: splits.map(split => ({
+                    user_id: split.participant_id,
+                    share_amount: parseFloat(split.split_amount)
+                }))
             };
+
+            // Remove the old field to avoid confusion
+            delete expenseData.payer_id;
 
             if (editingExpense) {
                 await updateExpense(editingExpense.id, expenseData);
@@ -107,15 +114,22 @@ const ExpensesSection = ({ tripId, refreshTrigger, onDataChange }) => {
 
     const handleEdit = (expense) => {
         setEditingExpense(expense);
+        // Map expense participants to splits for the form
+        const splits = expense.participants ? expense.participants.map(participant => ({
+            participant_id: participant.user_id,
+            split_amount: participant.share_amount,
+            split_percentage: null
+        })) : [];
+
         setFormData({
-            payer_id: expense.payer_id,
-            title: expense.title,
+            payer_id: expense.paid_by, // Use paid_by instead of payer_id
+            title: expense.title || expense.description,
             description: expense.description || '',
             amount: expense.amount,
             expense_date: expense.expense_date,
-            expense_type: expense.expense_type,
+            expense_type: expense.expense_type || (splits.length > 0 ? 'shared' : 'group'),
             category: expense.category,
-            splits: expense.splits || []
+            splits: splits
         });
         setShowAddForm(true);
     };
@@ -223,8 +237,8 @@ const ExpensesSection = ({ tripId, refreshTrigger, onDataChange }) => {
                                     >
                                         <option value="">Select person</option>
                                         {participants.map(participant => (
-                                            <option key={participant.id} value={participant.id}>
-                                                {participant.display_name}
+                                            <option key={participant.user_id} value={participant.user_id}>
+                                                {participant.first_name} {participant.last_name}
                                             </option>
                                         ))}
                                     </select>
@@ -328,15 +342,15 @@ const ExpensesSection = ({ tripId, refreshTrigger, onDataChange }) => {
                                 <div className="custom-split-section">
                                     <label>Custom Split Amounts</label>
                                     <div className="split-inputs">
-                                        {participants.filter(p => p.id !== parseInt(formData.payer_id)).map(participant => (
-                                            <div key={participant.id} className="split-input-row">
-                                                <span className="participant-name">{participant.display_name}</span>
+                                        {participants.filter(p => p.user_id !== formData.payer_id).map(participant => (
+                                            <div key={participant.user_id} className="split-input-row">
+                                                <span className="participant-name">{participant.first_name} {participant.last_name}</span>
                                                 <input
                                                     type="number"
                                                     step="0.01"
                                                     placeholder="0.00"
-                                                    value={getSplitAmount(participant.id)}
-                                                    onChange={(e) => updateCustomSplit(participant.id, e.target.value)}
+                                                    value={getSplitAmount(participant.user_id)}
+                                                    onChange={(e) => updateCustomSplit(participant.user_id, e.target.value)}
                                                 />
                                             </div>
                                         ))}
@@ -390,8 +404,8 @@ const ExpensesSection = ({ tripId, refreshTrigger, onDataChange }) => {
                                 </div>
 
                                 <div className="expense-details">
-                                    <h4 className="expense-title">{expense.title}</h4>
-                                    {expense.description && (
+                                    <h4 className="expense-title">{expense.title || expense.description}</h4>
+                                    {expense.description && expense.title !== expense.description && (
                                         <p className="expense-description">{expense.description}</p>
                                     )}
                                     <div className="expense-meta">
@@ -399,11 +413,32 @@ const ExpensesSection = ({ tripId, refreshTrigger, onDataChange }) => {
                                         <span className="expense-date">
                                             {new Date(expense.expense_date).toLocaleDateString()}
                                         </span>
-                                        <span className={`expense-type ${expense.expense_type}`}>
+                                        <span className={`expense-type ${expense.expense_type || 'group'}`}>
                                             {expense.expense_type === 'personal' ? '👤 Personal' :
                                                 expense.expense_type === 'group' ? '👥 Group' : '⚖️ Custom'}
                                         </span>
                                     </div>
+
+                                    {/* Show expense participants */}
+                                    {expense.participants && expense.participants.length > 0 && (
+                                        <div className="expense-participants">
+                                            <div className="participants-header">
+                                                <span>👥 Split between:</span>
+                                            </div>
+                                            <div className="participants-list">
+                                                {expense.participants.map(participant => (
+                                                    <div key={participant.user_id} className="participant-share">
+                                                        <span className="participant-name">
+                                                            {participant.first_name} {participant.last_name}
+                                                        </span>
+                                                        <span className="participant-amount">
+                                                            ${parseFloat(participant.share_amount).toFixed(2)}
+                                                        </span>
+                                                    </div>
+                                                ))}
+                                            </div>
+                                        </div>
+                                    )}
                                 </div>
 
                                 <div className="expense-actions">

@@ -18,8 +18,8 @@ export const getParticipants = async (tripId) => {
     return response.data;
 };
 
-export const removeParticipant = async (tripId, participantId) => {
-    const response = await api.delete(`/api/trip-split/trips/${tripId}/participants/${participantId}`);
+export const removeParticipant = async (tripId, userId) => {
+    const response = await api.delete(`/api/trip-split/trips/${tripId}/participants/${userId}`);
     return response.data;
 };
 

@@ -59,7 +59,7 @@ const SettlementsSection = ({ tripId, refreshTrigger, onDataChange }) => {
 
     const getTotalOwed = () => {
         return settlements
-            .filter(s => !s.is_settled)
+            .filter(s => !s.settled_at) // Check if settled_at is null
             .reduce((total, settlement) => total + parseFloat(settlement.amount), 0)
             .toFixed(2);
     };
@@ -118,14 +118,14 @@ const SettlementsSection = ({ tripId, refreshTrigger, onDataChange }) => {
                         {balances.map(balance => {
                             const formattedBalance = formatBalance(balance.balance);
                             return (
-                                <div key={balance.participant_id} className="balance-card">
+                                <div key={balance.user_id} className="balance-card">
                                     <div className="balance-participant">
                                         <div className="participant-avatar">
                                             {parseFloat(balance.balance) > 0 ? '💰' :
                                                 parseFloat(balance.balance) < 0 ? '💸' : '⚖️'}
                                         </div>
                                         <div className="participant-info">
-                                            <h4>{balance.display_name}</h4>
+                                            <h4>{balance.first_name} {balance.last_name}</h4>
                                             <p>{balance.email}</p>
                                         </div>
                                     </div>
@@ -179,14 +179,16 @@ const SettlementsSection = ({ tripId, refreshTrigger, onDataChange }) => {
                             {settlements.map(settlement => (
                                 <div
                                     key={settlement.id}
-                                    className={`settlement-card ${settlement.is_settled ? 'settled' : 'pending'}`}
+                                    className={`settlement-card ${settlement.settled_at ? 'settled' : 'pending'}`}
                                 >
                                     <div className="settlement-participants">
                                         <div className="participant from-participant">
                                             <div className="participant-avatar">💸</div>
                                             <div className="participant-info">
-                                                <h4>{settlement.from_name}</h4>
-                                                <p>{settlement.from_email}</p>
+                                                <h4>
+                                                    {settlement.payer_first_name} {settlement.payer_last_name}
+                                                </h4>
+                                                <p>{settlement.payer_email}</p>
                                             </div>
                                         </div>
 
@@ -201,14 +203,16 @@ const SettlementsSection = ({ tripId, refreshTrigger, onDataChange }) => {
                                         <div className="participant to-participant">
                                             <div className="participant-avatar">💰</div>
                                             <div className="participant-info">
-                                                <h4>{settlement.to_name}</h4>
-                                                <p>{settlement.to_email}</p>
+                                                <h4>
+                                                    {settlement.payee_first_name} {settlement.payee_last_name}
+                                                </h4>
+                                                <p>{settlement.payee_email}</p>
                                             </div>
                                         </div>
                                     </div>
 
                                     <div className="settlement-status">
-                                        {settlement.is_settled ? (
+                                        {settlement.settled_at ? (
                                             <div className="status-settled">
                                                 <span className="status-icon">✅</span>
                                                 <span>Paid on {new Date(settlement.settled_at).toLocaleDateString()}</span>
@@ -228,7 +232,7 @@ const SettlementsSection = ({ tripId, refreshTrigger, onDataChange }) => {
                             ))}
                         </div>
 
-                        {settlements.filter(s => !s.is_settled).length === 0 && settlements.length > 0 && (
+                        {settlements.filter(s => !s.settled_at).length === 0 && settlements.length > 0 && (
                             <div className="all-settled">
                                 <div className="celebration-icon">🎉</div>
                                 <h3>All Settled!</h3>

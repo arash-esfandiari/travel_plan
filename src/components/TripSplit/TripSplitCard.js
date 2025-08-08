@@ -1,7 +1,7 @@
 // src/components/TripSplit/TripSplitCard.js
-import React, { useState, useEffect, useContext } from 'react';
+import React, { useState, useContext } from 'react';
 import { formatDate } from '../../utils/formatDate';
-import { getParticipants, getExpenses, getSettlements } from '../../services/tripSplitService';
+import { getParticipants, getExpenses, getSettlements, calculateSettlements } from '../../services/tripSplitService';
 import { AuthContext } from '../../context/AuthContext';
 import SmartTripImage from '../Shared/SmartTripImage';
 import ExpensesList from './ExpensesList';
@@ -33,9 +33,21 @@ const TripSplitCard = ({ trip, onAddExpense, onAddParticipant, onRefresh }) => {
                 getSettlements(trip.id)
             ]);
 
-            setParticipants(participantsData.participants || []);
-            setExpenses(expensesData.expenses || []);
-            setSettlements(settlementsData.settlements || []);
+            // API responses return raw arrays; no nested keys
+            setParticipants(participantsData || []);
+            setExpenses(expensesData || []);
+            let currentSettlements = settlementsData || [];
+            // If no settlements exist yet, calculate and store them, then refetch
+            if (currentSettlements.length === 0 && (expensesData || []).length > 0) {
+                try {
+                    const calc = await calculateSettlements(trip.id);
+                    currentSettlements = (calc && calc.settlements) ? calc.settlements : await getSettlements(trip.id);
+                } catch (e) {
+                    // Fallback to empty if calculation fails
+                    currentSettlements = [];
+                }
+            }
+            setSettlements(currentSettlements || []);
         } catch (error) {
             console.error('Error fetching trip data:', error);
         } finally {
@@ -43,11 +55,42 @@ const TripSplitCard = ({ trip, onAddExpense, onAddParticipant, onRefresh }) => {
         }
     };
 
+    // Refresh details when expanded card receives new aggregated counts/totals
+    React.useEffect(() => {
+        if (expanded) {
+            fetchTripData();
+        }
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [expanded, trip.expense_count, trip.total_expenses, trip.participant_count]);
+
+    // When user switches to Settlements tab, ensure calculation and refresh
+    React.useEffect(() => {
+        const ensureSettlements = async () => {
+            if (!expanded || activeTab !== 'settlements') return;
+            try {
+                setLoading(true);
+                const calc = await calculateSettlements(trip.id);
+                if (calc && Array.isArray(calc.settlements)) {
+                    setSettlements(calc.settlements);
+                } else {
+                    const s = await getSettlements(trip.id);
+                    setSettlements(s || []);
+                }
+            } catch (e) {
+                // ignore, UI will just show none
+            } finally {
+                setLoading(false);
+            }
+        };
+        ensureSettlements();
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [activeTab, expanded, trip.id]);
+
     // Calculate user's share
     const userShare = expenses.reduce((total, expense) => {
-        const splits = expense.expense_splits || [];
-        const userSplit = splits.find(split => split.user_id === user?.userId);
-        return total + (userSplit ? parseFloat(userSplit.amount) : 0);
+        const participants = expense.participants || [];
+        const userParticipation = participants.find(participant => participant.user_id === user?.userId);
+        return total + (userParticipation ? parseFloat(userParticipation.share_amount) : 0);
     }, 0);
 
     return (
@@ -55,7 +98,7 @@ const TripSplitCard = ({ trip, onAddExpense, onAddParticipant, onRefresh }) => {
             <div className="card-header" onClick={toggleExpanded}>
                 <div className="trip-image">
                     <SmartTripImage
-                        src={trip.image_url}
+                        trip={trip}
                         alt={trip.trip_name}
                         className="card-trip-image"
                     />

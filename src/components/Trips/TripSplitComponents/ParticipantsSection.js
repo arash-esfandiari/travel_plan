@@ -66,13 +66,13 @@ const ParticipantsSection = ({ tripId, refreshTrigger, onDataChange }) => {
         }
     };
 
-    const handleRemoveParticipant = async (participantId) => {
+    const handleRemoveParticipant = async (userId) => {
         if (!window.confirm('Are you sure you want to remove this participant?')) {
             return;
         }
 
         try {
-            await removeParticipant(tripId, participantId);
+            await removeParticipant(tripId, userId);
             fetchParticipants();
             onDataChange();
         } catch (error) {
@@ -233,7 +233,7 @@ const ParticipantsSection = ({ tripId, refreshTrigger, onDataChange }) => {
                             {!participant.is_owner && (
                                 <button
                                     className="remove-btn"
-                                    onClick={() => handleRemoveParticipant(participant.id)}
+                                    onClick={() => handleRemoveParticipant(participant.user_id)}
                                     title="Remove participant"
                                 >
                                     🗑️
