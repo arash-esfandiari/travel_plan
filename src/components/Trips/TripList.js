@@ -19,8 +19,6 @@ const TripList = () => {
     const [fetchError, setFetchError] = useState(null);
     const navigate = useNavigate();
 
-    // Animated emojis for the floating icons
-    const emojis = ['✈️', '🗺️', '🏛️', '🌍', '🎒', '📸', '🏖️', '🗽', '🎡', '🏰'];
 
     const fetchTrips = async () => {
         console.log('🔍 TripList: Starting to fetch trips...');
@@ -154,17 +152,6 @@ const TripList = () => {
 
     return (
         <div className="trips-page">
-            {/* Floating decorative icons */}
-            {emojis.map((emoji, index) => (
-                <div
-                    key={index}
-                    className={`floating-emoji floating-emoji-${index + 1}`}
-                    style={{ animationDelay: `${index * 0.5}s` }}
-                >
-                    <span>{emoji}</span>
-                </div>
-            ))}
-
             {/* Main content container */}
             <div className="trips-container">
                 {/* Header Section */}

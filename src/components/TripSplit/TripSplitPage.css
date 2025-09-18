@@ -51,7 +51,7 @@
     display: block;
     font-size: 1.5rem;
     font-weight: 600;
-    color: #007aff;
+    color: #ff6b35;
     letter-spacing: -0.01em;
 }
 
@@ -150,7 +150,7 @@
 }
 
 .role-badge.owner {
-    background: #007aff;
+    background: #ff6b35;
     color: white;
 }
 
@@ -213,7 +213,7 @@
 }
 
 .action-btn {
-    background: #007aff;
+    background: #ff6b35;
     border: none;
     color: white;
     padding: 0.5rem 1rem;
@@ -225,24 +225,24 @@
 }
 
 .action-btn:hover {
-    background: #0056cc;
+    background: #e55a1a;
     transform: translateY(-1px);
 }
 
 .expense-btn {
-    background: #34c759;
+    background: #ff6b35;
 }
 
 .expense-btn:hover {
-    background: #28a745;
+    background: #e55a1a;
 }
 
 .participant-btn {
-    background: #007aff;
+    background: #ff6b35;
 }
 
 .participant-btn:hover {
-    background: #0056cc;
+    background: #e55a1a;
 }
 
 .user-share {
@@ -671,8 +671,8 @@
 }
 
 .split-card.active {
-    border-color: #007aff;
-    background: #007aff;
+    border-color: #ff6b35;
+    background: #ff6b35;
     color: white;
 }
 
@@ -863,12 +863,12 @@
 }
 
 .submit-btn {
-    background: #007aff;
+    background: #ff6b35;
     color: white;
 }
 
 .submit-btn:hover {
-    background: #0056cc;
+    background: #e55a1a;
     transform: translateY(-1px);
 }
 
@@ -906,7 +906,7 @@
 }
 
 .create-trip-btn {
-    background: #007aff;
+    background: #ff6b35;
     color: white;
     padding: 0.75rem 2rem;
     border: none;
@@ -918,7 +918,7 @@
 }
 
 .create-trip-btn:hover {
-    background: #0056cc;
+    background: #e55a1a;
     transform: translateY(-2px);
 }
 
@@ -952,7 +952,7 @@
 }
 
 .retry-btn {
-    background: #007aff;
+    background: #ff6b35;
     border: none;
     color: white;
     padding: 0.75rem 1.5rem;
@@ -964,7 +964,7 @@
 }
 
 .retry-btn:hover {
-    background: #0056cc;
+    background: #e55a1a;
     transform: translateY(-1px);
 }
 
