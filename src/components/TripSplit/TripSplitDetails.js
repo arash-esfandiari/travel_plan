@@ -5,7 +5,7 @@ import { AuthContext } from '../../context/AuthContext';
 import { getTripSplitDetails } from '../../services/tripSplitService';
 import ExpenseModal from './ExpenseModal';
 import ParticipantModal from './ParticipantModal';
-import TripSplitCard from './TripSplitCard';
+import TripSplitDetailsCard from './TripSplitDetailsCard';
 import './TripSplitDetails.css';
 
 const TripSplitDetails = () => {
@@ -155,15 +155,13 @@ const TripSplitDetails = () => {
                     </div>
                 </div>
 
-                {/* Trip Card with Full Details */}
-                <div className="expanded-trip-container">
-                    <TripSplitCard
+                {/* Trip Details Card */}
+                <div className="trip-details-container">
+                    <TripSplitDetailsCard
                         trip={trip}
                         onAddExpense={handleAddExpense}
                         onAddParticipant={handleAddParticipant}
-                        expanded={true}
-                        showActions={true}
-                        disableExpand={true}
+                        onRefresh={() => setRefreshTrigger(prev => prev + 1)}
                     />
                 </div>
             </div>

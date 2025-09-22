@@ -14,8 +14,7 @@ const ExpenseModal = ({ trip, onClose }) => {
         category: 'food',
         paid_by: '', // Who paid for this expense
         split_method: 'equal', // equal | custom | percent
-        split_scope: 'all', // all | subset
-        include_payer: true
+        split_scope: 'all' // all | subset
     });
 
     // UI state for split inputs
@@ -63,10 +62,9 @@ const ExpenseModal = ({ trip, onClose }) => {
     };
 
     const getTargetParticipants = () => {
-        const base = formData.split_scope === 'all'
+        return formData.split_scope === 'all'
             ? participants.map(p => p.user_id)
             : selectedParticipantIds;
-        return base.filter(id => formData.include_payer ? true : id !== formData.paid_by);
     };
 
     const toCents = (num) => Math.round(parseFloat(num) * 100);
@@ -89,31 +87,28 @@ const ExpenseModal = ({ trip, onClose }) => {
 
         // Custom amounts
         if (formData.split_method === 'custom') {
-            const list = targetIds.map(userId => ({
+            return targetIds.map(userId => ({
                 user_id: userId,
                 share_amount: parseFloat(customAmounts[userId] || 0)
             }));
-            // Optional normalization to ensure sum equals amount (adjust last)
-            const sumCents = list.reduce((s, p) => s + toCents(p.share_amount), 0);
-            const diff = toCents(totalAmount) - sumCents;
-            if (Math.abs(diff) > 0) {
-                list[list.length - 1].share_amount = fromCents(toCents(list[list.length - 1].share_amount) + diff);
-            }
-            return list;
         }
 
         // Percentages
         if (formData.split_method === 'percent') {
             const percList = targetIds.map(userId => parseFloat(percentages[userId] || 0));
-            const totalPct = percList.reduce((s, v) => s + v, 0) || 0;
-            const normalized = targetIds.map((userId, idx) => ({
+
+            // Calculate amounts based on percentages (validation ensures they add up to 100%)
+            const amounts = targetIds.map((userId, idx) => ({
                 user_id: userId,
-                share_amount: (totalPct > 0 ? (totalAmount * percList[idx]) / totalPct : 0)
+                share_amount: (totalAmount * percList[idx]) / 100
             }));
-            // Round to cents and adjust last
-            const centsList = normalized.map(p => toCents(p.share_amount));
+
+            // Round to cents and adjust last person for any rounding differences
+            const centsList = amounts.map(p => toCents(p.share_amount));
             const diff = toCents(totalAmount) - centsList.reduce((s, c) => s + c, 0);
-            if (centsList.length > 0) centsList[centsList.length - 1] += diff;
+            if (centsList.length > 0) {
+                centsList[centsList.length - 1] += diff;
+            }
             return targetIds.map((userId, idx) => ({ user_id: userId, share_amount: fromCents(centsList[idx]) }));
         }
 
@@ -130,43 +125,63 @@ const ExpenseModal = ({ trip, onClose }) => {
     };
 
     const getValidation = () => {
+        const tolerance = 0.01; // Consistent tolerance for all validations
         const amount = parseFloat(formData.amount || 0);
+
         if (!amount || amount <= 0) return { ok: false, message: 'Enter a valid amount' };
+
         const targets = getTargetParticipants();
         if (targets.length === 0) return { ok: false, message: 'Select at least one participant' };
 
         if (formData.split_method === 'percent') {
             const sum = targets.reduce((s, id) => s + parseFloat(percentages[id] || 0), 0);
             if (sum <= 0) return { ok: false, message: 'Enter percentages for participants' };
+
+            if (Math.abs(sum - 100) > tolerance) {
+                const difference = (100 - sum).toFixed(2);
+                if (sum > 100) {
+                    return { ok: false, message: `Percentages add up to ${sum.toFixed(2)}%. Please reduce by ${Math.abs(difference)}%` };
+                } else {
+                    return { ok: false, message: `Percentages add up to ${sum.toFixed(2)}%. Please add ${difference}% more` };
+                }
+            }
         }
-        // no weights method
+
         if (formData.split_method === 'custom') {
-            const sumCents = targets.reduce((s, id) => s + toCents(customAmounts[id] || 0), 0);
-            if (sumCents === 0) return { ok: false, message: 'Enter custom amounts' };
+            const customSum = targets.reduce((s, id) => s + parseFloat(customAmounts[id] || 0), 0);
+            if (customSum === 0) return { ok: false, message: 'Enter custom amounts' };
+
+            if (Math.abs(customSum - amount) > tolerance) {
+                const difference = (amount - customSum).toFixed(2);
+                if (customSum > amount) {
+                    return { ok: false, message: `Custom amounts total $${customSum.toFixed(2)}. Please reduce by $${Math.abs(difference)}` };
+                } else {
+                    return { ok: false, message: `Custom amounts total $${customSum.toFixed(2)}. Please add $${difference} more` };
+                }
+            }
         }
-        const { list, total } = computePreview();
-        if (list.length === 0) return { ok: false, message: 'Unable to compute split' };
-        const diffCents = toCents(formData.amount) - toCents(total);
-        if (Math.abs(diffCents) > 1) return { ok: false, message: 'Split does not add up to total yet' };
+
         return { ok: true, message: '' };
     };
 
     const handleSubmit = async (e) => {
         e.preventDefault();
+
+        // Check basic required fields
         if (!formData.title || !formData.amount || !formData.paid_by) {
             alert('Please fill in all required fields (title, amount, and who paid)');
             return;
         }
 
+        // Check validation
+        const validation = getValidation();
+        if (!validation.ok) {
+            alert(validation.message);
+            return;
+        }
+
         setSubmitting(true);
         try {
-            const computedParticipants = computeParticipants();
-            if (computedParticipants.length === 0) {
-                alert('Please select at least one participant and provide a valid split.');
-                setSubmitting(false);
-                return;
-            }
-
             const expenseData = {
                 title: formData.title,
                 description: formData.description,
@@ -174,7 +189,7 @@ const ExpenseModal = ({ trip, onClose }) => {
                 expense_date: formData.expense_date,
                 category: formData.category,
                 paid_by: formData.paid_by,
-                participants: computedParticipants
+                participants: computeParticipants()
             };
 
             await createExpense(trip.id, expenseData);
@@ -311,18 +326,11 @@ const ExpenseModal = ({ trip, onClose }) => {
                             </div>
                         </div>
 
-                        <div className="form-row">
-                            <div className="form-group">
-                                <label>Who shares this?</label>
-                                <div className="radio-row">
-                                    <label><input type="radio" name="split_scope" value="all" checked={formData.split_scope === 'all'} onChange={handleInputChange} /> All trip participants</label>
-                                    <label><input type="radio" name="split_scope" value="subset" checked={formData.split_scope === 'subset'} onChange={handleInputChange} /> Selected people</label>
-                                </div>
-                            </div>
-                            <div className="form-group">
-                                <label>
-                                    <input type="checkbox" name="include_payer" checked={!!formData.include_payer} onChange={(e) => setFormData(prev => ({ ...prev, include_payer: e.target.checked }))} /> Include payer in split
-                                </label>
+                        <div className="form-group">
+                            <label>Who shares this?</label>
+                            <div className="radio-row">
+                                <label><input type="radio" name="split_scope" value="all" checked={formData.split_scope === 'all'} onChange={handleInputChange} /> All trip participants</label>
+                                <label><input type="radio" name="split_scope" value="subset" checked={formData.split_scope === 'subset'} onChange={handleInputChange} /> Selected people</label>
                             </div>
                         </div>
 
@@ -338,7 +346,7 @@ const ExpenseModal = ({ trip, onClose }) => {
                                     {participants.map(p => (
                                         <label key={p.user_id} className="checkbox-item">
                                             <input type="checkbox" checked={selectedParticipantIds.includes(p.user_id)} onChange={() => toggleSelected(p.user_id)} />
-                                            <span>{p.first_name} {p.last_name}</span>
+                                            <span> {p.first_name} {p.last_name}</span>
                                         </label>
                                     ))}
                                 </div>
@@ -371,7 +379,47 @@ const ExpenseModal = ({ trip, onClose }) => {
                                     })}
                                 </div>
                                 {formData.split_method === 'percent' && (
-                                    <div className="form-hint">Tip: values are normalized, aim for ~100% total.</div>
+                                    <div className="form-hint">
+                                        <strong>Note:</strong> Percentages must add up to exactly 100%
+                                        {(() => {
+                                            const targets = getTargetParticipants();
+                                            const sum = targets.reduce((s, id) => s + parseFloat(percentages[id] || 0), 0);
+                                            if (sum > 0) {
+                                                return (
+                                                    <span style={{
+                                                        marginLeft: '0.5rem',
+                                                        color: Math.abs(sum - 100) <= 0.01 ? '#28a745' : '#dc3545',
+                                                        fontWeight: 'bold'
+                                                    }}>
+                                                        (Current: {sum.toFixed(2)}%)
+                                                    </span>
+                                                );
+                                            }
+                                            return null;
+                                        })()}
+                                    </div>
+                                )}
+                                {formData.split_method === 'custom' && (
+                                    <div className="form-hint">
+                                        <strong>Note:</strong> Custom amounts must add up to the total expense amount
+                                        {(() => {
+                                            const targets = getTargetParticipants();
+                                            const sum = targets.reduce((s, id) => s + parseFloat(customAmounts[id] || 0), 0);
+                                            const totalAmount = parseFloat(formData.amount || 0);
+                                            if (sum > 0 && totalAmount > 0) {
+                                                return (
+                                                    <span style={{
+                                                        marginLeft: '0.5rem',
+                                                        color: Math.abs(sum - totalAmount) <= 0.01 ? '#28a745' : '#dc3545',
+                                                        fontWeight: 'bold'
+                                                    }}>
+                                                        (Current: ${sum.toFixed(2)} / ${totalAmount.toFixed(2)})
+                                                    </span>
+                                                );
+                                            }
+                                            return null;
+                                        })()}
+                                    </div>
                                 )}
                             </div>
                         )}

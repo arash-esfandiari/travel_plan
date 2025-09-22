@@ -3,7 +3,6 @@
 .trip-split-container {
     min-height: 100vh;
     position: relative;
-    background: linear-gradient(135deg, #74ebd5 0%, #9face6 100%);
     font-family: "Fredoka", "Comic Sans MS", "Baloo", cursive, sans-serif;
     padding: 2rem;
     padding-top: 100px; /* Space for navbar */

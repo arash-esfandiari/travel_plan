@@ -1,7 +1,7 @@
 /* Trips Page Styling */
 .trips-page {
     min-height: 100vh;
-    background: #f2f2f7;
+    background: linear-gradient(135deg, #74ebd5 0%, #9face6 100%);
     padding: 5rem 0 1rem 0;
     position: relative;
     overflow-x: hidden;
@@ -534,15 +534,15 @@
     margin: 0 0 1.5rem 0;
     color: #1d1d1f;
     letter-spacing: -0.02em;
-    padding-right: 30px;
+    padding-right: 60px;
     background: linear-gradient(135deg, #1d1d1f, #333);
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
     background-clip: text;
 }
 
-/* Trip Actions Redesign */
-.trip-actions {
+/* Trip Actions Redesign - Now positioned in trip details section */
+.trip-details .trip-actions {
     position: absolute;
     top: 1.5rem;
     right: 1.5rem;

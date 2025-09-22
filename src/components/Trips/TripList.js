@@ -245,16 +245,16 @@ const TripList = () => {
                                         style={{ cursor: 'pointer' }}
                                     >
                                         <div className="card-image-container">
-                                            <TripActions
-                                                trip={trip}
-                                                onDeleted={handleTripDeleted}
-                                            />
                                             <SmartTripImage trip={trip} alt={trip.trip_name} className="trip-list-image" />
                                             <div className="card-overlay">
                                                 <span className="view-details">View Details</span>
                                             </div>
                                         </div>
                                         <div className="trip-details">
+                                            <TripActions
+                                                trip={trip}
+                                                onDeleted={handleTripDeleted}
+                                            />
                                             <h3 className="trip-title">{trip.trip_name}</h3>
                                             <div className="trip-info">
                                                 <div className="info-item">

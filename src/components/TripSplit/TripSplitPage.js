@@ -130,26 +130,38 @@ const TripSplitPage = () => {
             <div className="trip-split-container">
                 {/* Header */}
                 <div className="trip-split-header">
-                    <div className="header-content">
-                        <h1>💰 Trip Split</h1>
-                        <p>Manage expenses across all your trips</p>
+                    <div className="trip-title-section">
+                        <h1 className="trip-main-title">💰 Trip Split</h1>
+                        <div className="trip-subtitle">
+                            Manage expenses across all your adventures
+                        </div>
                     </div>
+
                     <div className="header-stats">
                         <div className="stat-item">
-                            <span className="stat-number">{trips.length}</span>
-                            <span className="stat-label">Trips</span>
+                            <div className="stat-icon">🏖️</div>
+                            <div className="stat-content">
+                                <span className="stat-number">{trips.length}</span>
+                                <span className="stat-label">Trips</span>
+                            </div>
                         </div>
                         <div className="stat-item">
-                            <span className="stat-number">
-                                {trips.reduce((sum, trip) => sum + trip.expense_count, 0)}
-                            </span>
-                            <span className="stat-label">Expenses</span>
+                            <div className="stat-icon">🧾</div>
+                            <div className="stat-content">
+                                <span className="stat-number">
+                                    {trips.reduce((sum, trip) => sum + (trip.expense_count || 0), 0)}
+                                </span>
+                                <span className="stat-label">Expenses</span>
+                            </div>
                         </div>
                         <div className="stat-item">
-                            <span className="stat-number">
-                                ${trips.reduce((sum, trip) => sum + trip.total_expenses, 0).toFixed(2)}
-                            </span>
-                            <span className="stat-label">Total</span>
+                            <div className="stat-icon">💸</div>
+                            <div className="stat-content">
+                                <span className="stat-number">
+                                    ${trips.reduce((sum, trip) => sum + (trip.total_expenses || 0), 0).toFixed(2)}
+                                </span>
+                                <span className="stat-label">Total</span>
+                            </div>
                         </div>
                     </div>
                 </div>

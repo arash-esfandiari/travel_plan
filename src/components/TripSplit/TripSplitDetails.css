@@ -175,42 +175,11 @@
     line-height: 1.4;
 }
 
-/* Expanded Trip Container */
-.expanded-trip-container {
+/* Trip Details Container */
+.trip-details-container {
     flex: 1;
     display: flex;
     flex-direction: column;
-}
-
-/* Fix trip card styling for details page */
-.expanded-trip-container .trip-split-card {
-    flex-direction: column;
-    min-height: auto;
-}
-
-.expanded-trip-container .card-image-container {
-    width: 100%;
-    height: 200px;
-    flex-shrink: 0;
-}
-
-.expanded-trip-container .card-header {
-    flex-direction: row;
-    padding: 1.5rem;
-}
-
-.expanded-trip-container .card-header::before {
-    display: none;
-}
-
-/* Disable cursor pointer for no-expand cards */
-.trip-split-card.no-expand {
-    cursor: default;
-}
-
-.trip-split-card.no-expand .card-image-container,
-.trip-split-card.no-expand .card-header {
-    cursor: default;
 }
 
 /* Loading, Error, and Not Found States */

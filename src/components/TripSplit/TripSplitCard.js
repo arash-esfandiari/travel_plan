@@ -138,47 +138,32 @@ const TripSplitCard = ({ trip, onAddExpense, onAddParticipant, onRefresh, onClic
             <div className="card-header" onClick={disableExpand ? undefined : toggleExpanded}>
                 <div className="trip-info">
                     <h3>{trip.trip_name}</h3>
-                    <p className="trip-location">{trip.city_name}</p>
-                    <p className="trip-dates">
-                        {formatDate(trip.start_date)} - {formatDate(trip.end_date)}
-                    </p>
-
-                    {/* Participants Display */}
-                    {(compact && participants.length > 0) && (
-                        <div className="trip-participants">
-                            <div className="participants-avatars">
-                                {participants.slice(0, 3).map((participant, index) => {
-                                    const name = participant.display_name || participant.email;
-                                    const initial = name.charAt(0).toUpperCase();
-                                    const colorIndex = name.charCodeAt(0) % 6; // 6 different colors
-
-                                    return (
-                                        <div
-                                            key={participant.user_id || index}
-                                            className={`participant-avatar color-${colorIndex}`}
-                                            title={name}
-                                        >
-                                            {initial}
-                                        </div>
-                                    );
-                                })}
-                                {participants.length > 3 && (
-                                    <div className="participant-avatar more-participants">
-                                        +{participants.length - 3}
-                                    </div>
-                                )}
-                            </div>
-                            <span className="participants-count">
-                                {participants.length} {participants.length === 1 ? 'participant' : 'participants'}
+                    <div className="info-item">
+                        <span className="info-icon">📅</span>
+                        <span className="info-text">
+                            {formatDate(trip.start_date)} - {formatDate(trip.end_date)}
+                        </span>
+                    </div>
+                    <div className="info-item">
+                        <span className="info-icon">👥</span>
+                        <span className="info-text">
+                            {trip.participant_count || participants.length} {(trip.participant_count || participants.length) === 1 ? 'Person' : 'People'}
+                        </span>
+                    </div>
+                    <div className="info-item">
+                        <span className="info-icon">💰</span>
+                        <span className="info-text">
+                            ${(trip.total_expenses || 0).toFixed(2)} Total
+                        </span>
+                    </div>
+                    {trip.user_role && (
+                        <div className="info-item">
+                            <span className="info-icon">{trip.user_role === 'owner' ? '👑' : '🤝'}</span>
+                            <span className="info-text">
+                                {trip.user_role === 'owner' ? 'Trip Owner' : 'Participant'}
                             </span>
                         </div>
                     )}
-
-                    <div className="trip-role">
-                        <span className={`role-badge ${trip.user_role}`}>
-                            {trip.user_role === 'owner' ? '👑 Trip Owner' : '🤝 Participant'}
-                        </span>
-                    </div>
                 </div>
 
                 {!compact && (
