@@ -445,10 +445,10 @@
 }
 
 /* Card Image Container - Enhanced */
-.card-image-container {
+.trip-card .card-image-container {
     position: relative;
     overflow: hidden;
-    width: 45%;
+    width: 55%;
     flex-shrink: 0;
     background: linear-gradient(135deg, #f0f0f0, #e8e8e8);
 }
@@ -499,11 +499,11 @@
 
 /* Trip Details - Enhanced */
 .trip-details {
-    padding: 2rem 2.5rem;
+    padding: 1.5rem 2rem;
     display: flex;
     flex-direction: column;
     justify-content: center;
-    width: 55%;
+    width: 45%;
     background: linear-gradient(
         135deg,
         rgba(255, 255, 255, 0.9),
@@ -534,7 +534,7 @@
     margin: 0 0 1.5rem 0;
     color: #1d1d1f;
     letter-spacing: -0.02em;
-    padding-right: 40px;
+    padding-right: 30px;
     background: linear-gradient(135deg, #1d1d1f, #333);
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
@@ -634,7 +634,7 @@
         min-height: auto;
     }
 
-    .card-image-container {
+    .trip-card .card-image-container {
         width: 100%;
         height: 220px;
     }
@@ -673,7 +673,7 @@
         padding: 1.25rem;
     }
 
-    .card-image-container {
+    .trip-card .card-image-container {
         height: 160px;
     }
 }

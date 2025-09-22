@@ -43,11 +43,11 @@
     transition: transform 0.3s ease;
 }
 
+/* Actions Dropdown Portal Container - positioning is handled via inline styles */
+
 /* Actions Dropdown Redesign */
 .actions-dropdown {
-    position: absolute;
-    top: 50px;
-    right: 0;
+    position: relative;
     background: rgba(255, 255, 255, 0.6);
     backdrop-filter: blur(25px);
     -webkit-backdrop-filter: blur(25px);
@@ -218,10 +218,11 @@
     margin-top: 2rem;
 }
 
-.cancel-btn,
-.delete-btn {
+.confirm-actions .cancel-btn,
+.confirm-actions .delete-btn {
     display: flex;
     align-items: center;
+    justify-content: center;
     gap: 0.5rem;
     padding: 0.8rem 1.5rem;
     border: none;
@@ -231,39 +232,55 @@
     cursor: pointer;
     transition: all 0.3s ease;
     font-family: inherit;
+    white-space: nowrap;
+    width: auto;
+    height: auto;
+    min-width: 120px;
 }
 
-.cancel-btn {
+.confirm-actions .cancel-btn {
     background: linear-gradient(135deg, #95a5a6 0%, #7f8c8d 100%);
     color: white;
     box-shadow: 0 5px 15px rgba(149, 165, 166, 0.3);
 }
 
-.cancel-btn:hover {
+.confirm-actions .cancel-btn:hover {
     transform: translateY(-2px);
     box-shadow: 0 8px 20px rgba(149, 165, 166, 0.4);
 }
 
-.delete-btn {
+.confirm-actions .delete-btn {
     background: linear-gradient(135deg, #e74c3c 0%, #c0392b 100%);
     color: white;
     box-shadow: 0 5px 15px rgba(231, 76, 60, 0.3);
 }
 
-.delete-btn:hover {
+.confirm-actions .delete-btn:hover {
     transform: translateY(-2px);
     box-shadow: 0 8px 20px rgba(231, 76, 60, 0.4);
 }
 
 .btn-icon {
     font-size: 1rem;
+    line-height: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
 }
 
 /* Responsive Design */
 @media (max-width: 768px) {
+    .actions-dropdown {
+        min-width: 160px;
+        max-width: calc(100vw - 2rem);
+    }
+
     .confirm-modal {
         margin: 1rem;
         padding: 1.5rem;
+        max-width: calc(100vw - 2rem);
+        width: 90%;
     }
 
     .confirm-actions {
@@ -271,9 +288,20 @@
         gap: 0.8rem;
     }
 
-    .cancel-btn,
-    .delete-btn {
+    .confirm-actions .cancel-btn,
+    .confirm-actions .delete-btn {
         width: 100%;
         justify-content: center;
+    }
+}
+
+@media (max-width: 480px) {
+    .actions-dropdown {
+        min-width: 140px;
+    }
+
+    .action-item {
+        padding: 0.7rem 0.8rem;
+        font-size: 0.9rem;
     }
 }

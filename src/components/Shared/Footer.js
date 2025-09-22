@@ -21,22 +21,19 @@ const Footer = () => {
                         <div className="footer-logo">
                             <span className="logo-emoji">🗺️</span>
                             <div className="logo-text">
-                                <h3>Smart Travel Planner</h3>
+                                <h3>Let's Planet</h3>
                                 <p>Your AI-powered travel companion</p>
                             </div>
                         </div>
                         <div className="footer-social">
-                            <a href="#" className="social-link" aria-label="Facebook">
-                                <span className="social-icon">📘</span>
+                            <a href="https://www.arashes.com/" className="social-link" aria-label="Facebook">
+                                <span className="social-icon">💼</span>
                             </a>
-                            <a href="#" className="social-link" aria-label="Twitter">
-                                <span className="social-icon">🐦</span>
-                            </a>
-                            <a href="#" className="social-link" aria-label="Instagram">
+                            <a href="https://www.instagram.com/arash__es/" className="social-link" aria-label="Instagram">
                                 <span className="social-icon">📷</span>
                             </a>
-                            <a href="#" className="social-link" aria-label="LinkedIn">
-                                <span className="social-icon">💼</span>
+                            <a href="https://www.linkedin.com/in/arash-esf/" className="social-link" aria-label="LinkedIn">
+                                <span className="social-icon">🔗</span>
                             </a>
                         </div>
                     </div>
@@ -85,7 +82,7 @@ const Footer = () => {
                 {/* Bottom section with copyright */}
                 <div className="footer-bottom">
                     <div className="footer-copyright">
-                        <p>&copy; {new Date().getFullYear()} Smart Travel Planner by Esfandiari Inc. All rights reserved.</p>
+                        <p>&copy; {new Date().getFullYear()} Let's Planet by Esfandiari Inc. All rights reserved.</p>
                     </div>
                     <div className="footer-newsletter">
                         <div className="newsletter-content">

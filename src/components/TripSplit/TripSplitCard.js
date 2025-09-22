@@ -8,7 +8,7 @@ import ExpensesList from './ExpensesList';
 import ParticipantsList from './ParticipantsList';
 import SettlementsList from './SettlementsList';
 
-const TripSplitCard = ({ trip, onAddExpense, onAddParticipant, onRefresh, onClick, compact = false, expanded = false, showActions = false }) => {
+const TripSplitCard = ({ trip, onAddExpense, onAddParticipant, onRefresh, onClick, compact = false, expanded = false, showActions = false, disableExpand = false }) => {
     const { user } = useContext(AuthContext);
     const [isExpanded, setIsExpanded] = useState(expanded);
     const [activeTab, setActiveTab] = useState('expenses');
@@ -43,6 +43,9 @@ const TripSplitCard = ({ trip, onAddExpense, onAddParticipant, onRefresh, onClic
     };
 
     const toggleExpanded = () => {
+        if (disableExpand) {
+            return; // Do nothing if expand is disabled
+        }
         if (compact && onClick) {
             onClick();
             return;
@@ -123,8 +126,8 @@ const TripSplitCard = ({ trip, onAddExpense, onAddParticipant, onRefresh, onClic
     }, 0);
 
     return (
-        <div className={`trip-split-card ${isExpanded ? 'expanded' : ''} ${compact ? 'compact' : ''}`}>
-            <div className="card-image-container" onClick={toggleExpanded}>
+        <div className={`trip-split-card ${isExpanded ? 'expanded' : ''} ${compact ? 'compact' : ''} ${disableExpand ? 'no-expand' : ''}`}>
+            <div className="card-image-container" onClick={disableExpand ? undefined : toggleExpanded}>
                 <SmartTripImage
                     trip={trip}
                     alt={trip.trip_name}
@@ -132,7 +135,7 @@ const TripSplitCard = ({ trip, onAddExpense, onAddParticipant, onRefresh, onClic
                 />
             </div>
 
-            <div className="card-header" onClick={toggleExpanded}>
+            <div className="card-header" onClick={disableExpand ? undefined : toggleExpanded}>
                 <div className="trip-info">
                     <h3>{trip.trip_name}</h3>
                     <p className="trip-location">{trip.city_name}</p>
@@ -195,7 +198,7 @@ const TripSplitCard = ({ trip, onAddExpense, onAddParticipant, onRefresh, onClic
                     </div>
                 )}
 
-                {!compact && (
+                {!compact && !disableExpand && (
                     <div className="expand-icon">
                         {isExpanded ? '▲' : '▼'}
                     </div>

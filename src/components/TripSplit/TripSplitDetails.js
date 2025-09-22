@@ -59,14 +59,10 @@ const TripSplitDetails = () => {
         setShowParticipantModal(true);
     };
 
-    const handleExpenseAdded = () => {
-        setRefreshTrigger(prev => prev + 1);
+    const handleModalClose = () => {
         setShowExpenseModal(false);
-    };
-
-    const handleParticipantAdded = () => {
-        setRefreshTrigger(prev => prev + 1);
         setShowParticipantModal(false);
+        setRefreshTrigger(prev => prev + 1); // Refresh data after modal actions
     };
 
     const handleGoBack = () => {
@@ -167,24 +163,25 @@ const TripSplitDetails = () => {
                         onAddParticipant={handleAddParticipant}
                         expanded={true}
                         showActions={true}
+                        disableExpand={true}
                     />
                 </div>
             </div>
 
             {/* Modals */}
-            <ExpenseModal
-                isOpen={showExpenseModal}
-                onClose={() => setShowExpenseModal(false)}
-                trip={trip}
-                onExpenseAdded={handleExpenseAdded}
-            />
+            {showExpenseModal && (
+                <ExpenseModal
+                    trip={trip}
+                    onClose={handleModalClose}
+                />
+            )}
 
-            <ParticipantModal
-                isOpen={showParticipantModal}
-                onClose={() => setShowParticipantModal(false)}
-                trip={trip}
-                onParticipantAdded={handleParticipantAdded}
-            />
+            {showParticipantModal && (
+                <ParticipantModal
+                    trip={trip}
+                    onClose={handleModalClose}
+                />
+            )}
         </div>
     );
 };

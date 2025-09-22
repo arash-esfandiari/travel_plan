@@ -241,7 +241,6 @@
 }
 
 .trip-split-card:hover {
-    transform: translateY(-4px) scale(1.01);
     box-shadow: 0 8px 40px rgba(0, 0, 0, 0.12), 0 4px 16px rgba(0, 0, 0, 0.08);
     border-color: rgba(255, 107, 53, 0.2);
 }
@@ -256,7 +255,8 @@
 }
 
 .trip-split-card.compact:hover {
-    transform: translateY(-2px) scale(1.005);
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+    border-color: rgba(255, 107, 53, 0.15);
 }
 
 /* Card Image Container - Compact */
@@ -709,6 +709,43 @@
     font-weight: 600;
     font-size: 1rem;
     letter-spacing: -0.01em;
+}
+
+/* Expense Participants Display */
+.expense-participants-inline {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    margin-top: 0.5rem;
+}
+
+.participant-chip {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    background: rgba(0, 122, 255, 0.1);
+    color: #007aff;
+    padding: 0.3rem 0.6rem;
+    border-radius: 8px;
+    font-size: 0.8rem;
+    font-weight: 500;
+    border: 1px solid rgba(0, 122, 255, 0.2);
+    transition: all 0.2s ease;
+}
+
+.participant-chip:hover {
+    background: rgba(0, 122, 255, 0.15);
+    border-color: rgba(0, 122, 255, 0.3);
+}
+
+.chip-amount {
+    background: rgba(0, 122, 255, 0.15);
+    color: #005bb5;
+    padding: 0.1rem 0.4rem;
+    border-radius: 4px;
+    font-weight: 600;
+    font-size: 0.75rem;
+    margin-left: 0.2rem;
 }
 
 /* Participant Items */
