@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import { getTrips, createTripFromQuestionFlow } from '../../services/tripService';
 import TripActions from './TripActions';
 import { formatDate } from '../../utils/formatDate';
@@ -18,6 +18,9 @@ const TripList = () => {
     const [creationError, setCreationError] = useState(null);
     const [fetchError, setFetchError] = useState(null);
     const navigate = useNavigate();
+
+    // Floating emojis for visual appeal
+    const emojis = ['✈️', '🗺️', '🏛️', '🌍', '🎒', '📸', '🏖️', '🗽', '🎡', '🏰'];
 
 
     const fetchTrips = async () => {
@@ -152,6 +155,19 @@ const TripList = () => {
 
     return (
         <div className="trips-page">
+            {/* Floating Emojis */}
+            {emojis.map((emoji, index) => (
+                <div
+                    key={index}
+                    className={`floating-emoji floating-emoji-${index + 1}`}
+                    style={{
+                        animationDelay: `${index * 0.5}s`
+                    }}
+                >
+                    <span>{emoji}</span>
+                </div>
+            ))}
+
             {/* Main content container */}
             <div className="trips-container">
                 {/* Header Section */}
@@ -216,7 +232,7 @@ const TripList = () => {
                             </button>
                         </div>
                     ) : (
-                        <div className="trips-grid">
+                        <div className="trip-list-grid">
                             {trips.map((trip, index) => (
                                 <div
                                     key={trip.id}
@@ -233,7 +249,7 @@ const TripList = () => {
                                                 trip={trip}
                                                 onDeleted={handleTripDeleted}
                                             />
-                                            <SmartTripImage trip={trip} alt={trip.trip_name} className="trip-image" />
+                                            <SmartTripImage trip={trip} alt={trip.trip_name} className="trip-list-image" />
                                             <div className="card-overlay">
                                                 <span className="view-details">View Details</span>
                                             </div>

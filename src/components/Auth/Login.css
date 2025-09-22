@@ -1,3 +1,52 @@
+/* Form Styling - Moved from index.css */
+.form-container {
+    background-color: #fff;
+    padding: 2rem;
+    max-width: 500px;
+    margin: 2rem auto;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    border-radius: 8px;
+}
+
+.form-container input[type="text"],
+.form-container input[type="email"],
+.form-container input[type="password"],
+.form-container input[type="date"],
+.form-container input[type="file"],
+.form-container textarea {
+    width: 100%;
+    padding: 0.8rem;
+    margin: 0.5rem 0 1rem;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+}
+
+.form-container button {
+    width: 100%;
+    padding: 0.8rem;
+    background-color: #1e90ff;
+    color: #fff;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 1rem;
+}
+
+.login-message {
+    background: linear-gradient(135deg, #ff4500 0%, #ff6b35 100%);
+    color: white;
+    padding: 1rem;
+    border-radius: 8px;
+    margin-bottom: 1rem;
+    text-align: center;
+    box-shadow: 0 4px 15px rgba(255, 69, 0, 0.3);
+}
+
+.login-message p {
+    margin: 0;
+    font-weight: 500;
+}
+
 /* Login Page Styling */
 .login-page {
     min-height: 100vh;

@@ -8,18 +8,47 @@ import ExpensesList from './ExpensesList';
 import ParticipantsList from './ParticipantsList';
 import SettlementsList from './SettlementsList';
 
-const TripSplitCard = ({ trip, onAddExpense, onAddParticipant, onRefresh }) => {
+const TripSplitCard = ({ trip, onAddExpense, onAddParticipant, onRefresh, onClick, compact = false, expanded = false, showActions = false }) => {
     const { user } = useContext(AuthContext);
-    const [expanded, setExpanded] = useState(false);
+    const [isExpanded, setIsExpanded] = useState(expanded);
     const [activeTab, setActiveTab] = useState('expenses');
     const [participants, setParticipants] = useState([]);
     const [expenses, setExpenses] = useState([]);
     const [settlements, setSettlements] = useState([]);
     const [loading, setLoading] = useState(false);
 
+    // Use prop-controlled expanded state if provided
+    React.useEffect(() => {
+        setIsExpanded(expanded);
+        if (expanded) {
+            fetchTripData();
+        }
+    }, [expanded]);
+
+    // Fetch participants for compact cards on mount
+    React.useEffect(() => {
+        if (compact) {
+            fetchParticipants();
+        }
+    }, [compact]);
+
+    const fetchParticipants = async () => {
+        try {
+            const participantsData = await getParticipants(trip.id);
+            setParticipants(participantsData || []);
+        } catch (error) {
+            console.error('Error fetching participants:', error);
+            setParticipants([]);
+        }
+    };
+
     const toggleExpanded = () => {
-        setExpanded(!expanded);
-        if (!expanded) {
+        if (compact && onClick) {
+            onClick();
+            return;
+        }
+        setIsExpanded(!isExpanded);
+        if (!isExpanded) {
             fetchTripData();
         }
     };
@@ -94,22 +123,54 @@ const TripSplitCard = ({ trip, onAddExpense, onAddParticipant, onRefresh }) => {
     }, 0);
 
     return (
-        <div className={`trip-split-card ${expanded ? 'expanded' : ''}`}>
-            <div className="card-header" onClick={toggleExpanded}>
-                <div className="trip-image">
-                    <SmartTripImage
-                        trip={trip}
-                        alt={trip.trip_name}
-                        className="card-trip-image"
-                    />
-                </div>
+        <div className={`trip-split-card ${isExpanded ? 'expanded' : ''} ${compact ? 'compact' : ''}`}>
+            <div className="card-image-container" onClick={toggleExpanded}>
+                <SmartTripImage
+                    trip={trip}
+                    alt={trip.trip_name}
+                    className="card-trip-image"
+                />
+            </div>
 
+            <div className="card-header" onClick={toggleExpanded}>
                 <div className="trip-info">
                     <h3>{trip.trip_name}</h3>
                     <p className="trip-location">{trip.city_name}</p>
                     <p className="trip-dates">
                         {formatDate(trip.start_date)} - {formatDate(trip.end_date)}
                     </p>
+
+                    {/* Participants Display */}
+                    {(compact && participants.length > 0) && (
+                        <div className="trip-participants">
+                            <div className="participants-avatars">
+                                {participants.slice(0, 3).map((participant, index) => {
+                                    const name = participant.display_name || participant.email;
+                                    const initial = name.charAt(0).toUpperCase();
+                                    const colorIndex = name.charCodeAt(0) % 6; // 6 different colors
+
+                                    return (
+                                        <div
+                                            key={participant.user_id || index}
+                                            className={`participant-avatar color-${colorIndex}`}
+                                            title={name}
+                                        >
+                                            {initial}
+                                        </div>
+                                    );
+                                })}
+                                {participants.length > 3 && (
+                                    <div className="participant-avatar more-participants">
+                                        +{participants.length - 3}
+                                    </div>
+                                )}
+                            </div>
+                            <span className="participants-count">
+                                {participants.length} {participants.length === 1 ? 'participant' : 'participants'}
+                            </span>
+                        </div>
+                    )}
+
                     <div className="trip-role">
                         <span className={`role-badge ${trip.user_role}`}>
                             {trip.user_role === 'owner' ? '👑 Trip Owner' : '🤝 Participant'}
@@ -117,27 +178,31 @@ const TripSplitCard = ({ trip, onAddExpense, onAddParticipant, onRefresh }) => {
                     </div>
                 </div>
 
-                <div className="trip-stats">
-                    <div className="stat">
-                        <span className="stat-value">{trip.participant_count}</span>
-                        <span className="stat-label">People</span>
+                {!compact && (
+                    <div className="trip-stats">
+                        <div className="stat">
+                            <span className="stat-value">{trip.participant_count}</span>
+                            <span className="stat-label">People</span>
+                        </div>
+                        <div className="stat">
+                            <span className="stat-value">{trip.expense_count}</span>
+                            <span className="stat-label">Expenses</span>
+                        </div>
+                        <div className="stat">
+                            <span className="stat-value">${trip.total_expenses.toFixed(2)}</span>
+                            <span className="stat-label">Total</span>
+                        </div>
                     </div>
-                    <div className="stat">
-                        <span className="stat-value">{trip.expense_count}</span>
-                        <span className="stat-label">Expenses</span>
-                    </div>
-                    <div className="stat">
-                        <span className="stat-value">${trip.total_expenses.toFixed(2)}</span>
-                        <span className="stat-label">Total</span>
-                    </div>
-                </div>
+                )}
 
-                <div className="expand-icon">
-                    {expanded ? '▲' : '▼'}
-                </div>
+                {!compact && (
+                    <div className="expand-icon">
+                        {isExpanded ? '▲' : '▼'}
+                    </div>
+                )}
             </div>
 
-            {expanded && (
+            {(isExpanded || showActions) && (
                 <div className="card-content">
                     {loading ? (
                         <div className="loading-details">

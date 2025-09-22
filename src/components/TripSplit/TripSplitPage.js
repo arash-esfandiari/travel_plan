@@ -19,6 +19,9 @@ const TripSplitPage = () => {
     const [showParticipantModal, setShowParticipantModal] = useState(false);
     const [refreshTrigger, setRefreshTrigger] = useState(0);
 
+    // Floating emojis for visual appeal
+    const emojis = ['💰', '🧾', '💳', '🤝', '✈️', '🎯', '📊', '💸', '🏦', '📱'];
+
 
     useEffect(() => {
         if (!user) {
@@ -111,6 +114,19 @@ const TripSplitPage = () => {
 
     return (
         <div className="trip-split-page">
+            {/* Floating Emojis */}
+            {emojis.map((emoji, index) => (
+                <div
+                    key={index}
+                    className={`floating-emoji floating-emoji-${index + 1}`}
+                    style={{
+                        animationDelay: `${index * 0.5}s`
+                    }}
+                >
+                    <span>{emoji}</span>
+                </div>
+            ))}
+
             <div className="trip-split-container">
                 {/* Header */}
                 <div className="trip-split-header">
@@ -161,6 +177,8 @@ const TripSplitPage = () => {
                                     onAddExpense={handleAddExpense}
                                     onAddParticipant={handleAddParticipant}
                                     onRefresh={handleRefresh}
+                                    onClick={() => navigate(`/trip-split/${trip.id}`)}
+                                    compact={true}
                                 />
                             ))}
                         </div>

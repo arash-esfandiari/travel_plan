@@ -7,6 +7,11 @@ export const getUserParticipatingTrips = async () => {
     return response.data;
 };
 
+export const getTripSplitDetails = async (tripId) => {
+    const response = await api.get(`/api/trip-split/trips/${tripId}/details`);
+    return response.data;
+};
+
 // Participants API
 export const addParticipant = async (tripId, participantData) => {
     const response = await api.post(`/api/trip-split/trips/${tripId}/participants`, participantData);
