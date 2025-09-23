@@ -1,16 +1,15 @@
 /* TripSplit Page Styles */
-.trip-split-page {
+.list-trip-split-page {
     min-height: 100vh;
     position: relative;
     overflow-x: hidden;
     background: linear-gradient(135deg, #74ebd5 0%, #9face6 100%);
     font-family: "Fredoka", "Comic Sans MS", "Baloo", cursive, sans-serif;
-    padding-top: 80px; /* Space for navbar */
     padding-bottom: 200px; /* Extra space for footer */
 }
 
 /* Add subtle pattern overlay */
-.trip-split-page::before {
+.list-trip-split-page::before {
     content: "";
     position: absolute;
     top: 0;
@@ -27,7 +26,7 @@
 }
 
 /* Floating Emojis */
-.floating-emoji {
+.list-floating-emoji {
     position: absolute;
     font-size: 2rem;
     z-index: 2;
@@ -39,57 +38,57 @@
     user-select: none;
 }
 
-.floating-emoji:hover {
+.list-floating-emoji:hover {
     transform: scale(1.3);
     filter: drop-shadow(0 6px 12px rgba(255, 107, 53, 0.4));
 }
 
-.floating-emoji-1 {
+.list-floating-emoji-1 {
     top: 8%;
     left: 8%;
     animation-delay: 0s;
 }
-.floating-emoji-2 {
+.list-floating-emoji-2 {
     top: 15%;
     right: 12%;
     animation-delay: 1s;
 }
-.floating-emoji-3 {
+.list-floating-emoji-3 {
     top: 65%;
     left: 5%;
     animation-delay: 2s;
 }
-.floating-emoji-4 {
+.list-floating-emoji-4 {
     top: 25%;
     right: 25%;
     animation-delay: 3s;
 }
-.floating-emoji-5 {
+.list-floating-emoji-5 {
     top: 45%;
     left: 15%;
     animation-delay: 4s;
 }
-.floating-emoji-6 {
+.list-floating-emoji-6 {
     top: 75%;
     right: 8%;
     animation-delay: 5s;
 }
-.floating-emoji-7 {
+.list-floating-emoji-7 {
     top: 35%;
     left: 85%;
     animation-delay: 6s;
 }
-.floating-emoji-8 {
+.list-floating-emoji-8 {
     top: 55%;
     right: 35%;
     animation-delay: 7s;
 }
-.floating-emoji-9 {
+.list-floating-emoji-9 {
     top: 85%;
     left: 25%;
     animation-delay: 8s;
 }
-.floating-emoji-10 {
+.list-floating-emoji-10 {
     top: 20%;
     left: 45%;
     animation-delay: 9s;
@@ -116,7 +115,7 @@
 }
 
 /* Main Container */
-.trip-split-container {
+.trip-split-list-container {
     max-width: 1200px;
     margin: 0 auto;
     padding: 2rem;
@@ -140,13 +139,13 @@
 }
 
 /* TripSplitHeader Redesign - Light, Elegant, and Interactive */
-.trip-split-header {
+.list-trip-split-header {
     background: rgba(255, 255, 255, 0.6); /* Light glass background */
     backdrop-filter: blur(25px);
     -webkit-backdrop-filter: blur(25px);
     border-radius: 25px;
     padding: 2.5rem;
-    margin-bottom: 2rem;
+    margin: 3rem;
     box-shadow: 0 20px 50px rgba(0, 0, 0, 0.1),
         /* Lighter shadow */ inset 0 1px 2px rgba(255, 255, 255, 0.5); /* Light inset highlight */
     border: 1px solid rgba(255, 255, 255, 0.8);
@@ -156,7 +155,7 @@
 }
 
 /* Sunbeam background effect */
-.trip-split-header::before {
+.list-trip-split-header::before {
     content: "";
     position: absolute;
     top: -50%;
@@ -355,7 +354,7 @@
 }
 
 /* Trip Split Card - Matching My Trips Design */
-.trip-split-card {
+.list-trip-split-card {
     background: linear-gradient(135deg, #ffffff 0%, #fafafa 100%);
     border-radius: 20px;
     box-shadow: 0 2px 20px rgba(0, 0, 0, 0.08), 0 1px 3px rgba(0, 0, 0, 0.1);
@@ -371,7 +370,7 @@
     margin-bottom: 1.5rem;
 }
 
-.trip-split-card::before {
+.list-trip-split-card::before {
     content: "";
     position: absolute;
     top: 0;
@@ -387,40 +386,40 @@
     z-index: 1;
 }
 
-.trip-split-card:hover {
+.list-trip-split-card:hover {
     transform: translateY(-4px) scale(1.01);
     box-shadow: 0 8px 40px rgba(0, 0, 0, 0.12), 0 4px 16px rgba(0, 0, 0, 0.08);
     border-color: rgba(255, 107, 53, 0.2);
 }
 
-.trip-split-card.expanded {
+.list-trip-split-card.expanded {
     cursor: default;
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
 }
 
-.trip-split-card.compact {
+.list-trip-split-card.compact {
     cursor: pointer;
 }
 
-.trip-split-card.compact:hover {
+.list-trip-split-card.compact:hover {
     transform: translateY(-4px) scale(1.01);
     box-shadow: 0 8px 40px rgba(0, 0, 0, 0.12), 0 4px 16px rgba(0, 0, 0, 0.08);
     border-color: rgba(255, 107, 53, 0.2);
 }
 
 /* Disable hover effects for no-expand cards */
-.trip-split-card.no-expand {
+.list-trip-split-card.no-expand {
     cursor: default;
 }
 
-.trip-split-card.no-expand:hover {
+.list-trip-split-card.no-expand:hover {
     transform: none;
     box-shadow: 0 2px 20px rgba(0, 0, 0, 0.08), 0 1px 3px rgba(0, 0, 0, 0.1);
     border-color: rgba(0, 0, 0, 0.04);
 }
 
-.trip-split-card.no-expand .card-image-container,
-.trip-split-card.no-expand .card-header {
+.list-trip-split-card.no-expand .card-image-container,
+.list-trip-split-card.no-expand .card-header {
     cursor: default;
 }
 
@@ -441,12 +440,12 @@
     filter: brightness(1.02) contrast(1.05);
 }
 
-.trip-split-card:hover .card-trip-image {
+.list-trip-split-card:hover .card-trip-image {
     transform: scale(1.08);
     filter: brightness(1.1) contrast(1.1) saturate(1.1);
 }
 
-.trip-split-card.no-expand:hover .card-trip-image {
+.list-trip-split-card.no-expand:hover .card-trip-image {
     transform: none;
     filter: brightness(1.02) contrast(1.05);
 }
@@ -974,15 +973,15 @@
 
 /* Responsive Design */
 @media (max-width: 768px) {
-    .trip-split-page {
+    .list-trip-split-page {
         padding: 4rem 0 1rem 0;
     }
 
-    .trip-split-container {
+    .trip-split-list-container {
         padding: 0 1rem;
     }
 
-    .trip-split-header {
+    .list-trip-split-header {
         flex-direction: column;
         text-align: center;
         padding: 1.25rem;
@@ -1000,7 +999,7 @@
         gap: 1rem;
     }
 
-    .trip-split-card {
+    .list-trip-split-card {
         flex-direction: column;
         min-height: auto;
     }
@@ -1070,7 +1069,7 @@
 }
 
 @media (max-width: 480px) {
-    .trip-split-header {
+    .list-trip-split-header {
         padding: 1rem;
     }
 

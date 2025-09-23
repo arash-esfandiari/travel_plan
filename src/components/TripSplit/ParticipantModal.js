@@ -41,8 +41,8 @@ const ParticipantModal = ({ trip, onClose }) => {
     };
 
     return (
-        <div className="modal-overlay">
-            <div className="modal-content participant-modal">
+        <div className="modal-overlay" onClick={onClose}>
+            <div className="modal-content participant-modal" onClick={(e) => e.stopPropagation()}>
                 <div className="modal-header">
                     <h3>👥 Add Friend</h3>
                     <h4>{trip.trip_name}</h4>

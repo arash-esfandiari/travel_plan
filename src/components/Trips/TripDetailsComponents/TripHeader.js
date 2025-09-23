@@ -6,7 +6,7 @@ const TripHeader = ({ trip, loading, onGoBack, onRefresh }) => {
     const navigate = useNavigate();
 
     const handleTripSplit = () => {
-        navigate(`/trips/${trip.id}/split`);
+        navigate(`/trip-split/${trip.id}`);
     };
 
     return (

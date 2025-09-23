@@ -1,5 +1,5 @@
 // src/components/Trips/TripSplitComponents/SettlementsSection.js
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { calculateSettlements, getSettlements, markSettlementPaid } from '../../../services/tripSplitService';
 
 const SettlementsSection = ({ tripId, refreshTrigger, onDataChange }) => {
@@ -9,11 +9,7 @@ const SettlementsSection = ({ tripId, refreshTrigger, onDataChange }) => {
     const [calculating, setCalculating] = useState(false);
     const [error, setError] = useState(null);
 
-    useEffect(() => {
-        fetchSettlements();
-    }, [tripId, refreshTrigger]);
-
-    const fetchSettlements = async () => {
+    const fetchSettlements = useCallback(async () => {
         try {
             setLoading(true);
             const data = await getSettlements(tripId);
@@ -25,7 +21,11 @@ const SettlementsSection = ({ tripId, refreshTrigger, onDataChange }) => {
         } finally {
             setLoading(false);
         }
-    };
+    }, [tripId]);
+
+    useEffect(() => {
+        fetchSettlements();
+    }, [fetchSettlements, refreshTrigger]);
 
     const handleCalculateSettlements = async () => {
         try {
@@ -64,10 +64,6 @@ const SettlementsSection = ({ tripId, refreshTrigger, onDataChange }) => {
             .toFixed(2);
     };
 
-    const getPersonalBalance = (participantName) => {
-        const balance = balances.find(b => b.display_name === participantName);
-        return balance ? parseFloat(balance.balance) : 0;
-    };
 
     const formatBalance = (amount) => {
         const value = parseFloat(amount);
@@ -118,28 +114,53 @@ const SettlementsSection = ({ tripId, refreshTrigger, onDataChange }) => {
                         {balances.map(balance => {
                             const formattedBalance = formatBalance(balance.balance);
                             return (
-                                <div key={balance.user_id} className="balance-card">
-                                    <div className="balance-participant">
-                                        <div className="participant-avatar">
+                                <div key={balance.user_id} className={`balance-card ${formattedBalance.class}`}>
+                                    {/* Card Header */}
+                                    <div className="balance-card-header">
+                                        <div className="balance-status-badge">
+                                            <span className="status-icon">
+                                                {parseFloat(balance.balance) > 0 ? '💰' :
+                                                    parseFloat(balance.balance) < 0 ? '💸' : '⚖️'}
+                                            </span>
+                                            <span className="status-label">
+                                                {parseFloat(balance.balance) > 0 ? 'Gets Money' :
+                                                    parseFloat(balance.balance) < 0 ? 'Owes Money' : 'Even'}
+                                            </span>
+                                        </div>
+                                        <div className={`balance-amount-display ${formattedBalance.class}`}>
+                                            <span className="balance-amount-text">
+                                                {Math.abs(parseFloat(balance.balance)).toFixed(2)}
+                                            </span>
+                                        </div>
+                                    </div>
+
+                                    {/* Main Content */}
+                                    <div className="balance-main-content">
+                                        <div className="balance-avatar-large">
                                             {parseFloat(balance.balance) > 0 ? '💰' :
                                                 parseFloat(balance.balance) < 0 ? '💸' : '⚖️'}
                                         </div>
-                                        <div className="participant-info">
-                                            <h4>{balance.first_name} {balance.last_name}</h4>
-                                            <p>{balance.email}</p>
+                                        <div className="balance-participant-info">
+                                            <h3 className="participant-name">
+                                                {balance.first_name} {balance.last_name}
+                                            </h3>
+                                            <p className="participant-email">{balance.email}</p>
                                         </div>
                                     </div>
-                                    <div className={`balance-amount ${formattedBalance.class}`}>
-                                        {formattedBalance.text}
-                                    </div>
-                                    <div className="balance-details">
-                                        <div className="balance-detail">
-                                            <span>Paid:</span>
-                                            <span>${parseFloat(balance.total_paid).toFixed(2)}</span>
-                                        </div>
-                                        <div className="balance-detail">
-                                            <span>Owes:</span>
-                                            <span>${parseFloat(balance.total_owed).toFixed(2)}</span>
+
+                                    {/* Footer with Details */}
+                                    <div className="balance-footer">
+                                        <div className="balance-breakdown">
+                                            <div className="breakdown-item">
+                                                <span className="breakdown-icon">💳</span>
+                                                <span className="breakdown-label">Paid</span>
+                                                <span className="breakdown-value">{parseFloat(balance.total_paid).toFixed(2)}</span>
+                                            </div>
+                                            <div className="breakdown-item">
+                                                <span className="breakdown-icon">📊</span>
+                                                <span className="breakdown-label">Share</span>
+                                                <span className="breakdown-value">{parseFloat(balance.total_owed).toFixed(2)}</span>
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
@@ -181,49 +202,75 @@ const SettlementsSection = ({ tripId, refreshTrigger, onDataChange }) => {
                                     key={settlement.id}
                                     className={`settlement-card ${settlement.settled_at ? 'settled' : 'pending'}`}
                                 >
-                                    <div className="settlement-participants">
-                                        <div className="participant from-participant">
-                                            <div className="participant-avatar">💸</div>
-                                            <div className="participant-info">
-                                                <h4>
-                                                    {settlement.payer_first_name} {settlement.payer_last_name}
-                                                </h4>
-                                                <p>{settlement.payer_email}</p>
-                                            </div>
+                                    {/* Card Header */}
+                                    <div className="settlement-card-header">
+                                        <div className="settlement-status-badge">
+                                            <span className="status-icon">
+                                                {settlement.settled_at ? '✅' : '⏳'}
+                                            </span>
+                                            <span className="status-label">
+                                                {settlement.settled_at ? 'Settled' : 'Pending'}
+                                            </span>
                                         </div>
-
-                                        <div className="settlement-arrow">
-                                            <div className="arrow-line"></div>
-                                            <div className="arrow-head">→</div>
-                                            <div className="settlement-amount">
-                                                ${parseFloat(settlement.amount).toFixed(2)}
-                                            </div>
+                                        <div className="settlement-amount-display">
+                                            <span className="settlement-amount-text">
+                                                {parseFloat(settlement.amount).toFixed(2)}
+                                            </span>
                                         </div>
+                                    </div>
 
-                                        <div className="participant to-participant">
-                                            <div className="participant-avatar">💰</div>
-                                            <div className="participant-info">
-                                                <h4>
-                                                    {settlement.payee_first_name} {settlement.payee_last_name}
-                                                </h4>
-                                                <p>{settlement.payee_email}</p>
+                                    {/* Main Content - Payment Flow */}
+                                    <div className="settlement-main-content">
+                                        <div className="payment-flow">
+                                            <div className="payer-section">
+                                                <div className="participant-avatar payer">💸</div>
+                                                <div className="participant-details">
+                                                    <h4 className="participant-name">
+                                                        {settlement.payer_first_name} {settlement.payer_last_name}
+                                                    </h4>
+                                                    <p className="participant-email">{settlement.payer_email}</p>
+                                                    <span className="participant-role">Owes</span>
+                                                </div>
+                                            </div>
+
+                                            <div className="payment-arrow">
+                                                <div className="arrow-container">
+                                                    <div className="arrow-line"></div>
+                                                    <div className="arrow-head">→</div>
+                                                </div>
+                                                <div className="payment-label">pays</div>
+                                            </div>
+
+                                            <div className="payee-section">
+                                                <div className="participant-avatar payee">💰</div>
+                                                <div className="participant-details">
+                                                    <h4 className="participant-name">
+                                                        {settlement.payee_first_name} {settlement.payee_last_name}
+                                                    </h4>
+                                                    <p className="participant-email">{settlement.payee_email}</p>
+                                                    <span className="participant-role">Receives</span>
+                                                </div>
                                             </div>
                                         </div>
                                     </div>
 
-                                    <div className="settlement-status">
+                                    {/* Footer */}
+                                    <div className="settlement-footer">
                                         {settlement.settled_at ? (
-                                            <div className="status-settled">
-                                                <span className="status-icon">✅</span>
-                                                <span>Paid on {new Date(settlement.settled_at).toLocaleDateString()}</span>
+                                            <div className="settlement-completed">
+                                                <span className="completion-icon">✅</span>
+                                                <span className="completion-text">
+                                                    Paid on {new Date(settlement.settled_at).toLocaleDateString()}
+                                                </span>
                                             </div>
                                         ) : (
                                             <div className="settlement-actions">
                                                 <button
-                                                    className="mark-paid-btn"
+                                                    className="action-btn mark-paid-btn"
                                                     onClick={() => handleMarkPaid(settlement.id)}
                                                 >
-                                                    ✅ Mark as Paid
+                                                    <span className="btn-icon">✅</span>
+                                                    <span className="btn-text">Mark as Paid</span>
                                                 </button>
                                             </div>
                                         )}

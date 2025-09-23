@@ -1,8 +1,8 @@
 // src/components/Trips/TripSplitComponents/ParticipantsSection.js
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { getParticipants, addParticipant, removeParticipant } from '../../../services/tripSplitService';
 
-const ParticipantsSection = ({ tripId, refreshTrigger, onDataChange }) => {
+const ParticipantsSection = ({ tripId, refreshTrigger, onDataChange, onAddParticipant }) => {
     const [participants, setParticipants] = useState([]);
     const [loading, setLoading] = useState(true);
     const [showAddForm, setShowAddForm] = useState(false);
@@ -10,11 +10,7 @@ const ParticipantsSection = ({ tripId, refreshTrigger, onDataChange }) => {
     const [adding, setAdding] = useState(false);
     const [error, setError] = useState(null);
 
-    useEffect(() => {
-        fetchParticipants();
-    }, [tripId, refreshTrigger]);
-
-    const fetchParticipants = async () => {
+    const fetchParticipants = useCallback(async () => {
         try {
             setLoading(true);
             const data = await getParticipants(tripId);
@@ -26,7 +22,11 @@ const ParticipantsSection = ({ tripId, refreshTrigger, onDataChange }) => {
         } finally {
             setLoading(false);
         }
-    };
+    }, [tripId]);
+
+    useEffect(() => {
+        fetchParticipants();
+    }, [fetchParticipants, refreshTrigger]);
 
     const handleAddParticipant = async (e) => {
         e.preventDefault();
@@ -93,7 +93,7 @@ const ParticipantsSection = ({ tripId, refreshTrigger, onDataChange }) => {
                 <h2>👥 Trip Participants</h2>
                 <button
                     className="add-participant-btn"
-                    onClick={() => setShowAddForm(true)}
+                    onClick={onAddParticipant}
                 >
                     + Add Friend
                 </button>
@@ -152,43 +152,62 @@ const ParticipantsSection = ({ tripId, refreshTrigger, onDataChange }) => {
                         <p>Add friends to start splitting expenses</p>
                         <button
                             className="empty-action-btn"
-                            onClick={() => setShowAddForm(true)}
+                            onClick={onAddParticipant}
                         >
                             Add Your First Friend
                         </button>
                     </div>
                 ) : (
                     participants.map(participant => (
-                        <div key={participant.id} className="participant-card">
-                            <div className="participant-info">
-                                <div className="participant-avatar">
+                        <div key={participant.id} className={`participant-card ${participant.is_owner ? 'owner' : ''}`}>
+                            {/* Card Header */}
+                            <div className="participant-card-header">
+                                <div className="participant-status-badge">
+                                    <span className="status-icon">
+                                        {participant.is_owner ? '👑' : '👤'}
+                                    </span>
+                                    <span className="status-label">
+                                        {participant.is_owner ? 'Trip Owner' : 'Participant'}
+                                    </span>
+                                </div>
+                                {!participant.is_owner && (
+                                    <button
+                                        className="action-btn remove-btn"
+                                        onClick={() => handleRemoveParticipant(participant.user_id)}
+                                        title="Remove participant"
+                                    >
+                                        🗑️
+                                    </button>
+                                )}
+                            </div>
+
+                            {/* Main Content */}
+                            <div className="participant-main-content">
+                                <div className="participant-avatar-large">
                                     {participant.is_owner ? '👑' : '👤'}
                                 </div>
-                                <div className="participant-details">
-                                    <h4 className="participant-name">
+                                <div className="participant-info-section">
+                                    <h3 className="participant-name">
                                         {participant.display_name}
-                                        {participant.is_owner && <span className="owner-badge">Owner</span>}
-                                    </h4>
-                                    <p className="participant-contact">
+                                    </h3>
+                                    <p className="participant-email">
                                         {participant.user_email || participant.email}
-                                        {participant.username && (
-                                            <span className="username">@{participant.username}</span>
-                                        )}
                                     </p>
-                                    <p className="participant-joined">
-                                        Joined {new Date(participant.joined_at).toLocaleDateString()}
-                                    </p>
+                                    {participant.username && (
+                                        <p className="participant-username">@{participant.username}</p>
+                                    )}
                                 </div>
                             </div>
-                            {!participant.is_owner && (
-                                <button
-                                    className="remove-btn"
-                                    onClick={() => handleRemoveParticipant(participant.user_id)}
-                                    title="Remove participant"
-                                >
-                                    🗑️
-                                </button>
-                            )}
+
+                            {/* Footer */}
+                            <div className="participant-footer">
+                                <div className="participant-meta">
+                                    <span className="meta-icon">📅</span>
+                                    <span className="meta-text">
+                                        Joined {new Date(participant.joined_at).toLocaleDateString()}
+                                    </span>
+                                </div>
+                            </div>
                         </div>
                     ))
                 )}

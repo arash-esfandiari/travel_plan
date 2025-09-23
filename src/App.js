@@ -12,9 +12,8 @@ import MainPage from './components/Home/MainPage';
 import TripList from './components/Trips/TripList';
 import TripDetails from './components/Trips/TripDetails';
 import TripEdit from './components/Trips/TripEdit';
-import TripSplit from './components/Trips/TripSplit';
-import TripSplitPage from './components/TripSplit/TripSplitPage';
-import TripSplitDetails from './components/TripSplit/TripSplitDetails';
+import SplitDetails from './components/Trips/SplitDetails';
+import TripSplitList from './components/TripSplit/TripSplitList';
 
 function App() {
   return (
@@ -31,11 +30,10 @@ function App() {
             <Route path="/login" element={<Login />} />
             <Route path="/signup" element={<Signup />} />
             <Route path="/trips" element={<TripList />} />
-            <Route path="/trip-split" element={<TripSplitPage />} />
-            <Route path="/trip-split/:tripId" element={<TripSplitDetails />} />
+            <Route path="/trip-split" element={<TripSplitList />} />
+            <Route path="/trip-split/:tripId" element={<SplitDetails />} />
             <Route path="/trips/:tripId" element={<TripDetails />} />
             <Route path="/trips/:tripId/edit" element={<TripEdit />} />
-            <Route path="/trips/:tripId/split" element={<TripSplit />} />
             <Route path="*" element={<NotFound />} />
           </Routes>
         </main>

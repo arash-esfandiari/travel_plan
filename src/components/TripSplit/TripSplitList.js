@@ -1,4 +1,4 @@
-// src/components/TripSplit/TripSplitPage.js
+// src/components/TripSplit/TripSplitList.js
 import React, { useState, useEffect, useContext } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { AuthContext } from '../../context/AuthContext';
@@ -6,9 +6,9 @@ import { getUserParticipatingTrips } from '../../services/tripSplitService';
 import TripSplitCard from './TripSplitCard';
 import ExpenseModal from './ExpenseModal';
 import ParticipantModal from './ParticipantModal';
-import './TripSplitPage.css';
+import './TripSplitList.css';
 
-const TripSplitPage = () => {
+const TripSplitList = () => {
     const navigate = useNavigate();
     const { user } = useContext(AuthContext);
     const [trips, setTrips] = useState([]);
@@ -73,7 +73,7 @@ const TripSplitPage = () => {
 
     if (!user) {
         return (
-            <div className="trip-split-page">
+            <div className="list-trip-split-page">
                 <div className="login-required">
                     <h2>Login Required</h2>
                     <p>Please log in to access trip expense sharing.</p>
@@ -87,7 +87,7 @@ const TripSplitPage = () => {
 
     if (loading) {
         return (
-            <div className="trip-split-page">
+            <div className="list-trip-split-page">
                 <div className="loading-container">
                     <div className="loading-spinner">💰</div>
                     <h2>Loading Your Trips...</h2>
@@ -99,7 +99,7 @@ const TripSplitPage = () => {
 
     if (error) {
         return (
-            <div className="trip-split-page">
+            <div className="list-trip-split-page">
                 <div className="error-container">
                     <div className="error-icon">⚠️</div>
                     <h2>Something went wrong</h2>
@@ -113,12 +113,12 @@ const TripSplitPage = () => {
     }
 
     return (
-        <div className="trip-split-page">
+        <div className="list-trip-split-page">
             {/* Floating Emojis */}
             {emojis.map((emoji, index) => (
                 <div
                     key={index}
-                    className={`floating-emoji floating-emoji-${index + 1}`}
+                    className={`list-floating-emoji list-floating-emoji-${index + 1}`}
                     style={{
                         animationDelay: `${index * 0.5}s`
                     }}
@@ -127,9 +127,9 @@ const TripSplitPage = () => {
                 </div>
             ))}
 
-            <div className="trip-split-container">
+            <div className="trip-split-list-container">
                 {/* Header */}
-                <div className="trip-split-header">
+                <div className="list-trip-split-header">
                     <div className="trip-title-section">
                         <h1 className="trip-main-title">💰 Trip Split</h1>
                         <div className="trip-subtitle">
@@ -216,4 +216,4 @@ const TripSplitPage = () => {
     );
 };
 
-export default TripSplitPage; 
+export default TripSplitList; 

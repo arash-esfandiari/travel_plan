@@ -1,8 +1,8 @@
 // src/components/TripSplit/ExpenseModal.js
 import React, { useState, useEffect } from 'react';
-import { createExpense, getParticipants } from '../../services/tripSplitService';
+import { createExpense, updateExpense, getParticipants } from '../../services/tripSplitService';
 
-const ExpenseModal = ({ trip, onClose }) => {
+const ExpenseModal = ({ trip, editingExpense, onClose }) => {
     const [participants, setParticipants] = useState([]);
     const [loading, setLoading] = useState(false);
     const [submitting, setSubmitting] = useState(false);
@@ -23,17 +23,55 @@ const ExpenseModal = ({ trip, onClose }) => {
     const [percentages, setPercentages] = useState({}); // userId -> percent
 
     const categories = [
-        { value: 'food', label: '🍽️ Food & Drinks' },
-        { value: 'transport', label: '🚗 Transportation' },
-        { value: 'accommodation', label: '🏨 Accommodation' },
-        { value: 'entertainment', label: '🎉 Entertainment' },
-        { value: 'shopping', label: '🛍️ Shopping' },
-        { value: 'other', label: '📦 Other' }
+        { value: 'food', label: 'Food & Drinks' },
+        { value: 'transport', label: 'Transportation' },
+        { value: 'accommodation', label: 'Accommodation' },
+        { value: 'entertainment', label: 'Entertainment' },
+        { value: 'shopping', label: 'Shopping' },
+        { value: 'other', label: 'Other' }
     ];
 
     useEffect(() => {
         fetchParticipants();
     }, [trip.id]);
+
+    // Initialize form with editing data
+    useEffect(() => {
+        if (editingExpense) {
+            setFormData({
+                title: editingExpense.title || '',
+                description: editingExpense.description || '',
+                amount: editingExpense.amount || '',
+                expense_date: editingExpense.expense_date || new Date().toISOString().split('T')[0],
+                category: editingExpense.category || 'food',
+                paid_by: editingExpense.paid_by || '',
+                split_method: 'equal', // Default for editing
+                split_scope: 'all'
+            });
+
+            // Set up participants selection if needed
+            if (editingExpense.participants && editingExpense.participants.length > 0) {
+                const participantIds = editingExpense.participants.map(p => p.user_id);
+                setSelectedParticipantIds(participantIds);
+
+                // Set custom amounts if it's a custom split
+                const customAmountMap = {};
+                editingExpense.participants.forEach(p => {
+                    customAmountMap[p.user_id] = p.share_amount;
+                });
+                setCustomAmounts(customAmountMap);
+
+                // Determine split method based on participants
+                if (editingExpense.participants.length < participants.length) {
+                    setFormData(prev => ({
+                        ...prev,
+                        split_scope: 'subset',
+                        split_method: 'custom'
+                    }));
+                }
+            }
+        }
+    }, [editingExpense, participants]);
 
     const fetchParticipants = async () => {
         setLoading(true);
@@ -192,21 +230,25 @@ const ExpenseModal = ({ trip, onClose }) => {
                 participants: computeParticipants()
             };
 
-            await createExpense(trip.id, expenseData);
+            if (editingExpense) {
+                await updateExpense(editingExpense.id, expenseData);
+            } else {
+                await createExpense(trip.id, expenseData);
+            }
             onClose(); // This will trigger refresh in parent
         } catch (error) {
-            console.error('Error creating expense:', error);
-            alert('Failed to create expense. Please try again.');
+            console.error(`Error ${editingExpense ? 'updating' : 'creating'} expense:`, error);
+            alert(`Failed to ${editingExpense ? 'update' : 'create'} expense. Please try again.`);
         } finally {
             setSubmitting(false);
         }
     };
 
     return (
-        <div className="modal-overlay">
-            <div className="modal-content expense-modal">
+        <div className="modal-overlay" onClick={onClose}>
+            <div className="modal-content expense-modal" onClick={(e) => e.stopPropagation()}>
                 <div className="modal-header">
-                    <h3>💰 Add Expense</h3>
+                    <h3>💰 {editingExpense ? 'Edit Expense' : 'Add Expense'}</h3>
                     <h4>{trip.trip_name}</h4>
                     <button className="close-btn" onClick={onClose}>×</button>
                 </div>
@@ -476,7 +518,10 @@ const ExpenseModal = ({ trip, onClose }) => {
                                 className="submit-btn"
                                 disabled={submitting || !getValidation().ok}
                             >
-                                {submitting ? 'Adding...' : 'Add Expense'}
+                                {submitting ?
+                                    (editingExpense ? 'Updating...' : 'Adding...') :
+                                    (editingExpense ? 'Update Expense' : 'Add Expense')
+                                }
                             </button>
                         </div>
                     </form>

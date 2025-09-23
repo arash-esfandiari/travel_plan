@@ -452,3 +452,8 @@ header.fade-out {
         max-height: 35px;
     }
 }
+
+/* Hide header when modal is open */
+body.modal-open header {
+    display: none !important;
+}

@@ -126,7 +126,7 @@ const TripSplitCard = ({ trip, onAddExpense, onAddParticipant, onRefresh, onClic
     }, 0);
 
     return (
-        <div className={`trip-split-card ${isExpanded ? 'expanded' : ''} ${compact ? 'compact' : ''} ${disableExpand ? 'no-expand' : ''}`}>
+        <div className={`list-trip-split-card ${isExpanded ? 'expanded' : ''} ${compact ? 'compact' : ''} ${disableExpand ? 'no-expand' : ''}`}>
             <div className="card-image-container" onClick={disableExpand ? undefined : toggleExpanded}>
                 <SmartTripImage
                     trip={trip}
@@ -177,7 +177,7 @@ const TripSplitCard = ({ trip, onAddExpense, onAddParticipant, onRefresh, onClic
                             <span className="stat-label">Expenses</span>
                         </div>
                         <div className="stat">
-                            <span className="stat-value">${trip.total_expenses.toFixed(2)}</span>
+                            <span className="stat-value">${(trip.total_expenses || 0).toFixed(2)}</span>
                             <span className="stat-label">Total</span>
                         </div>
                     </div>
