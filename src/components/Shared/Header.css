@@ -461,6 +461,15 @@ header.fade-out {
     header {
         padding: 1rem 1.25rem;
         padding-top: calc(env(safe-area-inset-top, 0) + 1.4rem);
+        background: rgba(15, 15, 18, 0.72);
+        border-bottom: 1px solid rgba(255, 255, 255, 0.15);
+        backdrop-filter: blur(26px);
+        -webkit-backdrop-filter: blur(26px);
+        box-shadow: 0 18px 36px rgba(0, 0, 0, 0.25);
+    }
+
+    header::before {
+        opacity: 0.85;
     }
 
     header::after {
