@@ -1,5 +1,12 @@
 .App {
     text-align: center;
+    /* Prevent text size adjustment on orientation change in iOS */
+    -webkit-text-size-adjust: 100%;
+    -moz-text-size-adjust: 100%;
+    -ms-text-size-adjust: 100%;
+    text-size-adjust: 100%;
+    /* Enable smooth scrolling on iOS */
+    -webkit-overflow-scrolling: touch;
 }
 
 .App-logo {
