@@ -39,8 +39,8 @@ A full-stack travel planner application that helps users create, manage, and pla
 1. **Clone the repository and navigate to the backend folder:**
 
     ```bash
-    git clone https://github.com/yourusername/travel-planner.git
-    cd travel-planner/backend
+    git clone https://github.com/yourusername/LetsPlanet.git
+    cd LetsPlanet/backend
     ```
 
 2. **Install dependencies:**
@@ -103,7 +103,7 @@ Frontend Setup
 ## Project Structure
 
 ```
-travel-planner/
+LetsPlanet/
 ├── backend/
 │ ├── src/
 │ │ ├── controllers/

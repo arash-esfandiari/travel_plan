@@ -61,6 +61,6 @@ footer p {
 /* Responsive */
 @media (max-width: 768px) {
     main {
-        padding: 1rem;
+        padding: 0;
     }
 }
