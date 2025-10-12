@@ -40,7 +40,8 @@ body {
     padding: 0;
     overflow-x: hidden;
     overflow-y: auto;
-    height: auto;
+    height: 100%;
+    background-color: transparent;
 }
 
 .main-page {
@@ -52,6 +53,10 @@ body {
     position: relative;
     /* Force the page to be tall enough to contain all sections */
     height: auto;
+    background-color: transparent;
+    /* Extend to the very top of viewport */
+    margin-top: 0 !important;
+    padding-top: 0 !important;
 }
 
 /* Hero Section */
@@ -67,17 +72,21 @@ body {
     animation: pageBounce 0.6s ease-out;
     margin: 0;
     padding-top: 0;
+    /* Pull up to start at absolute top including notch area */
+    margin-top: calc(-1 * env(safe-area-inset-top, 0px));
     /* Extend to fill viewport including notch */
-    min-height: calc(100vh + env(safe-area-inset-top, 0px) + env(safe-area-inset-bottom, 0px));
+    min-height: calc(100vh + env(safe-area-inset-top, 0px));
 }
 
 /* Background image - extends into notch and safe areas */
 .hero-background {
     position: absolute;
-    top: calc(-1 * env(safe-area-inset-top, 0px));
-    left: calc(-1 * env(safe-area-inset-left, 0px));
-    width: calc(100% + env(safe-area-inset-left, 0px) + env(safe-area-inset-right, 0px));
-    height: calc(100% + env(safe-area-inset-top, 0px) + env(safe-area-inset-bottom, 0px));
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    width: 100%;
+    height: 100%;
     z-index: 0;
 }
 
@@ -90,10 +99,12 @@ body {
 
 .hero-overlay {
     position: absolute;
-    top: calc(-1 * env(safe-area-inset-top, 0px));
-    left: calc(-1 * env(safe-area-inset-left, 0px));
-    width: calc(100% + env(safe-area-inset-left, 0px) + env(safe-area-inset-right, 0px));
-    height: calc(100% + env(safe-area-inset-top, 0px) + env(safe-area-inset-bottom, 0px));
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    width: 100%;
+    height: 100%;
     background: linear-gradient(
         135deg,
         rgba(0, 0, 0, 0.4) 0%,
@@ -125,7 +136,7 @@ body {
     position: relative;
     text-align: center;
     /* Add padding to account for fixed header and safe areas */
-    padding-top: calc(80px + env(safe-area-inset-top, 0px));
+    padding-top: calc(env(safe-area-inset-top, 0px) + 120px);
     padding-left: max(env(safe-area-inset-left, 0px), 1rem);
     padding-right: max(env(safe-area-inset-right, 0px), 1rem);
 }
