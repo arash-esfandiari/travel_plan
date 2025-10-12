@@ -72,6 +72,18 @@
     }
 }
 
+@keyframes notchGlowPulse {
+    0%,
+    100% {
+        opacity: 0.65;
+        transform: translateX(-50%) scaleX(0.9);
+    }
+    50% {
+        opacity: 0.9;
+        transform: translateX(-50%) scaleX(1.05);
+    }
+}
+
 header {
     background: transparent;
     backdrop-filter: blur(0px);
@@ -79,6 +91,7 @@ header {
     border-bottom: 1px solid transparent;
     box-shadow: none;
     padding: 1rem 3rem;
+    padding-top: calc(env(safe-area-inset-top, 0) + 1rem);
     display: flex;
     align-items: center;
     justify-content: space-between;
@@ -89,6 +102,8 @@ header {
     left: 0;
     right: 0;
     z-index: 1000;
+    isolation: isolate;
+    overflow: visible;
     transition: background 0.4s cubic-bezier(0.4, 0, 0.2, 1),
         backdrop-filter 0.4s cubic-bezier(0.4, 0, 0.2, 1),
         border-bottom 0.4s cubic-bezier(0.4, 0, 0.2, 1),
@@ -112,6 +127,19 @@ header::before {
     opacity: 0;
     pointer-events: none;
     transition: opacity 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+header::after {
+    content: "";
+    position: absolute;
+    pointer-events: none;
+    opacity: 0;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 0;
+    z-index: -1;
+    mix-blend-mode: screen;
 }
 
 /* Header when scrolled - Glass Effect */
@@ -432,6 +460,40 @@ header.fade-out {
 @media (max-width: 768px) {
     header {
         padding: 0.8rem 1rem;
+        padding-top: calc(env(safe-area-inset-top, 0) + 0.8rem);
+    }
+
+    header::after {
+        opacity: 1;
+        top: calc(-1 * env(safe-area-inset-top, 0) - 18px);
+        left: 50%;
+        right: auto;
+        width: min(360px, 80vw);
+        height: calc(env(safe-area-inset-top, 0) + 48px);
+        transform: translateX(-50%);
+        background:
+            radial-gradient(
+                140% 180% at 12% 0%,
+                rgba(255, 69, 0, 0.55) 0%,
+                rgba(255, 69, 0, 0.12) 60%,
+                transparent 80%
+            ),
+            radial-gradient(
+                140% 180% at 88% 0%,
+                rgba(255, 140, 0, 0.5) 0%,
+                rgba(255, 140, 0, 0.1) 60%,
+                transparent 80%
+            ),
+            radial-gradient(
+                120% 120% at 50% 100%,
+                rgba(255, 255, 255, 0.35) 0%,
+                rgba(255, 255, 255, 0.08) 55%,
+                transparent 85%
+            );
+        filter: blur(22px);
+        animation: notchGlowPulse 7s ease-in-out infinite;
+        box-shadow: 0 12px 32px rgba(255, 69, 0, 0.18);
+        border-radius: 120px;
     }
 
     nav {
