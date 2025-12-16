@@ -237,3 +237,4 @@ body::after {
 ## 🎉 Result
 
 Your website now provides a seamless, edge-to-edge experience on iPhones with notches while maintaining perfect usability and accessibility!
+

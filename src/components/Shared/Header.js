@@ -1,4 +1,4 @@
-import React, { useContext, useState, useEffect } from 'react';
+import React, { useContext, useState, useEffect, useRef } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { AuthContext } from '../../context/AuthContext';
 import './Header.css';
@@ -10,6 +10,7 @@ const Header = () => {
     const [isFading, setIsFading] = useState(false);
     const [isDropdownOpen, setIsDropdownOpen] = useState(false);
     const [isScrolled, setIsScrolled] = useState(false);
+    const dropdownRef = useRef(null);
 
     useEffect(() => {
         const handleScroll = () => {
@@ -31,7 +32,32 @@ const Header = () => {
         setIsDropdownOpen(false);
     }, [user]);
 
+    // Close dropdown when clicking outside or pressing Escape
+    useEffect(() => {
+        if (!isDropdownOpen) return;
+
+        const handlePointerDown = (event) => {
+            const container = dropdownRef.current;
+            if (!container) return;
+            if (container.contains(event.target)) return;
+            setIsDropdownOpen(false);
+        };
+
+        const handleKeyDown = (event) => {
+            if (event.key === 'Escape') setIsDropdownOpen(false);
+        };
+
+        document.addEventListener('pointerdown', handlePointerDown);
+        document.addEventListener('keydown', handleKeyDown);
+
+        return () => {
+            document.removeEventListener('pointerdown', handlePointerDown);
+            document.removeEventListener('keydown', handleKeyDown);
+        };
+    }, [isDropdownOpen]);
+
     const handleLogout = () => {
+        setIsDropdownOpen(false);
         setIsFading(true);
         setTimeout(() => {
             logout();
@@ -55,8 +81,8 @@ const Header = () => {
                 {user ? (
                     <>
                         <Link to="/trips">My Trips</Link>
-                        <Link to="/trip-split">💰 Split</Link>
-                        <div className="user-dropdown">
+                        <Link to="/trip-split">TripSplit</Link>
+                        <div className="user-dropdown" ref={dropdownRef}>
                             <button
                                 className="user-name"
                                 onClick={toggleDropdown}
